@@ -1,14 +1,67 @@
 {
-  "name": "Мои финансы",
-  "short_name": "Финансы",
+  "id": "./",
+  "name": "Lucky Finance",
+  "short_name": "Lucky Finance",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#16202B",
   "theme_color": "#16202B",
   "lang": "ru",
+  "categories": [
+    "finance"
+  ],
   "icons": [
-    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
-    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
-  ]
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Добавить расход",
+      "short_name": "Расход",
+      "url": "./?a=expense",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Добавить доход",
+      "short_name": "Доход",
+      "url": "./?a=income",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Обмен валюты",
+      "short_name": "Обмен",
+      "url": "./?a=exchange",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "description": "Личный учёт денег для тех, кто получает в одной валюте, а тратит в другой."
 }
