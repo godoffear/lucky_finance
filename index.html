@@ -193,13 +193,13 @@ var CUR={
 var WEAK=['VND','JPY','KRW'];
 var TYPES={cash:'Наличные',card_ru:'Карта РФ',card_vn:'Карта Вьетнама',card_other:'Другая карта',crypto:'Крипта',broker:'Брокер',other:'Другое'};
 var INC=['Зарплата','Подработка','Подарок','Другое'];
-var EXP=['Еда','Еда вне дома','Транспорт','Жильё','Связь','Развлечения','Здоровье','Покупки','Одежда','Путешествия','Спорт','Образование','Подарки','Питомцы','Красота','Дети','Дом и ремонт','Другое'];
-var EMO={'Корректировка':'⚖️','Еда':'🍜','Еда вне дома':'🍽','Транспорт':'🛵','Жильё':'🏠','Связь':'📱','Развлечения':'🎬','Здоровье':'💊','Покупки':'🛍','Одежда':'👕','Путешествия':'✈️','Спорт':'🏋','Образование':'📚','Подарки':'🎁','Питомцы':'🐾','Красота':'💅','Дети':'👶','Дом и ремонт':'🔧','Зарплата':'💼','Подработка':'🧾','Подарок':'🎁','Начальный остаток':'🏁','Другое':'📄'};
+var EXP=['Еда','Еда вне дома','Кофе и напитки','Транспорт','Жильё','Связь','Подписки','Развлечения','Здоровье','Покупки','Быт и хозтовары','Одежда','Путешествия','Спорт','Образование','Подарки','Питомцы','Красота','Дети','Дом и ремонт','Другое'];
+var EMO={'Корректировка':'⚖️','Еда':'🍜','Еда вне дома':'🍽','Кофе и напитки':'☕','Подписки':'🎟','Быт и хозтовары':'🧻','Транспорт':'🛵','Жильё':'🏠','Связь':'📱','Развлечения':'🎬','Здоровье':'💊','Покупки':'🛍','Одежда':'👕','Путешествия':'✈️','Спорт':'🏋','Образование':'📚','Подарки':'🎁','Питомцы':'🐾','Красота':'💅','Дети':'👶','Дом и ремонт':'🔧','Зарплата':'💼','Подработка':'🧾','Подарок':'🎁','Начальный остаток':'🏁','Другое':'📄'};
 var ICONSET=['🏷','🛒','☕','🍺','🎮','🎵','🚗','🌿','💻','🧴','🧸','🎨','⚽','🎓','💡','🧹','🚬','🎗','🧳','📦'];
 function catIcon(c){return EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷';}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.10';
+var VERSION='2.11';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -554,6 +554,8 @@ function viewHome(){
   }
 
   h+=limitHome();
+  var todaySpent=dayExpenseSum(today());
+  if(todaySpent>0)h+='<div class="card" data-a="viewtoday" style="cursor:pointer;padding:12px 16px"><div class="row"><div class="t1">Сегодня потрачено</div><span class="amt num">'+fmt(todaySpent,main)+'</span></div></div>';
 
   // Сводка за месяц
   var ym=today().slice(0,7),inc=0,exp=0,cats={};
@@ -630,6 +632,7 @@ function opsFiltered(){
   else if(per==='prev'){from=prev+'-01';to=prev+'-31';}
   else if(per==='30'){from=new Date(Date.now()-new Date().getTimezoneOffset()*60000-29*864e5).toISOString().slice(0,10);to='9999-12-31';}
   else if(per==='year'){from=t0.slice(0,4)+'-01-01';to=t0.slice(0,4)+'-12-31';}
+  else if(per==='day'){from=to=nav.pday||t0;}
   var TL={income:'доход',expense:'расход',transfer:'перевод',exchange:'обмен',save:'накопления',unsave:'накопления'};
   return S.tx.filter(function(t){
     if(!(f==='all'||t.type===f||(f==='save'&&t.type==='unsave')))return false;
@@ -644,11 +647,20 @@ function opsFiltered(){
     return true;
   }).sort(cmp).reverse();
 }
+function dayExpenseSum(d){
+  var sum=0;S.tx.forEach(function(t){if(t.type==='expense'&&!t.opening&&t.date===d){var v=txToMain(t);if(v!=null)sum+=v;}});
+  return sum;
+}
 function opsListHtml(list){
   if(!list.length)return '<div class="card empty"><b>Ничего не найдено</b>Измени фильтры или добавь операцию — кнопки на главном экране.</div>';
+  var main=S.settings.main;
   var h='<div class="row small muted" style="margin:10px 4px 0"><span>Найдено: '+list.length+'</span><button class="chip" data-a="csv">Экспорт CSV</button></div>',cur='';
   list.forEach(function(t){
-    if(t.date!==cur){if(cur)h+='</div>';cur=t.date;h+='<div class="grp">'+dlabel(t.date)+'</div><div class="card" style="margin-top:6px;padding:4px 16px">';}
+    if(t.date!==cur){
+      if(cur)h+='</div>';cur=t.date;
+      var ds=dayExpenseSum(t.date);
+      h+='<div class="grp row" style="align-items:baseline"><span>'+dlabel(t.date)+'</span>'+(ds>0?'<span class="num" style="font-weight:600;color:var(--ink)">'+fmt(ds,main)+'</span>':'')+'</div><div class="card" style="margin-top:6px;padding:4px 16px">';
+    }
     h+=opRow(t);
   });
   return h+'</div>';
@@ -657,12 +669,13 @@ function viewOps(){
   var f=nav.filter;
   var chips=[['all','Все'],['income','Доходы'],['expense','Расходы'],['exchange','Обмены'],['transfer','Переводы'],['save','Накопления']];
   var cats=[];S.tx.forEach(function(t){if(t.cat&&cats.indexOf(t.cat)<0)cats.push(t.cat);});
-  var pers=[['all','За всё время'],['month','Этот месяц'],['prev','Прошлый месяц'],['30','Последние 30 дней'],['year','Этот год']];
+  var pers=[['all','За всё время'],['day','За день'],['month','Этот месяц'],['prev','Прошлый месяц'],['30','Последние 30 дней'],['year','Этот год']];
   var active=(nav.q||nav.per!=='all'||nav.facc||nav.fcat||f!=='all');
   var h='<h1>Операции</h1><input data-q="1" value="'+esc(nav.q||'')+'" placeholder="Поиск: заметка, категория, счёт, сумма…" autocomplete="off" style="margin-top:0">';
   h+='<div class="chips" style="margin:10px 0 0">'+chips.map(function(c){return '<button class="chip'+(f===c[0]?' on':'')+'" data-a="filter" data-v="'+c[0]+'">'+c[1]+'</button>';}).join('')+'</div>';
   h+='<div class="split"><select data-nf="per">'+pers.map(function(x){return '<option value="'+x[0]+'"'+(nav.per===x[0]?' selected':'')+'>'+x[1]+'</option>';}).join('')+'</select>'+
      '<select data-nf="facc"><option value="">Все счета</option>'+S.accounts.map(function(a){return '<option value="'+a.id+'"'+(nav.facc===a.id?' selected':'')+'>'+esc(a.name)+'</option>';}).join('')+'</select></div>';
+  if(nav.per==='day')h+='<input type="date" data-nf="pday" value="'+esc(nav.pday||today())+'" max="'+today()+'" style="margin-top:8px">';
   h+='<select data-nf="fcat" style="margin-top:8px"><option value="">Все категории</option>'+cats.map(function(c){return '<option value="'+esc(c)+'"'+(nav.fcat===c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select>';
   if(active)h+='<button class="chip" data-a="opsreset" style="margin-top:8px">Сбросить фильтры</button>';
   h+='<div id="opsList">'+opsListHtml(opsFiltered())+'</div>';
@@ -811,6 +824,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.11',items:['Новые категории: Кофе и напитки, Подписки, Быт и хозтовары','В «Операциях» рядом с датой видна сумма расходов за день, есть фильтр «За день»','На главной — карточка «Сегодня потрачено»','Обычные валюты и курсы крипты теперь берутся одним надёжным запросом с автоматическим запасным сервером']},
   {v:'2.10',items:['На вкладке «Счета» теперь тоже виден переключатель «Свой курс / Официальный» рядом с общей суммой','Если обновление курсов не удалось, показывается точная причина (ЦБ / Рынок / Крипта отдельно)']},
   {v:'2.9',items:['Кнопка «Обновить курс» на вкладке «Счета», когда включён официальный курс']},
   {v:'2.8',items:['Главная показывает 3 основные валюты','На вкладке «Счета» можно выбрать, какие счета входят в общую сумму','Переключатель «Свой курс / Официальный» рядом с суммой','Раздел «О приложении» и журнал версий','Кнопка скрытия клавиатуры на Android']},
@@ -1948,29 +1962,26 @@ function wizFinish(){
 
 /* Автообновление курсов (работает в установленной версии; в Claude блокируется) */
 function errMsg(e){return e&&(e.message||String(e))||'неизвестная ошибка';}
-var RATE_DIAG={cbr:'',mkt:'',crypto:'',ts:0};
+var RATE_DIAG={cbr:'',mkt:'',ts:0};
 function getJson(url){return fetch(url).then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json();});}
+/* Один запрос даёт сразу и обычные валюты, и крипту. Основной сервер — jsDelivr,
+   если он не ответит — запасной на Cloudflare. */
+function fetchRatesApi(){
+  var primary='https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json';
+  var fallback='https://latest.currency-api.pages.dev/v1/currencies/usd.min.json';
+  return getJson(primary).catch(function(){return getJson(fallback);});
+}
 function refreshMarket(){
   var mk=Object.assign({},(S.mkt&&S.mkt.rub)||{});mk.RUB=1;
-  return getJson('https://open.er-api.com/v6/latest/USD').then(function(j){
-    var r=j.rates||{};if(!(r.RUB>0))throw new Error('в ответе нет RUB');
-    Object.keys(r).forEach(function(k){if(r[k]>0)mk[k]=r.RUB/r[k];});
-    mk.RUB=1;mk.USD=r.RUB;RATE_DIAG.mkt='';return true;
-  }).catch(function(e){RATE_DIAG.mkt=errMsg(e);return false;}).then(function(fiatOk){
-    var usd=mk.USD>0?mk.USD:(S.auto&&S.auto.rub&&S.auto.rub.USD);
-    var ids=[],map={};
-    favCurs().forEach(function(c){if(CG[c]&&!map[CG[c]]){ids.push(CG[c]);map[CG[c]]=c;}});
-    if(!ids.length)return {fiatOk:fiatOk,cryptoOk:null};
-    if(!(usd>0)){RATE_DIAG.crypto='нет курса USD, чтобы пересчитать';return {fiatOk:fiatOk,cryptoOk:false};}
-    if(!(mk.USD>0))mk.USD=usd;
-    return getJson('https://api.coingecko.com/api/v3/simple/price?ids='+ids.join(',')+'&vs_currencies=usd').then(function(j){
-      var got=false;
-      Object.keys(j).forEach(function(id){var u=j[id]&&j[id].usd;if(u>0&&map[id]){mk[map[id]]=u*usd;got=true;}});
-      if(!got)throw new Error('пустой ответ');
-      RATE_DIAG.crypto='';return {fiatOk:fiatOk,cryptoOk:true};
-    }).catch(function(e){RATE_DIAG.crypto=errMsg(e);return {fiatOk:fiatOk,cryptoOk:false};});
+  return fetchRatesApi().then(function(j){
+    var r=j.usd||{};if(!(r.rub>0))throw new Error('в ответе нет курса рубля');
+    Object.keys(r).forEach(function(k){var code=k.toUpperCase();if(r[k]>0)mk[code]=r.rub/r[k];});
+    mk.RUB=1;mk.USD=r.rub;RATE_DIAG.mkt='';
+    return {fiatOk:true,cryptoOk:true};
+  }).catch(function(e){
+    RATE_DIAG.mkt=errMsg(e);return {fiatOk:false,cryptoOk:false};
   }).then(function(res){
-    if(res.fiatOk||res.cryptoOk)S.mkt={date:today(),ts:Date.now(),rub:mk};
+    if(res.fiatOk)S.mkt={date:today(),ts:Date.now(),rub:mk};
     return res;
   });
 }
@@ -1984,8 +1995,8 @@ function refreshRates(manual){
     RATE_DIAG.ts=Date.now();
     save();C=compute();render();
     if(manual){
-      var parts=['ЦБ '+(rs[0]?'✓':'✕'),'Рынок '+(rs[1].fiatOk?'✓':'✕'),'Крипта '+(rs[1].cryptoOk===true?'✓':rs[1].cryptoOk===false?'✕':'—')];
-      toast((rs[0]||rs[1].fiatOk||rs[1].cryptoOk?'Курсы обновлены':'Не удалось обновить')+' — '+parts.join(' · '));
+      var parts=['ЦБ '+(rs[0]?'✓':'✕'),'Валюты и крипта '+(rs[1].fiatOk?'✓':'✕')];
+      toast((rs[0]||rs[1].fiatOk?'Курсы обновлены':'Не удалось обновить')+' — '+parts.join(' · '));
     }
   });
 }
@@ -1993,8 +2004,7 @@ function rateDiag(){
   if(!RATE_DIAG.ts)return '';
   var parts=[];
   if(RATE_DIAG.cbr)parts.push('ЦБ: '+esc(RATE_DIAG.cbr));
-  if(RATE_DIAG.mkt)parts.push('Рынок: '+esc(RATE_DIAG.mkt));
-  if(RATE_DIAG.crypto)parts.push('Крипта: '+esc(RATE_DIAG.crypto));
+  if(RATE_DIAG.mkt)parts.push('Валюты и крипта: '+esc(RATE_DIAG.mkt));
   if(!parts.length)return '<div class="hint">Последнее обновление прошло без ошибок.</div>';
   return '<div class="hint warn" style="margin-top:8px">Последний раз не получилось: '+parts.join('; ')+'. Если видишь «Failed to fetch» — скорее всего сайт не разрешает запросы из браузера (CORS) или заблокирован в твоей сети; пришли этот текст мне.</div>';
 }
@@ -2154,6 +2164,7 @@ var H={
     inp.focus();
   },
   ratemode:function(el){S.settings.rateMode=el.dataset.v;commit();},
+  viewtoday:function(){nav.per='day';nav.pday=today();nav.filter='expense';nav.q='';nav.facc='';nav.fcat='';go('ops');},
   close:closeSheet,
   askyes:function(){var f=ask.fn;ask.fn=null;if(f)f();},
   theme:function(el){var v=el.dataset.v;try{localStorage.setItem(TKEY,v);}catch(e){}applyTheme(v);render();},
