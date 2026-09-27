@@ -134,8 +134,11 @@ nav button.on svg{stroke:var(--fx)}
 #toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88%;text-align:center}
 #toast.show{opacity:1}
 
-.hero .vc{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
-.hero .vc button{padding:5px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:transparent;color:var(--hero-ink);font-size:13px;font-weight:500}
+.vc{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.vc button{padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13px;font-weight:500}
+.vc button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.vc button.pk{border-style:dashed;margin-left:auto}
+.hero .vc button{border-color:rgba(255,255,255,.25);background:transparent;color:var(--hero-ink)}
 .hero .vc button.on{background:var(--hero-ink);color:var(--hero);border-color:var(--hero-ink)}
 .ic.save,.ic.unsave{background:var(--fx-soft)}
 .pbar{height:10px;border-radius:5px;background:var(--bg);overflow:hidden}
@@ -153,7 +156,6 @@ nav button.on svg{stroke:var(--fx)}
 .sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
 .sw.on{background:var(--income)}
 .sw.on::after{transform:translateX(18px)}
-.hero .vc button.pk{border-style:dashed;margin-left:auto}
 .pbar.warn b{background:var(--gold)}
 .pbar.over b{background:var(--expense)}
 .ib{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:18px;display:grid;place-items:center;padding:0;flex:none}
@@ -199,7 +201,7 @@ var ICONSET=['🏷','🛒','☕','🍺','🎮','🎵','🚗','🌿','💻','🧴
 function catIcon(c){return EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷';}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.11';
+var VERSION='2.12';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -219,7 +221,7 @@ function fresh(){return {settings:{main:'RUB',rates:{},custom:[],lastAcc:'',view
 var S=load()||fresh();
 var C=null;
 var nav={tab:'home',acc:null,filter:'all',sub:null,rep:'',q:'',per:'all',facc:'',fcat:''};
-var reveal=false;
+var reveal=true;
 var F=null;
 
 function load(){try{var r=localStorage.getItem(KEY);return r?normalize(JSON.parse(r)):null;}catch(e){return null;}}
@@ -604,7 +606,7 @@ function viewAccounts(){
   var h2='<div class="row"><h1>Счета</h1><button class="chip" data-a="newacc">+ Счёт</button></div>';
   if(S.accounts.length>1){
     var inclA=S.accounts.filter(function(a){return !a.excl;}).length,mA=S.settings.main,totA=calcTotal(),rmodeA=S.settings.rateMode||'own',hasForeignA=S.accounts.some(function(a){return a.cur!==mA;});
-    h2+='<div class="card" style="margin-top:0;padding:12px 16px"><button class="item" data-a="pick" style="padding:0"><div class="grow"><div class="t1">Общая сумма: '+fmt(totA,mA)+'</div><div class="t2">Учитывается '+inclA+' из '+S.accounts.length+' — нажми, чтобы выбрать счета</div></div><span class="muted">›</span></button>';
+    h2+='<div class="card" style="margin-top:0;padding:12px 16px"><button class="item" data-a="pick" style="padding:0"><div class="grow"><div class="t1">Общая сумма: '+fmt(totA,mA)+'</div><div class="t2" style="white-space:normal;overflow:visible;text-overflow:clip">Учитывается '+inclA+' из '+S.accounts.length+' — нажми, чтобы выбрать</div></div><span class="muted">›</span></button>';
     if(hasForeignA)h2+='<div class="vc" style="margin-top:10px">'+[['own','Свой курс'],['official','Официальный']].map(function(x){return '<button data-a="ratemode" data-v="'+x[0]+'" class="'+(rmodeA===x[0]?'on':'')+'">'+x[1]+'</button>';}).join('')+'</div>';
     if(rmodeA==='official'){
       var mktAge=S.mkt?Math.round((Date.now()-(S.mkt.ts||0))/36e5):null;
@@ -824,6 +826,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.12',items:['Исправлен переключатель «Свой курс / Официальный» на вкладке «Счета» — он был почти не виден из-за конфликта старых стилей','Сумма на главном экране больше не скрыта под размытием по умолчанию']},
   {v:'2.11',items:['Новые категории: Кофе и напитки, Подписки, Быт и хозтовары','В «Операциях» рядом с датой видна сумма расходов за день, есть фильтр «За день»','На главной — карточка «Сегодня потрачено»','Обычные валюты и курсы крипты теперь берутся одним надёжным запросом с автоматическим запасным сервером']},
   {v:'2.10',items:['На вкладке «Счета» теперь тоже виден переключатель «Свой курс / Официальный» рядом с общей суммой','Если обновление курсов не удалось, показывается точная причина (ЦБ / Рынок / Крипта отдельно)']},
   {v:'2.9',items:['Кнопка «Обновить курс» на вкладке «Счета», когда включён официальный курс']},
@@ -2005,7 +2008,7 @@ function rateDiag(){
   var parts=[];
   if(RATE_DIAG.cbr)parts.push('ЦБ: '+esc(RATE_DIAG.cbr));
   if(RATE_DIAG.mkt)parts.push('Валюты и крипта: '+esc(RATE_DIAG.mkt));
-  if(!parts.length)return '<div class="hint">Последнее обновление прошло без ошибок.</div>';
+  if(!parts.length)return '';
   return '<div class="hint warn" style="margin-top:8px">Последний раз не получилось: '+parts.join('; ')+'. Если видишь «Failed to fetch» — скорее всего сайт не разрешает запросы из браузера (CORS) или заблокирован в твоей сети; пришли этот текст мне.</div>';
 }
 function askPersist(){
