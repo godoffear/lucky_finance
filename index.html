@@ -201,7 +201,7 @@ var ICONSET=['🏷','🛒','☕','🍺','🎮','🎵','🚗','🌿','💻','🧴
 function catIcon(c){return EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷';}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.14';
+var VERSION='2.15';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -366,6 +366,21 @@ function compute(){
     return {cost:cost,unknown:unknown,est:est};
   }
   S.tx.slice().sort(cmp).forEach(function(t){
+    if(t.type==='svadj'){
+      var Vadj=svAcc(t.cur);
+      Vadj.bal+=t.amount;
+      if(t.cur!==main){
+        if(t.amount>0){
+          var ra=t.rateMain>0?t.rateMain:null,esta=false;
+          if(ra==null){var fra=rateToMain(t.cur);if(fra!=null){ra=fra;esta=true;}}
+          Vadj.lots.push({amt:t.amount,rate:ra,src:ra?main:null,est:esta,date:t.date});
+        }else{
+          var needa=-t.amount;
+          while(needa>1e-9&&Vadj.lots.length){var la=Vadj.lots[0],takea=Math.min(la.amt,needa);la.amt-=takea;needa-=takea;if(la.amt<=1e-9)Vadj.lots.shift();}
+        }
+      }
+      return;
+    }
     var A=accs[t.acc];if(!A)return;
     if(t.type==='income'){
       A.bal+=t.amount;
@@ -494,6 +509,10 @@ function go(tab,acc){nav.tab=tab;nav.acc=acc||null;nav.sub=null;render();window.
 
 function backBar(label,action){return '<div class="backbar"><button class="chip" data-a="'+action+'">‹ '+label+'</button></div>';}
 function opRow(t,ctx){
+  if(t.type==='svadj'){
+    var signA=t.amount>=0?'+':'−';
+    return '<button class="item" data-a="edit" data-id="'+t.id+'"><div class="ic save">🐷</div><div class="grow"><div class="t1">Корректировка накоплений</div><div class="t2">'+esc(t.note||'')+'</div></div><div class="amt fx">'+signA+fmt(Math.abs(t.amount),t.cur)+'</div></button>';
+  }
   var a=getAcc(t.acc),b=t.to?getAcc(t.to):null;if(!a)return '';
   var ic,title,sub,amt,cls='';
   if(t.type==='income'||t.type==='expense'){
@@ -646,7 +665,7 @@ function opsFiltered(){
   else if(per==='day'){from=to=nav.pday||t0;}
   var TL={income:'доход',expense:'расход',transfer:'перевод',exchange:'обмен',save:'накопления',unsave:'накопления'};
   return S.tx.filter(function(t){
-    if(!(f==='all'||t.type===f||(f==='save'&&t.type==='unsave')))return false;
+    if(!(f==='all'||t.type===f||(f==='save'&&(t.type==='unsave'||t.type==='svadj'))))return false;
     if(from&&(t.date<from||t.date>to))return false;
     if(nav.facc&&t.acc!==nav.facc&&t.to!==nav.facc)return false;
     if(nav.fcat&&t.cat!==nav.fcat)return false;
@@ -695,9 +714,10 @@ function viewOps(){
 function dec(n){return String(n).replace('.',',');}
 function csvCell(v){v=String(v==null?'':v);return /[";\r\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
 function csvOps(list){
-  var TL={income:'Доход',expense:'Расход',transfer:'Перевод',exchange:'Обмен',save:'В накопления',unsave:'Из накоплений'};
+  var TL={income:'Доход',expense:'Расход',transfer:'Перевод',exchange:'Обмен',save:'В накопления',unsave:'Из накоплений',svadj:'Корректировка накоплений'};
   var rows=[['Дата','Тип','Категория','Счёт','Сумма','Валюта','Счёт назначения','Получено','Валюта получения','Заметка']];
   list.slice().reverse().forEach(function(t){
+    if(t.type==='svadj'){rows.push([t.date,TL.svadj,'','',dec(t.amount),t.cur,'','','',t.note||'']);return;}
     var a=getAcc(t.acc),b=t.to?getAcc(t.to):null;
     rows.push([t.date,TL[t.type]||t.type,t.cat||'',a?a.name:'',dec(t.amount),a?a.cur:'',b?b.name:'',t.type==='exchange'?dec(t.toAmount):'',b&&t.type==='exchange'?b.cur:'',t.note||'']);
   });
@@ -835,6 +855,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.15',items:['«Указать сумму накоплений» — можно скорректировать итог напрямую, без привязки к счёту (например, после сбоя)']},
   {v:'2.14',items:['Напоминание о резервной копии теперь можно настроить на свой день недели и время','На главном есть кнопка «Позже», если напоминание пришло не вовремя','Приложение само подсказывает, когда вышло обновление, и обновляется в один тап']},
   {v:'2.13',items:['На главной не больше 2 дополнительных карточек сразу — остальное по кнопке «Показать ещё»','Переключатель курса теперь один и тот же блок на главной, на «Счетах» и в «Ещё»','Второстепенный текст стал визуально тише']},
   {v:'2.12',items:['Исправлен переключатель «Свой курс / Официальный» на вкладке «Счета» — он был почти не виден из-за конфликта старых стилей','Сумма на главном экране больше не скрыта под размытием по умолчанию']},
@@ -879,11 +900,11 @@ function viewSavings(){
   h+='<div class="card"><div class="small muted">Всего накоплено</div><div class="num" style="font:600 28px/1.2 Unbounded,Onest,sans-serif;margin-top:6px;letter-spacing:-.02em">'+fmt(st.sum,main)+'</div>';
   st.per.forEach(function(p){h+='<div class="row small" style="margin-top:6px"><span class="muted">'+p.cur+'</span><span class="num">'+fmt(p.bal,p.cur)+'</span></div>';});
   if(st.miss.length)h+='<div class="hint warn">Не учтены в сумме: '+st.miss.join(', ')+' — нет курса.</div>';
-  h+='<div class="split"><button class="btn income sm" style="width:100%" data-a="save" data-v="save">Отложить</button><button class="btn plain sm" style="width:100%" data-a="save" data-v="unsave">Вернуть на счёт</button></div>';
+  h+='<div class="split"><button class="btn income sm" style="width:100%" data-a="save" data-v="save">Отложить</button><button class="btn plain sm" style="width:100%" data-a="save" data-v="unsave">Вернуть на счёт</button></div><button class="btn plain sm" style="width:100%;margin-top:8px" data-a="svadj">Указать сумму накоплений</button>';
   h+='<div class="hint">Накопления не входят в общий баланс. Деньги попадают сюда только когда ты нажимаешь «Отложить» — приложение ничего не откладывает само.</div></div>';
   if(g&&g.target>0){h+=goalCard(st,g,false)+'<button class="btn plain sm" data-a="goal">Изменить цель</button>';}
   else h+='<div class="card empty"><b>Цели пока нет</b>Задай название и сумму — здесь появится шкала прогресса.<button class="btn plain sm" data-a="goal">Поставить цель</button></div>';
-  var ops=S.tx.filter(function(t){return t.type==='save'||t.type==='unsave';}).sort(cmp).reverse();
+  var ops=S.tx.filter(function(t){return t.type==='save'||t.type==='unsave'||t.type==='svadj';}).sort(cmp).reverse();
   if(ops.length)h+='<div class="card"><h3>История</h3>'+ops.map(function(t){return opRow(t);}).join('')+'</div>';
   return h;
 }
@@ -1539,6 +1560,42 @@ function saveGoal(){
   closeSheet();commit();toast('Цель сохранена');
 }
 
+/* Корректировка накоплений без привязки к счёту */
+function openSvAdj(){
+  var cur=Object.keys(C.sav)[0]||S.settings.main;
+  F={sva:true,cur:cur,totalS:'',rateS:''};
+  renderSvAdj();
+}
+function renderSvAdj(){
+  var cur=F.cur,curBal=C.sav[cur]?C.sav[cur].bal:0,main=S.settings.main;
+  var h='<h2>Указать сумму накоплений</h2><div class="small muted">Для случаев, когда данные разошлись с реальностью — например, после сбоя. Меняет только накопления, счета не трогает.</div>';
+  h+='<label>Валюта<select data-f="cur">'+curOptions(cur)+'</select></label>';
+  h+='<label>Сколько сейчас должно быть в накоплениях<div class="amtwrap"><input inputmode="decimal" data-f="totalS" value="'+esc(F.totalS)+'" placeholder="'+inp(curBal)+'" autocomplete="off"><span>'+cur+'</span></div></label>';
+  if(cur!==main){
+    var weak=WEAK.indexOf(cur)>=0,inf=rateInfo(cur);
+    h+='<label>Курс добавленной части (если станет больше, необязательно)<input inputmode="decimal" data-f="rateS" value="'+esc(F.rateS)+'" placeholder="'+(inf.r?nfRate.format(weak?1/inf.r:inf.r):'нет курса')+'" autocomplete="off"></label>';
+  }
+  h+='<div class="hint" id="svahint"></div><button class="btn income" data-a="savesva">Сохранить</button>';
+  openSheet(h);svaUpdate();
+}
+function svaUpdate(){
+  var el=$('#svahint');if(!el||!F)return;
+  var cur=F.cur,curBal=C.sav[cur]?C.sav[cur].bal:0,b=num(F.totalS);
+  if(!(b>=0)){el.textContent='Сейчас в накоплениях: '+fmt(curBal,cur);return;}
+  var d=b-curBal;
+  el.textContent=Math.abs(d)<1e-9?'Совпадает с тем, что уже есть.':'Разница: '+(d>0?'+':'−')+fmt(Math.abs(d),cur);
+}
+function saveSvAdj(){
+  var cur=F.cur,curBal=C.sav[cur]?C.sav[cur].bal:0,b=num(F.totalS);
+  if(!(b>=0)){toast('Введи сумму (0 или больше)');return;}
+  var d=b-curBal;
+  if(Math.abs(d)<1e-9){closeSheet();return;}
+  var t={id:uid(),seq:S.seq++,date:today(),type:'svadj',cur:cur,amount:d,note:'Корректировка накоплений'};
+  var r=num(F.rateS);
+  if(d>0&&r>0&&cur!==S.settings.main)t.rateMain=WEAK.indexOf(cur)>=0?1/r:r;
+  S.tx.push(t);closeSheet();commit();toast('Сохранено');
+}
+
 /* Инвестиции */
 function openInv(id){
   var i=id?S.inv.filter(function(x){return x.id===id;})[0]:null;
@@ -2084,7 +2141,12 @@ var H={
   tab:function(el){go(el.dataset.v);},
   reveal:function(){reveal=!reveal;render();},
   op:function(el){openOp(el.dataset.v);},
-  edit:function(el){var t=S.tx.filter(function(x){return x.id===el.dataset.id;})[0];if(!t)return;if(t.type==='save'||t.type==='unsave')openSave(t.type,t);else openOp(t.type,t);},
+  edit:function(el){
+    var t=S.tx.filter(function(x){return x.id===el.dataset.id;})[0];if(!t)return;
+    if(t.type==='save'||t.type==='unsave')openSave(t.type,t);
+    else if(t.type==='svadj')ask('Удалить эту корректировку накоплений? Сумма пересчитается.','Удалить',function(){S.tx=S.tx.filter(function(x){return x.id!==t.id;});commit();toast('Удалено');});
+    else openOp(t.type,t);
+  },
   tpl:function(el){var o=F.tpls&&F.tpls[+el.dataset.i];if(!o)return;F.acc=o.acc;F.cat=o.cat;F.amountS=inp(o.amount);if(o.saved)F.note=o.note||'';F.showTpl=false;renderOp();},
   viewcur:function(el){S.settings.view=el.dataset.v;save();render();},
   repmonth:function(el){var cur=today().slice(0,7),n=shiftMonth(nav.rep||cur,+el.dataset.v);if(n>cur)return;nav.rep=n;render();},
@@ -2230,6 +2292,8 @@ var H={
   bkon:function(){var b=backupCfg();b.on=!b.on;save();render();},
   bkdow:function(el){backupCfg().dow=+el.dataset.v;save();render();},
   appupdate:function(){applyAppUpdate();},
+  svadj:function(){openSvAdj();},
+  savesva:saveSvAdj,
   close:closeSheet,
   askyes:function(){var f=ask.fn;ask.fn=null;if(f)f();},
   theme:function(el){var v=el.dataset.v;try{localStorage.setItem(TKEY,v);}catch(e){}applyTheme(v);render();},
@@ -2263,7 +2327,7 @@ document.addEventListener('input',function(e){
   if(el.dataset.w&&W){wizInput(el);return;}
   if(el.dataset.f&&F){
     F[el.dataset.f]=el.value;
-    if(F.calc)calcUpdate();else if(F.bal)balUpdate();else if(F.sv)svUpdate();else if(F.plan)planUpdate();else if(F.rc)rcUpdate();else if(F.type)updateHint();
+    if(F.calc)calcUpdate();else if(F.bal)balUpdate();else if(F.sv)svUpdate();else if(F.plan)planUpdate();else if(F.rc)rcUpdate();else if(F.sva)svaUpdate();else if(F.type)updateHint();
   }
 });
 document.addEventListener('change',function(e){
@@ -2293,6 +2357,7 @@ document.addEventListener('change',function(e){
       else if(F.sv){renderSave();}
       else if(F.inv){renderInv();}
       else if(F.plan){planInit();renderPlan();}
+      else if(F.sva){renderSvAdj();}
       else if(F.rf){renderRec();}
       else if(F.type){if(el.dataset.f==='acc')F.to='';renderOp();}
     }
