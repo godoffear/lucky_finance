@@ -195,13 +195,13 @@ var CUR={
 var WEAK=['VND','JPY','KRW'];
 var TYPES={cash:'Наличные',card_ru:'Карта РФ',card_vn:'Карта Вьетнама',card_other:'Другая карта',crypto:'Крипта',broker:'Брокер',other:'Другое'};
 var INC=['Зарплата','Подработка','Подарок','Другое'];
-var EXP=['Еда','Еда вне дома','Кофе и напитки','Транспорт','Жильё','Связь','Подписки','Развлечения','Здоровье','Покупки','Быт и хозтовары','Одежда','Путешествия','Спорт','Образование','Подарки','Питомцы','Красота','Дети','Дом и ремонт','Другое'];
-var EMO={'Корректировка':'⚖️','Еда':'🍜','Еда вне дома':'🍽','Кофе и напитки':'☕','Подписки':'🎟','Быт и хозтовары':'🧻','Транспорт':'🛵','Жильё':'🏠','Связь':'📱','Развлечения':'🎬','Здоровье':'💊','Покупки':'🛍','Одежда':'👕','Путешествия':'✈️','Спорт':'🏋','Образование':'📚','Подарки':'🎁','Питомцы':'🐾','Красота':'💅','Дети':'👶','Дом и ремонт':'🔧','Зарплата':'💼','Подработка':'🧾','Подарок':'🎁','Начальный остаток':'🏁','Другое':'📄'};
+var EXP=['Еда','Еда вне дома','Кофе и напитки','Транспорт','Аренда жилья','Жильё','Связь','Подписки','Развлечения','Здоровье','Покупки','Быт и хозтовары','Одежда','Путешествия','Спорт','Образование','Подарки','Питомцы','Красота','Дети','Дом и ремонт','Другое'];
+var EMO={'Корректировка':'⚖️','Еда':'🍜','Еда вне дома':'🍽','Кофе и напитки':'☕','Аренда жилья':'🔑','Подписки':'🎟','Быт и хозтовары':'🧻','Транспорт':'🛵','Жильё':'🏠','Связь':'📱','Развлечения':'🎬','Здоровье':'💊','Покупки':'🛍','Одежда':'👕','Путешествия':'✈️','Спорт':'🏋','Образование':'📚','Подарки':'🎁','Питомцы':'🐾','Красота':'💅','Дети':'👶','Дом и ремонт':'🔧','Зарплата':'💼','Подработка':'🧾','Подарок':'🎁','Начальный остаток':'🏁','Другое':'📄'};
 var ICONSET=['🏷','🛒','☕','🍺','🎮','🎵','🚗','🌿','💻','🧴','🧸','🎨','⚽','🎓','💡','🧹','🚬','🎗','🧳','📦'];
 function catIcon(c){return EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷';}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.15';
+var VERSION='2.16';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -218,7 +218,7 @@ var CG={BTC:'bitcoin',ETH:'ethereum',BNB:'binancecoin',SOL:'solana',XRP:'ripple'
 var persisted=null;
 
 /* ---------- Состояние ---------- */
-function fresh(){return {settings:{main:'RUB',rates:{},custom:[],lastAcc:'',view:'',goal:null,lastBackup:0,favs:DEF_FAVS.slice(),limit:null,wizardDone:false,must:['Жильё','Связь'],recon:{on:true,days:7,accs:{}},expInc:null,catIcons:{},rateMode:'own',backup:{on:true,dow:0,time:'20:00',snz:''}},accounts:[],tx:[],inv:[],rec:[],tpl:[],auto:AUTO_DEFAULT,mkt:null,seq:1};}
+function fresh(){return {settings:{main:'RUB',rates:{},custom:[],lastAcc:'',view:'',goal:null,lastBackup:0,favs:DEF_FAVS.slice(),limit:null,wizardDone:false,must:['Аренда жилья','Связь'],recon:{on:true,days:7,accs:{}},expInc:null,catIcons:{},rateMode:'own',backup:{on:true,dow:0,time:'20:00',snz:''}},accounts:[],tx:[],inv:[],rec:[],tpl:[],auto:AUTO_DEFAULT,mkt:null,seq:1};}
 var S=load()||fresh();
 var C=null;
 var nav={tab:'home',acc:null,filter:'all',sub:null,rep:'',q:'',per:'all',facc:'',fcat:''};
@@ -236,7 +236,7 @@ function normalize(o){
   s.inv=o.inv||[];s.auto=o.auto||null;
   s.rec=o.rec||[];s.tpl=o.tpl||[];s.mkt=o.mkt||null;
   if(!Array.isArray(s.settings.favs))s.settings.favs=DEF_FAVS.slice();
-  if(!Array.isArray(s.settings.must))s.settings.must=['Жильё','Связь'];
+  if(!Array.isArray(o.settings&&o.settings.must))s.settings.must=['Жильё','Связь'];
   if(!s.settings.recon||typeof s.settings.recon!=='object')s.settings.recon={on:true,days:7,accs:{}};
   if(!s.settings.catIcons||typeof s.settings.catIcons!=='object')s.settings.catIcons={};
   if(s.settings.rateMode!=='official')s.settings.rateMode='own';
@@ -763,6 +763,54 @@ function delta(a,b,expense){
   return '<small class="'+(bad?'neg':'pos')+'">'+(up?'+':'−')+Math.abs(p)+'% к прошлому месяцу</small>';
 }
 
+function applyBalanceDelta(accBal,svBal,t){
+  if(t.type==='income'){accBal[t.acc]=(accBal[t.acc]||0)+t.amount;}
+  else if(t.type==='expense'){accBal[t.acc]=(accBal[t.acc]||0)-t.amount;}
+  else if(t.type==='transfer'){accBal[t.acc]=(accBal[t.acc]||0)-t.amount;accBal[t.to]=(accBal[t.to]||0)+t.amount;}
+  else if(t.type==='exchange'){accBal[t.acc]=(accBal[t.acc]||0)-t.amount;accBal[t.to]=(accBal[t.to]||0)+t.toAmount;}
+  else if(t.type==='save'){accBal[t.acc]=(accBal[t.acc]||0)-t.amount;var a=getAcc(t.acc);if(a)svBal[a.cur]=(svBal[a.cur]||0)+t.amount;}
+  else if(t.type==='unsave'){accBal[t.acc]=(accBal[t.acc]||0)+t.amount;var a2=getAcc(t.acc);if(a2)svBal[a2.cur]=(svBal[a2.cur]||0)-t.amount;}
+  else if(t.type==='svadj'){svBal[t.cur]=(svBal[t.cur]||0)+t.amount;}
+}
+function capitalAt(cutoff){
+  var accBal={},svBal={};
+  S.tx.forEach(function(t){if(t.date<=cutoff)applyBalanceDelta(accBal,svBal,t);});
+  var main=S.settings.main,total=0,missing=false;
+  S.accounts.forEach(function(a){
+    if(a.excl)return;
+    var b=accBal[a.id]||0;
+    if(a.cur===main){total+=b;return;}
+    var r=rateToMain(a.cur);if(r!=null)total+=b*r;else missing=true;
+  });
+  Object.keys(svBal).forEach(function(cur){
+    var b=svBal[cur];if(Math.abs(b)<1e-9)return;
+    if(cur===main){total+=b;return;}
+    var r=rateToMain(cur);if(r!=null)total+=b*r;else missing=true;
+  });
+  return {total:total,missing:missing};
+}
+function capitalCard(){
+  var main=S.settings.main,t0=today(),curYm=t0.slice(0,7),months=[],missing=false;
+  for(var i=5;i>=0;i--){
+    var ym=shiftMonth(curYm,-i),dim=new Date(+ym.slice(0,4),+ym.slice(5,7),0).getDate();
+    var cutoff=(i===0)?t0:(ym+'-'+String(dim).padStart(2,'0'));
+    var c=capitalAt(cutoff);if(c.missing)missing=true;
+    months.push({ym:ym,total:c.total});
+  }
+  if(!S.accounts.length)return '';
+  var vals=months.map(function(m){return m.total;}),mx=Math.max.apply(null,vals.concat([0])),mn=Math.min.apply(null,vals.concat([0])),range=Math.max(mx-mn,1);
+  var first=months[0].total,last=months[months.length-1].total,delta=Math.abs(first)>1e-6?((last-first)/Math.abs(first)*100):null;
+  var h='<div class="card"><h3>Капитал по месяцам</h3><div class="small muted" style="margin:-4px 0 8px">Счета и накопления вместе, в '+main+'. Для прошлых месяцев конвертация идёт по сегодняшнему курсу, а не по курсу того времени — это ориентир, не точная историческая сумма. Инвестиции сюда не входят, у них нет истории по месяцам.</div>';
+  h+='<div class="cols">'+months.map(function(m){
+    var lab=new Date(m.ym+'-01T00:00:00').toLocaleDateString('ru-RU',{month:'short'}).replace('.','');
+    var hgt=Math.max(4,Math.round((m.total-mn)/range*88));
+    return '<div class="col"><div class="pair"><i class="a" style="height:'+hgt+'%;width:60%"></i></div>'+lab+'</div>';
+  }).join('')+'</div>';
+  h+='<div class="row" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)"><span class="small muted">Сейчас</span><span class="amt num">'+fmt(last,main)+'</span></div>';
+  if(delta!=null)h+='<div class="small '+(delta>=0?'pos':'neg')+'" style="margin-top:4px">'+(delta>=0?'+':'−')+nfP.format(Math.abs(delta))+'% за 6 месяцев</div>';
+  if(missing)h+='<div class="hint warn" style="margin-top:8px">Для части валют нет курса — сумма может быть занижена.</div>';
+  return h+'</div>';
+}
 function viewReport(){
   var main=S.settings.main,cur=today().slice(0,7),ym=nav.rep||cur;if(ym>cur)ym=cur;
   var st=monthStats(ym),pv=monthStats(shiftMonth(ym,-1));
@@ -803,6 +851,7 @@ function viewReport(){
       return '<div class="col"><div class="pair"><i class="a" style="height:'+Math.round(o.x.inc/mx*100)+'%"></i><i class="b" style="height:'+Math.round(o.x.exp/mx*100)+'%"></i></div>'+lab+'</div>';
     }).join('')+'</div><div class="small muted" style="margin-top:10px"><span class="pos">■</span> доходы &nbsp; <span class="neg">■</span> расходы</div></div>';
   }
+  h+=capitalCard();
   // инвестиции
   if(S.inv.length){
     var inv=0,now=0,miss=[];
@@ -855,6 +904,8 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.17',items:['Новая категория «Аренда жилья», отдельно от общего «Жильё»','У новых установок аренда по умолчанию входит в обязательные категории','Исправлена миграция старых обязательных категорий — она случайно подхватывала новый дефолт вместо своего']},
+  {v:'2.16',items:['В «Отчёте» появился график «Капитал по месяцам» — счета и накопления вместе за последние 6 месяцев','«Обязательные траты» теперь часть экрана «Постоянные платежи», отдельного пункта в «Ещё» больше нет']},
   {v:'2.15',items:['«Указать сумму накоплений» — можно скорректировать итог напрямую, без привязки к счёту (например, после сбоя)']},
   {v:'2.14',items:['Напоминание о резервной копии теперь можно настроить на свой день недели и время','На главном есть кнопка «Позже», если напоминание пришло не вовремя','Приложение само подсказывает, когда вышло обновление, и обновляется в один тап']},
   {v:'2.13',items:['На главной не больше 2 дополнительных карточек сразу — остальное по кнопке «Показать ещё»','Переключатель курса теперь один и тот же блок на главной, на «Счетах» и в «Ещё»','Второстепенный текст стал визуально тише']},
@@ -879,9 +930,9 @@ function viewAbout(){
   }).join('')+'</div>';
   return h;
 }
-function viewMust(){
+function mustSection(){
   var main=S.settings.main,must=mustCats(),cats=catsFor('expense'),rw=runway();
-  var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Обязательные траты</h1><div class="small muted">Аренда, связь и другие ежемесячные траты не должны портить картину «сколько я трачу в день». Отметь категории обязательных трат: в дневную сумму они не входят.</div>';
+  var h='<div class="grp" style="margin-top:20px">Обязательные траты</div><div class="small muted" style="margin:6px 4px 0">Аренда, связь и другие ежемесячные траты не должны портить картину «сколько я трачу в день». Отметь категории обязательных трат: в дневную сумму они не входят.</div>';
   h+='<div class="card"><h3>Обязательные категории</h3><div class="chips" style="margin:0">'+cats.map(function(c){return '<button class="chip'+(must.indexOf(c)>=0?' on':'')+'" data-a="togmust" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+'</div><div class="hint">Траты, внесённые через «Внести» у постоянного платежа или значком 🔁, обязательными считаются всегда.</div></div>';
   h+='<div class="card"><h3>Как это учитывается сейчас</h3>';
   if(!rw.per.length)h+='<div class="small muted">Пока нет расходов — цифры появятся после первых трат.</div>';
@@ -922,7 +973,7 @@ function viewInvest(){
 }
 
 function viewMore(){
-  var sub={exchange:viewExchange,savings:viewSavings,invest:viewInvest,curs:viewCurs,limits:viewLimits,rec:viewRec,tpl:viewTpl,must:viewMust,recon:viewRecon,about:viewAbout}[nav.sub];
+  var sub={exchange:viewExchange,savings:viewSavings,invest:viewInvest,curs:viewCurs,limits:viewLimits,rec:viewRec,tpl:viewTpl,recon:viewRecon,about:viewAbout}[nav.sub];
   if(sub)return sub();
   var main=S.settings.main,theme=(function(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}})();
   function it(v,ic,t1,t2){return '<button class="item" data-a="sub" data-v="'+v+'"><div class="ic">'+ic+'</div><div class="grow"><div class="t1">'+t1+'</div><div class="t2">'+t2+'</div></div><span class="muted">›</span></button>';}
@@ -933,7 +984,6 @@ function viewMore(){
     it('invest','📈','Инвестиции','Что куда вложено и сколько стоит')+'</div>';
   h+='<div class="grp">Планирование</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
     it('rec','🔁','Постоянные платежи','Аренда, интернет, подписки — напомню внести')+
-    it('must','📌','Обязательные траты','Аренда и другое: не портят дневную сумму')+
     it('recon','⚖️','Сверка остатков','Проверка, что деньги сходятся')+
     it('limits','🎯','Лимиты','На месяц и по категориям')+
     it('tpl','⚡','Шаблоны трат','Быстрый ввод частых расходов')+'</div>';
@@ -1463,13 +1513,17 @@ function recHome(){
 function viewRec(){
   var main=S.settings.main;
   var h=backBar('Ещё','back2')+'<div class="row" style="margin-top:14px"><h1 style="margin:0">Постоянные платежи</h1><button class="chip" data-a="newrec">+ Платёж</button></div><div class="small muted" style="margin-top:8px">Приложение ничего не списывает само. В нужный день при открытии оно только напомнит, а ты подтвердишь.</div><div class="chips" style="margin:12px 0 0"><button class="chip" data-a="recfromtx">Добавить из внесённых расходов</button></div>'+recSummary();
-  if(!S.rec.length)return h+'<div class="card empty"><b>Платежей пока нет</b>Добавь аренду, интернет, подписки — и не забудешь внести.</div>';
-  h+='<div class="card" style="padding:4px 16px">';
-  S.rec.forEach(function(r){
-    var a=getAcc(r.acc);
-    h+='<button class="item" data-a="editrec" data-id="'+r.id+'"><div class="ic">'+catIcon(r.cat)+'</div><div class="grow"><div class="t1">'+esc(r.name)+'</div><div class="t2">Каждое '+r.day+'-е число · '+(a?esc(a.name):'—')+'</div></div><div class="amt num">'+fmt(r.amount,a?a.cur:main)+'</div></button>';
-  });
-  return h+'</div>';
+    if(!S.rec.length)h+='<div class="card empty"><b>Платежей пока нет</b>Добавь аренду, интернет, подписки — и не забудешь внести.</div>';
+  else{
+    h+='<div class="card" style="padding:4px 16px">';
+    S.rec.forEach(function(r){
+      var a=getAcc(r.acc);
+      h+='<button class="item" data-a="editrec" data-id="'+r.id+'"><div class="ic">'+catIcon(r.cat)+'</div><div class="grow"><div class="t1">'+esc(r.name)+'</div><div class="t2">Каждое '+r.day+'-е число · '+(a?esc(a.name):'—')+'</div></div><div class="amt num">'+fmt(r.amount,a?a.cur:main)+'</div></button>';
+    });
+    h+='</div>';
+  }
+  h+=mustSection();
+  return h;
 }
 function openRec(id){
   if(!S.accounts.length){toast('Сначала добавь счёт');return;}
