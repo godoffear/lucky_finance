@@ -831,14 +831,26 @@ function csvOps(list){
 
 function dlong(d){return new Date(d+'T00:00:00').toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});}
 var nfP=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1});
+/* Накопления по валютам. val — во сколько они обошлись по FIFO (партии накоплений с известным курсом,
+   остаток — по общему курсу валюты); mkt — сколько стоят сегодня по рыночному курсу (или ЦБ) */
 function savingsTotal(){
-  var sum=0,miss=[],per=[];
+  var main=S.settings.main,sum=0,mktSum=0,mktAll=true,miss=[],per=[];
   Object.keys(C.sav).forEach(function(c){
-    var b=C.sav[c].bal;if(Math.abs(b)<1e-9)return;
-    per.push({cur:c,bal:b});var r=rateToMain(c);
-    if(r==null)miss.push(c);else sum+=b*r;
+    var V=C.sav[c],b=V.bal;if(Math.abs(b)<1e-9)return;
+    var val=null,mkt=null;
+    if(c===main){val=mkt=b;}
+    else{
+      var known=0,cost=0;V.lots.forEach(function(l){if(l.src===main&&l.rate!=null){known+=l.amt;cost+=l.amt*l.rate;}});
+      var r=rateToMain(c),rest=b-known;
+      if(rest<=1e-9)val=cost*(b/(known||b));else if(r!=null)val=cost+rest*r;
+      var au=autoRate(c);if(au)mkt=b*au.r;
+    }
+    per.push({cur:c,bal:b,val:val,mkt:mkt});
+    if(val==null)miss.push(c);else sum+=val;
+    if(mkt==null)mktAll=false;else mktSum+=mkt;
   });
-  return {sum:sum,miss:miss,per:per};
+  var foreign=per.some(function(p){return p.cur!==main;});
+  return {sum:sum,miss:miss,per:per,mkt:foreign&&mktAll?mktSum:null};
 }
 /* Теги: #слово в заметке. Итог расходов по каждому тегу за всё время */
 function tagsOf(t){return (t.note||'').match(/#[0-9A-Za-zА-Яа-яЁё_-]+/g)||[];}
@@ -1261,7 +1273,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
-  {v:'2.20',items:['Новый раздел «Финпомощник» в «Ещё»: сводка твоих финансов для Claude — скачать файлом или скопировать текстом, и ссылка на страницу помощника в claude.ai']},
+  {v:'2.20',items:['Накопления: у каждой валюты виден рублёвый эквивалент по курсу покупки и стоимость по рынку сегодня, с разницей','Новый раздел «Финпомощник» в «Ещё»: сводка твоих финансов для Claude — скачать файлом или скопировать текстом, и ссылка на страницу помощника в claude.ai']},
   {v:'2.19',items:['На главной пояснения под суммой (курс, отключённые счета) свёрнуты в «Подробнее»','Калькулятор цели: выбор даты снова открывает календарь, плюс быстрые варианты 3 мес / 6 мес / 1 год / 2 года']},
   {v:'2.18',items:['Лимиты: в «Отчёте» — кольцо лимита месяца по категориям, в «Лимитах» — цветные полоски с чертой «сегодня»','Калькулятор «Как быстрее дойти до цели» в «Накоплениях»: к дате, по сумме, % от дохода, сценарии, где найти деньги, правило 50/30/20','Категория «Еда» переименована в «Продукты» — старые операции перенесены','Отчёт: круг расходов по категориям (нажми на категорию — откроются её операции), «Пульс месяца» по дням, «Что изменилось» по категориям, «Поездки и теги» — пиши #тег в заметке','Счета: круг «Где лежат деньги» по валютам','Накопления: кольцо цели и срок «в таком темпе»','Обмен валюты: график «Твой курс и рынок»','Новый раздел «Долги и займы» с напоминанием о сроке возврата','«Повторить сегодня» в любой операции','Переключатель «Свой курс / Официальный» убран: курс берётся по FIFO (средний курс твоих денег), если его нет — заданный вручную, потом рыночный и ЦБ','Новое в «Обмене валюты»: насколько твой курс хуже или лучше рыночного на день обмена','Удаление можно отменить в течение 7 секунд','Конвертер — маленькая кнопка 🧮 в шапке главной вместо плавающей','Можно выбрать, какие счета участвуют в прогнозах — отдельно от общей суммы','В «Отчёте» текущий месяц сравнивается с теми же днями прошлого','Операции счёта сгруппированы по дням, сначала последние 50','«Пора внести платежи»: видно, за какой месяц платёж, кнопки компактнее','Обязательные категории показываются свёрнуто, список — по кнопке «Изменить»','Прогнозы «На сколько хватит» и «К концу месяца» появляются, когда накопится 30 дней операций — раньше средняя трата в день была случайной','Ссылка «Обязательные траты… как это исправить» в «Отчёте» снова ведёт в «Постоянные платежи»','У своих категорий в сводках теперь виден их значок, а не точка','Напоминание о резервной копии появится в любой день, если копии нет дольше недели','Шрифты сохраняются для работы без интернета','Даты постоянных платежей считаются по местному времени, а не по UTC','Новый постоянный платёж по умолчанию в категории «Аренда жилья»','Доход в валюте, для которого указан курс, в отчётах считается по этому курсу','Восстановление из копии стало безопаснее','Кнопка «скрыть клавиатуру» больше не остаётся на экране после закрытия окна','Мелкие исправления текстов']},
   {v:'2.17',items:['Новая категория «Аренда жилья», отдельно от общего «Жильё»','У новых установок аренда по умолчанию входит в обязательные категории','Исправлена миграция старых обязательных категорий — она случайно подхватывала новый дефолт вместо своего']},
@@ -1310,7 +1322,15 @@ function viewSavings(){
   var main=S.settings.main,g=S.settings.goal,st=savingsTotal();
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Накопления и цель</h1>';
   h+='<div class="card"><div class="small muted">Всего накоплено</div><div class="num" style="font:600 28px/1.2 Unbounded,Onest,sans-serif;margin-top:6px;letter-spacing:-.02em">'+fmt(st.sum,main)+'</div>';
-  if(st.per.length>1||(st.per[0]&&st.per[0].cur!==main))st.per.forEach(function(p){h+='<div class="row small" style="margin-top:6px"><span class="muted">'+p.cur+'</span><span class="num">'+fmt(p.bal,p.cur)+'</span></div>';});
+  if(st.mkt!=null){var dm=st.mkt-st.sum;h+='<div class="small muted" style="margin-top:2px">по рынку сегодня ≈ '+fmt(Math.round(st.mkt),main)+' <span class="'+(dm>=0?'pos':'neg')+'">('+(dm>=0?'+':'−')+fmt(Math.round(Math.abs(dm)),main)+')</span></div>';}
+  if(st.per.length>1||(st.per[0]&&st.per[0].cur!==main))st.per.forEach(function(p){
+    var sub='';
+    if(p.cur!==main){
+      sub='<div>'+(p.val!=null?'≈ '+fmt(Math.round(p.val),main)+' по курсу покупки':'курс покупки неизвестен')+'</div>';
+      if(p.mkt!=null){var d=p.val!=null?p.mkt-p.val:null;sub+='<div>по рынку ≈ '+fmt(Math.round(p.mkt),main)+(d!=null?' <span class="'+(d>=0?'pos':'neg')+'">('+(d>=0?'+':'−')+fmt(Math.round(Math.abs(d)),main)+')</span>':'')+'</div>';}
+    }
+    h+='<div style="margin-top:8px"><div class="row small"><span class="muted">'+p.cur+'</span><span class="num" style="font-weight:600">'+fmt(p.bal,p.cur)+'</span></div>'+(sub?'<div class="small muted num" style="text-align:right">'+sub+'</div>':'')+'</div>';
+  });
   if(st.miss.length)h+='<div class="hint warn">Не учтены в сумме: '+st.miss.join(', ')+' — нет курса.</div>';
   h+='<div class="split"><button class="btn income sm" style="width:100%" data-a="save" data-v="save">Отложить</button><button class="btn plain sm" style="width:100%" data-a="save" data-v="unsave">Вернуть на счёт</button></div><button class="btn plain sm" style="width:100%;margin-top:8px" data-a="svadj">Указать сумму накоплений</button>';
   h+='<div class="hint">Накопления не входят в общий баланс. Деньги попадают сюда только когда ты нажимаешь «Отложить» — приложение ничего не откладывает само.</div></div>';
