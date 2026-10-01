@@ -603,7 +603,7 @@ function viewHome(){
   var recH=recHome();if(recH)extras.push(recH);
   var reconH=reconHome();if(reconH)extras.push(reconH);
   var rw=runway();
-  if(rw.per.length){
+  if(fcReady()){
     var fc=forecast(),fcLine='';
     if(fc&&fc.total)fcLine='<div class="t2" style="margin-top:4px">К концу месяца '+(fc.total.end<0?'<b class="neg">не хватит '+fmt(-fc.total.end,main)+'</b>':'≈ <b>'+fmt(fc.total.end,main)+'</b>')+'</div>';
     extras.push('<div class="card" data-a="runway" style="cursor:pointer;padding:12px 16px"><div class="row"><div class="grow"><div class="t2">На сколько хватит денег</div><div class="t1" style="white-space:normal">'+rw.per.slice(0,3).map(function(x){return x.cur+': '+(x.days==null?'—':'~'+fmtDays(x.days));}).join(' · ')+'</div>'+fcLine+'</div><span class="muted small">Разбор ›</span></div></div>');
@@ -931,7 +931,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
-  {v:'2.18',items:['Ссылка «Обязательные траты… как это исправить» в «Отчёте» снова ведёт в «Постоянные платежи»','У своих категорий в сводках теперь виден их значок, а не точка','Напоминание о резервной копии появится в любой день, если копии нет дольше недели','Шрифты сохраняются для работы без интернета','Даты постоянных платежей считаются по местному времени, а не по UTC','Новый постоянный платёж по умолчанию в категории «Аренда жилья»','Доход в валюте, для которого указан курс, в отчётах считается по этому курсу','Восстановление из копии стало безопаснее','Мелкие исправления текстов']},
+  {v:'2.18',items:['Прогнозы «На сколько хватит» и «К концу месяца» появляются, когда накопится 30 дней операций — раньше средняя трата в день была случайной','Ссылка «Обязательные траты… как это исправить» в «Отчёте» снова ведёт в «Постоянные платежи»','У своих категорий в сводках теперь виден их значок, а не точка','Напоминание о резервной копии появится в любой день, если копии нет дольше недели','Шрифты сохраняются для работы без интернета','Даты постоянных платежей считаются по местному времени, а не по UTC','Новый постоянный платёж по умолчанию в категории «Аренда жилья»','Доход в валюте, для которого указан курс, в отчётах считается по этому курсу','Восстановление из копии стало безопаснее','Мелкие исправления текстов']},
   {v:'2.17',items:['Новая категория «Аренда жилья», отдельно от общего «Жильё»','У новых установок аренда по умолчанию входит в обязательные категории','Исправлена миграция старых обязательных категорий — она случайно подхватывала новый дефолт вместо своего']},
   {v:'2.16',items:['В «Отчёте» появился график «Капитал по месяцам» — счета и накопления вместе за последние 6 месяцев','«Обязательные траты» теперь часть экрана «Постоянные платежи», отдельного пункта в «Ещё» больше нет']},
   {v:'2.15',items:['«Указать сумму накоплений» — можно скорректировать итог напрямую, без привязки к счёту (например, после сбоя)']},
@@ -1740,7 +1740,7 @@ function runway(){return RW_CACHE||(RW_CACHE=runwayCalc());}
 function runwayCalc(){
   var t=today(),first=null;
   S.tx.forEach(function(x){if(x.opening)return;if(!first||x.date<first)first=x.date;});
-  if(!first)return {basis:0,per:[],total:null,gaps:[]};
+  if(!first)return {basis:0,since:0,per:[],total:null,gaps:[]};
   var since=Math.round((new Date(t+'T00:00:00')-new Date(first+'T00:00:00'))/864e5)+1;
   var basis=Math.max(3,Math.min(30,since));
   function ago(n){return new Date(Date.now()-new Date().getTimezoneOffset()*60000-n*864e5).toISOString().slice(0,10);}
@@ -1769,11 +1769,19 @@ function runwayCalc(){
     var tb=calcTotal();
     tot={daily:Vm,unsch:Um,bal:tb,monthMust:mm,monthRec:mrm,sched30:s30,unsch30:Um*30,days:runDays(tb,Vm+Um,function(d){var sm=0;rcs.forEach(function(x){sm+=recUpcoming(x.c,d)*x.r;});return sm;})};
   }
-  return {basis:basis,per:list,total:tot,gaps:Object.keys(G).map(function(k){return G[k];})};
+  return {basis:basis,since:since,per:list,total:tot,gaps:Object.keys(G).map(function(k){return G[k];})};
+}
+/* Прогнозы показываем, только когда есть 30 дней данных — иначе средняя трата в день случайная */
+var FC_DAYS=30;
+function fcReady(){var rw=runway();return rw.per.length>0&&rw.since>=FC_DAYS;}
+function fcWaitText(){
+  var rw=runway(),left=FC_DAYS-(rw.since||0);
+  return 'Прогноз появится, когда накопится '+FC_DAYS+' дней операций — так средняя трата в день будет честной. '+(rw.since?'Осталось '+left+' '+plural(left,'день','дня','дней')+'.':'Начни вносить расходы.');
 }
 function runwayCard(){
   var rw=runway(),main=S.settings.main;
   if(!rw.per.length)return '';
+  if(!fcReady())return '<div class="card"><h3>Прогноз</h3><div class="small muted">'+fcWaitText()+'</div>'+(S.accounts.some(function(a){return a.cur!==main;})?'<button class="btn plain sm" data-a="plan">Сколько менять?</button>':'')+'</div>';
   var h='<div class="card"><h3>На сколько хватит денег</h3>';
   rw.per.forEach(function(p){
     h+='<div class="row" style="padding:6px 0"><div class="grow"><div class="t1">'+p.cur+'</div><div class="t2">повседневно ~'+fmt(p.daily,p.cur)+' в день'+(p.monthMust>0?' · обязательные ~'+fmt(p.monthMust,p.cur)+' в месяц':'')+' · на счетах '+fmt(p.bal,p.cur)+'</div></div><div class="amt num">'+(p.days==null?'—':'~'+fmtDays(p.days))+(p.days!=null&&p.days<365?'<small>до '+endDate(p.days)+'</small>':'')+'</div></div>';
@@ -1873,6 +1881,7 @@ function forecast(){
   return {me:me,per:per,total:tot};
 }
 function forecastCard(){
+  if(!fcReady())return '';
   var f=forecast();if(!f)return '';
   var main=S.settings.main,me=f.me,t=f.total;
   function row(l,v,cls,sub){return '<div class="row" style="padding:5px 0"><div class="grow"><div class="small muted">'+l+'</div>'+(sub?'<div class="t2">'+sub+'</div>':'')+'</div><span class="num'+(cls?' '+cls:'')+'" style="font-weight:600;text-align:right">'+v+'</span></div>';}
@@ -1915,7 +1924,7 @@ function recItems(days){
 }
 function openRunway(){
   var rw=runway(),main=S.settings.main;
-  if(!rw.per.length){openSheet('<h2>На сколько хватит</h2><p class="muted">Пока нет расходов — прогноз появится после первых трат.</p><button class="btn plain" data-a="close">Понятно</button>');return;}
+  if(!fcReady()){openSheet('<h2>На сколько хватит</h2><p class="muted">'+(rw.per.length?fcWaitText():'Пока нет расходов — прогноз появится после первых трат.')+'</p><button class="btn plain" data-a="close">Понятно</button>');return;}
   var items=recItems(30);
   function row(l,v,cls){return '<div class="row" style="padding:5px 0"><span class="small muted">'+l+'</span><span class="num'+(cls?' '+cls:'')+'" style="font-weight:600;text-align:right">'+v+'</span></div>';}
   function block(title,sub,cur,p,its){
