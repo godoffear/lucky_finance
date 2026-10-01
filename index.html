@@ -243,7 +243,7 @@ function topSegs(list,label){
 function catIcon(c){return esc(EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷');}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.19';
+var VERSION='2.20';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -1261,6 +1261,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.20',items:['Новый раздел «Финпомощник» в «Ещё»: сводка твоих финансов для Claude — скачать файлом или скопировать текстом, и ссылка на страницу помощника в claude.ai']},
   {v:'2.19',items:['На главной пояснения под суммой (курс, отключённые счета) свёрнуты в «Подробнее»','Калькулятор цели: выбор даты снова открывает календарь, плюс быстрые варианты 3 мес / 6 мес / 1 год / 2 года']},
   {v:'2.18',items:['Лимиты: в «Отчёте» — кольцо лимита месяца по категориям, в «Лимитах» — цветные полоски с чертой «сегодня»','Калькулятор «Как быстрее дойти до цели» в «Накоплениях»: к дате, по сумме, % от дохода, сценарии, где найти деньги, правило 50/30/20','Категория «Еда» переименована в «Продукты» — старые операции перенесены','Отчёт: круг расходов по категориям (нажми на категорию — откроются её операции), «Пульс месяца» по дням, «Что изменилось» по категориям, «Поездки и теги» — пиши #тег в заметке','Счета: круг «Где лежат деньги» по валютам','Накопления: кольцо цели и срок «в таком темпе»','Обмен валюты: график «Твой курс и рынок»','Новый раздел «Долги и займы» с напоминанием о сроке возврата','«Повторить сегодня» в любой операции','Переключатель «Свой курс / Официальный» убран: курс берётся по FIFO (средний курс твоих денег), если его нет — заданный вручную, потом рыночный и ЦБ','Новое в «Обмене валюты»: насколько твой курс хуже или лучше рыночного на день обмена','Удаление можно отменить в течение 7 секунд','Конвертер — маленькая кнопка 🧮 в шапке главной вместо плавающей','Можно выбрать, какие счета участвуют в прогнозах — отдельно от общей суммы','В «Отчёте» текущий месяц сравнивается с теми же днями прошлого','Операции счёта сгруппированы по дням, сначала последние 50','«Пора внести платежи»: видно, за какой месяц платёж, кнопки компактнее','Обязательные категории показываются свёрнуто, список — по кнопке «Изменить»','Прогнозы «На сколько хватит» и «К концу месяца» появляются, когда накопится 30 дней операций — раньше средняя трата в день была случайной','Ссылка «Обязательные траты… как это исправить» в «Отчёте» снова ведёт в «Постоянные платежи»','У своих категорий в сводках теперь виден их значок, а не точка','Напоминание о резервной копии появится в любой день, если копии нет дольше недели','Шрифты сохраняются для работы без интернета','Даты постоянных платежей считаются по местному времени, а не по UTC','Новый постоянный платёж по умолчанию в категории «Аренда жилья»','Доход в валюте, для которого указан курс, в отчётах считается по этому курсу','Восстановление из копии стало безопаснее','Кнопка «скрыть клавиатуру» больше не остаётся на экране после закрытия окна','Мелкие исправления текстов']},
   {v:'2.17',items:['Новая категория «Аренда жилья», отдельно от общего «Жильё»','У новых установок аренда по умолчанию входит в обязательные категории','Исправлена миграция старых обязательных категорий — она случайно подхватывала новый дефолт вместо своего']},
@@ -1371,6 +1372,49 @@ function debtHome(){
   if(!due.length)return '';
   return '<div class="card" data-a="sub" data-v="debts" style="cursor:pointer;border-color:var(--gold)"><h3 style="color:var(--ink)">Срок возврата долга</h3>'+due.slice(0,3).map(function(d){return '<div class="row small" style="padding:3px 0"><span>'+esc(d.who)+' · '+(d.dir==='lent'?'должен тебе':'ты должен')+'</span><span class="num" style="font-weight:600">'+fmt(debtLeft(d),d.cur)+'</span></div>';}).join('')+'</div>';
 }
+/* ---------- Финпомощник: сводка для Claude ---------- */
+/* Страница помощника живёт в claude.ai и отвечает за счёт аккаунта Claude того, кто её открыл */
+var HELPER_URL='https://claude.ai/artifact/J9nTBoprRKzukkmqyK7xJR';
+function r0(n){return Math.round(n*100)/100;}
+/* Компактная сводка без сырых операций и заметок: остатки, месяцы по категориям, платежи, лимиты, цель */
+function aiSummary(){
+  var main=S.settings.main,t=today(),cur=t.slice(0,7),i;
+  var o={app:'lucky-finance',kind:'ai-summary',v:1,generated:t,main:main,totalMain:Math.round(calcTotal())};
+  o.accounts=S.accounts.map(function(a){var b=C.accs[a.id].bal,r=rateToMain(a.cur);return {name:a.name,cur:a.cur,balance:r0(b),balanceMain:r!=null?Math.round(b*r):null,inTotal:!a.excl,inForecast:fcIn(a)};});
+  o.rates={};S.accounts.concat(S.inv).forEach(function(a){var c=a.cur;if(c===main||o.rates[c])return;var ri=rateInfoC(c);if(ri.r)o.rates[c]={rateToMain:Number(ri.r.toPrecision(6)),source:ri.src};});
+  o.months=[];
+  for(i=5;i>=0;i--){
+    var ym=shiftMonth(cur,-i),st=monthStats(ym);if(!st.inc&&!st.exp&&!o.months.length)continue;
+    var bc={};Object.keys(st.cats).sort(function(a,b){return st.cats[b]-st.cats[a];}).forEach(function(k){bc[k]=Math.round(st.cats[k]);});
+    o.months.push({month:ym,income:Math.round(st.inc),expense:Math.round(st.exp),byCategory:bc,partial:ym===cur?('по '+(+t.slice(8,10))+'-е число'):undefined});
+  }
+  o.avgIncome3m=Math.round(avgIncome());
+  o.mustCategories=mustCats().slice();
+  o.recurring=S.rec.map(function(r){var a=getAcc(r.acc);return {name:r.name,amount:r.amount,cur:a?a.cur:main,day:r.day,cat:r.cat};});
+  var l=limits(),mp=monthProgress();
+  if(l.total>0||Object.keys(l.cats).length)o.limits={month:l.total>0?{limit:l.total,spentThisMonth:Math.round(mp.st.exp),daysLeft:mp.daysLeft}:null,byCategory:Object.keys(l.cats).map(function(c){return {cat:c,limit:l.cats[c],spentThisMonth:Math.round(mp.st.cats[c]||0)};})};
+  var sv=savingsTotal();o.savings={totalMain:Math.round(sv.sum),byCur:sv.per.map(function(p){return {cur:p.cur,bal:r0(p.bal)};})};
+  var g=S.settings.goal;o.goal=g&&g.target>0?{name:g.name,target:g.target,saved:Math.round(sv.sum),pacePerMonth:Math.round(savePace())}:null;
+  var T={};S.tx.forEach(function(x){if(x.type!=='expense'||x.opening)return;var tg=tagsOf(x);if(!tg.length)return;var v=txToMain(x);if(v==null)return;
+    uniq(tg.map(function(z){return z.toLowerCase();})).forEach(function(k){var e=T[k]||(T[k]={tag:tg.filter(function(z){return z.toLowerCase()===k;})[0],totalMain:0,from:x.date,to:x.date});e.totalMain+=v;if(x.date<e.from)e.from=x.date;if(x.date>e.to)e.to=x.date;});});
+  o.tags=Object.keys(T).map(function(k){T[k].totalMain=Math.round(T[k].totalMain);return T[k];});
+  var lent=0,owe=0;S.debts.forEach(function(d){var left=debtLeft(d),r=rateToMain(d.cur);if(left<=1e-9||r==null)return;if(d.dir==='lent')lent+=left*r;else owe+=left*r;});
+  o.debts={owedToMeMain:Math.round(lent),iOweMain:Math.round(owe)};
+  if(fcReady()){var rw=runway();o.runway=rw.per.map(function(p){return {cur:p.cur,dailyEveryday:r0(p.daily),daysLeft:p.days==null?null:Math.floor(p.days),balance:r0(p.bal)};});}
+  o.note='Суммы в '+main+', если не указано иное. Курсы иностранных денег — по FIFO, если есть; иначе ручной, рыночный или ЦБ.';
+  return o;
+}
+function aiSummaryText(){
+  return 'Сводка моих финансов из Lucky Finance. Отвечай по-русски, опирайся только на эти цифры и называй их; если данных не хватает — скажи.\n\n```json\n'+JSON.stringify(aiSummary())+'\n```\n\nМой вопрос: ';
+}
+function viewAi(){
+  var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Финпомощник</h1><div class="small muted">Спрашивай Claude о своих деньгах: траты, лимиты, цель, обмены. Ответы идут за счёт твоей подписки Claude, отдельный ключ не нужен.</div>';
+  h+='<div class="card"><h3>Как пользоваться</h3><div class="small" style="line-height:1.7">Скачай сводку и выбери её на странице помощника. Или скопируй сводку и вставь в обычный чат с Claude, дописав свой вопрос.</div>'+
+    '<a class="btn" href="'+HELPER_URL+'" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Открыть Финпомощник</a>'+
+    '<div class="split"><button class="btn plain sm" style="width:100%" data-a="aidl">Скачать сводку</button><button class="btn plain sm" style="width:100%" data-a="aicopy">Скопировать сводку</button></div></div>';
+  h+='<div class="card"><h3>Что попадает в сводку</h3><div class="small muted" style="line-height:1.7">Остатки по счетам, доходы и расходы по категориям за последние месяцы, постоянные платежи, лимиты, накопления и цель, итоги по #тегам и долгам, курсы. <b>Не попадают</b> отдельные операции и заметки к ним. Сводка — снимок на сегодня: чтобы помощник видел свежие цифры, скачай её заново.</div></div>';
+  return h;
+}
 function viewInvest(){
   var h=backBar('Ещё','back2')+'<div class="row" style="margin-top:14px"><h1 style="margin:0">Инвестиции</h1><button class="chip" data-a="newinv">+ Актив</button></div>';
   if(!S.inv.length)return h+'<div class="card empty"><b>Активов пока нет</b>Добавь, где что лежит: биржа, крипта, депозит. Стоимость обновляешь сам, когда захочешь.</div>';
@@ -1384,7 +1428,7 @@ function viewInvest(){
 }
 
 function viewMore(){
-  var sub={debts:viewDebts,exchange:viewExchange,savings:viewSavings,invest:viewInvest,curs:viewCurs,limits:viewLimits,rec:viewRec,tpl:viewTpl,recon:viewRecon,about:viewAbout}[nav.sub];
+  var sub={ai:viewAi,debts:viewDebts,exchange:viewExchange,savings:viewSavings,invest:viewInvest,curs:viewCurs,limits:viewLimits,rec:viewRec,tpl:viewTpl,recon:viewRecon,about:viewAbout}[nav.sub];
   if(sub)return sub();
   var main=S.settings.main,theme=(function(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}})();
   function it(v,ic,t1,t2){return '<button class="item" data-a="sub" data-v="'+v+'"><div class="ic">'+ic+'</div><div class="grow"><div class="t1">'+t1+'</div><div class="t2">'+t2+'</div></div><span class="muted">›</span></button>';}
@@ -1393,6 +1437,7 @@ function viewMore(){
     it('exchange','⇄','Обмен валюты','Средний курс, остатки, сколько обменяно')+
     it('savings','🐷','Накопления и цель','Откладываешь только ты, вручную')+
     it('invest','📈','Инвестиции','Что куда вложено и сколько стоит')+
+    it('ai','💬','Финпомощник','Вопросы Claude о твоих деньгах')+
     it('debts','🤝','Долги и займы','Кто кому сколько должен')+'</div>';
   h+='<div class="grp">Планирование</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
     it('rec','🔁','Постоянные платежи','Аренда, интернет, подписки — напомню внести')+
@@ -2837,6 +2882,12 @@ var H={
   goalcalc:openGoalCalc,
   gcdate:function(el){F.dateS=el.dataset.v;renderGoalCalc();},
   gcmode:function(el){F.mode=el.dataset.v;renderGoalCalc();},
+  aidl:function(){deliverFile('lucky-finance-summary-'+today()+'.json',JSON.stringify(aiSummary(),null,1),'application/json').then(function(ok){toast(ok?'Сводка сохранена — выбери её на странице помощника':'Не удалось сохранить файл — скопируй сводку');});},
+  aicopy:function(){
+    var txt=aiSummaryText();
+    function fallback(){openSheet('<h2>Сводка для Claude</h2><div class="small muted">Выдели текст и скопируй вручную, затем вставь в чат с Claude и допиши вопрос.</div><textarea id="aitxt" readonly>'+esc(txt)+'</textarea><button class="btn plain" data-a="close" style="margin-top:8px">Закрыть</button>');var ta=$('#aitxt');if(ta){ta.focus();ta.select();}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast('Скопировано — вставь в чат с Claude и допиши вопрос');},fallback);else fallback();
+  },
   close:closeSheet,
   askyes:function(){var f=ask.fn;ask.fn=null;if(f)f();},
   theme:function(el){var v=el.dataset.v;try{localStorage.setItem(TKEY,v);}catch(e){}applyTheme(v);render();},
