@@ -975,8 +975,8 @@ function savePace(){
 function goalCard(st,g,link){
   var pct=g.target>0?st.sum/g.target*100:0,done=pct>=100;
   return '<div class="card'+(done?' gold':'')+'"'+(link?' data-a="sub" data-v="savings" style="cursor:pointer"':'')+'>'+
-    '<div class="row"><h3 style="margin:0;color:var(--ink)">'+(done?'🎯 ':'')+esc(g.name||'Цель')+'</h3><span class="small muted num">'+Math.floor(pct)+'%</span></div>'+
-    ringRow(st,g,pct,done)+'</div>';
+    '<div class="row"><h3 style="margin:0;color:var(--ink)">'+(done?'🎯 ':'')+esc(g.name||'Цель')+'</h3>'+(link?'':'<button class="chip sm" data-a="goal">Изменить</button>')+'</div>'+
+    ringRow(st,g,pct,done)+(!link&&!done?'<button class="btn sm" data-a="goalcalc" style="width:100%;margin-top:14px">Как быстрее дойти до цели</button>':'')+'</div>';
 }
 function ringRow(st,g,pct,done){
   var main=S.settings.main,R=52,L=2*Math.PI*R,w=Math.max(0,Math.min(100,pct)),len=w/100*L,col=done?'var(--gold)':'var(--income)';
@@ -1081,7 +1081,7 @@ function viewReport(){
       });
       h+='<div class="hint">Нажми на категорию, чтобы увидеть её операции.</div></div>'+changesCard(st,pv,dl);
     }
-    h+=catLimitsCard(st);
+    h+=limitDonutCard(st,ym);
     var big=st.big.sort(function(a,b){return b.v-a.v;}).slice(0,3);
     if(big.length){
       h+='<div class="card"><h3>Самые крупные траты</h3>'+big.map(function(b){
@@ -1251,7 +1251,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
-  {v:'2.18',items:['Калькулятор «Как быстрее дойти до цели» в «Накоплениях»: к дате, по сумме, % от дохода, сценарии, где найти деньги, правило 50/30/20','Категория «Еда» переименована в «Продукты» — старые операции перенесены','Отчёт: круг расходов по категориям (нажми на категорию — откроются её операции), «Пульс месяца» по дням, «Что изменилось» по категориям, «Поездки и теги» — пиши #тег в заметке','Счета: круг «Где лежат деньги» по валютам','Накопления: кольцо цели и срок «в таком темпе»','Обмен валюты: график «Твой курс и рынок»','Новый раздел «Долги и займы» с напоминанием о сроке возврата','«Повторить сегодня» в любой операции','Переключатель «Свой курс / Официальный» убран: курс берётся по FIFO (средний курс твоих денег), если его нет — заданный вручную, потом рыночный и ЦБ','Новое в «Обмене валюты»: насколько твой курс хуже или лучше рыночного на день обмена','Удаление можно отменить в течение 7 секунд','Конвертер — маленькая кнопка 🧮 в шапке главной вместо плавающей','Можно выбрать, какие счета участвуют в прогнозах — отдельно от общей суммы','В «Отчёте» текущий месяц сравнивается с теми же днями прошлого','Операции счёта сгруппированы по дням, сначала последние 50','«Пора внести платежи»: видно, за какой месяц платёж, кнопки компактнее','Обязательные категории показываются свёрнуто, список — по кнопке «Изменить»','Прогнозы «На сколько хватит» и «К концу месяца» появляются, когда накопится 30 дней операций — раньше средняя трата в день была случайной','Ссылка «Обязательные траты… как это исправить» в «Отчёте» снова ведёт в «Постоянные платежи»','У своих категорий в сводках теперь виден их значок, а не точка','Напоминание о резервной копии появится в любой день, если копии нет дольше недели','Шрифты сохраняются для работы без интернета','Даты постоянных платежей считаются по местному времени, а не по UTC','Новый постоянный платёж по умолчанию в категории «Аренда жилья»','Доход в валюте, для которого указан курс, в отчётах считается по этому курсу','Восстановление из копии стало безопаснее','Кнопка «скрыть клавиатуру» больше не остаётся на экране после закрытия окна','Мелкие исправления текстов']},
+  {v:'2.18',items:['Лимиты: в «Отчёте» — кольцо лимита месяца по категориям, в «Лимитах» — цветные полоски с чертой «сегодня»','Калькулятор «Как быстрее дойти до цели» в «Накоплениях»: к дате, по сумме, % от дохода, сценарии, где найти деньги, правило 50/30/20','Категория «Еда» переименована в «Продукты» — старые операции перенесены','Отчёт: круг расходов по категориям (нажми на категорию — откроются её операции), «Пульс месяца» по дням, «Что изменилось» по категориям, «Поездки и теги» — пиши #тег в заметке','Счета: круг «Где лежат деньги» по валютам','Накопления: кольцо цели и срок «в таком темпе»','Обмен валюты: график «Твой курс и рынок»','Новый раздел «Долги и займы» с напоминанием о сроке возврата','«Повторить сегодня» в любой операции','Переключатель «Свой курс / Официальный» убран: курс берётся по FIFO (средний курс твоих денег), если его нет — заданный вручную, потом рыночный и ЦБ','Новое в «Обмене валюты»: насколько твой курс хуже или лучше рыночного на день обмена','Удаление можно отменить в течение 7 секунд','Конвертер — маленькая кнопка 🧮 в шапке главной вместо плавающей','Можно выбрать, какие счета участвуют в прогнозах — отдельно от общей суммы','В «Отчёте» текущий месяц сравнивается с теми же днями прошлого','Операции счёта сгруппированы по дням, сначала последние 50','«Пора внести платежи»: видно, за какой месяц платёж, кнопки компактнее','Обязательные категории показываются свёрнуто, список — по кнопке «Изменить»','Прогнозы «На сколько хватит» и «К концу месяца» появляются, когда накопится 30 дней операций — раньше средняя трата в день была случайной','Ссылка «Обязательные траты… как это исправить» в «Отчёте» снова ведёт в «Постоянные платежи»','У своих категорий в сводках теперь виден их значок, а не точка','Напоминание о резервной копии появится в любой день, если копии нет дольше недели','Шрифты сохраняются для работы без интернета','Даты постоянных платежей считаются по местному времени, а не по UTC','Новый постоянный платёж по умолчанию в категории «Аренда жилья»','Доход в валюте, для которого указан курс, в отчётах считается по этому курсу','Восстановление из копии стало безопаснее','Кнопка «скрыть клавиатуру» больше не остаётся на экране после закрытия окна','Мелкие исправления текстов']},
   {v:'2.17',items:['Новая категория «Аренда жилья», отдельно от общего «Жильё»','У новых установок аренда по умолчанию входит в обязательные категории','Исправлена миграция старых обязательных категорий — она случайно подхватывала новый дефолт вместо своего']},
   {v:'2.16',items:['В «Отчёте» появился график «Капитал по месяцам» — счета и накопления вместе за последние 6 месяцев','«Обязательные траты» теперь часть экрана «Постоянные платежи», отдельного пункта в «Ещё» больше нет']},
   {v:'2.15',items:['«Указать сумму накоплений» — можно скорректировать итог напрямую, без привязки к счёту (например, после сбоя)']},
@@ -1298,11 +1298,11 @@ function viewSavings(){
   var main=S.settings.main,g=S.settings.goal,st=savingsTotal();
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Накопления и цель</h1>';
   h+='<div class="card"><div class="small muted">Всего накоплено</div><div class="num" style="font:600 28px/1.2 Unbounded,Onest,sans-serif;margin-top:6px;letter-spacing:-.02em">'+fmt(st.sum,main)+'</div>';
-  st.per.forEach(function(p){h+='<div class="row small" style="margin-top:6px"><span class="muted">'+p.cur+'</span><span class="num">'+fmt(p.bal,p.cur)+'</span></div>';});
+  if(st.per.length>1||(st.per[0]&&st.per[0].cur!==main))st.per.forEach(function(p){h+='<div class="row small" style="margin-top:6px"><span class="muted">'+p.cur+'</span><span class="num">'+fmt(p.bal,p.cur)+'</span></div>';});
   if(st.miss.length)h+='<div class="hint warn">Не учтены в сумме: '+st.miss.join(', ')+' — нет курса.</div>';
   h+='<div class="split"><button class="btn income sm" style="width:100%" data-a="save" data-v="save">Отложить</button><button class="btn plain sm" style="width:100%" data-a="save" data-v="unsave">Вернуть на счёт</button></div><button class="btn plain sm" style="width:100%;margin-top:8px" data-a="svadj">Указать сумму накоплений</button>';
   h+='<div class="hint">Накопления не входят в общий баланс. Деньги попадают сюда только когда ты нажимаешь «Отложить» — приложение ничего не откладывает само.</div></div>';
-  if(g&&g.target>0){h+=goalCard(st,g,false)+(st.sum<g.target?'<button class="btn sm" data-a="goalcalc" style="margin-right:8px">Как быстрее дойти до цели</button>':'')+'<button class="btn plain sm" data-a="goal">Изменить цель</button>';}
+  if(g&&g.target>0){h+=goalCard(st,g,false);}
   else h+='<div class="card empty"><b>Цели пока нет</b>Задай название и сумму — здесь появится шкала прогресса.<button class="btn plain sm" data-a="goal">Поставить цель</button></div>';
   var ops=S.tx.filter(function(t){return t.type==='save'||t.type==='unsave'||t.type==='svadj';}).sort(cmp).reverse();
   if(ops.length)h+='<div class="card"><h3>История</h3>'+ops.map(function(t){return opRow(t);}).join('')+'</div>';
@@ -1847,6 +1847,36 @@ function limitMsg(t){
   if(cl>0){var cs=st.cats[t.cat]||0,cb=cs-v;if(cb<cl&&cs>=cl)msgs.push('лимит «'+t.cat+'» превышен');else if(cb<cl*0.8&&cs>=cl*0.8)msgs.push('«'+t.cat+'»: 80% лимита');}
   return msgs.length?msgs.join(', ').replace(/^./,function(c){return c.toUpperCase();}):'';
 }
+/* Лимит месяца одним кольцом: куски — траты по категориям с лимитом, серое — остальное, пусто — сколько ещё можно */
+function limitDonutCard(st,ym){
+  var l=limits(),main=S.settings.main,ks=Object.keys(l.cats).filter(function(c){return l.cats[c]>0;});
+  if(!(l.total>0))return catLimitsCard(st);
+  var segs=ks.map(function(c){return {k:c,v:st.cats[c]||0};}).sort(function(a,b){return b.v-a.v;}).slice(0,5);
+  segs.forEach(function(x,i){x.c=SERIES[i];});
+  var lim=0;segs.forEach(function(x){lim+=x.v;});
+  var rest=Math.max(0,st.exp-lim),over=st.exp>l.total,scale=Math.max(l.total,st.exp),R=52,W=16,L=2*Math.PI*R,off=0;
+  var all=segs.concat(rest>0?[{k:'Прочее',v:rest,c:'var(--cother)',other:true}]:[]);
+  var svg='<div class="donut"><svg viewBox="0 0 132 132"><circle cx="66" cy="66" r="'+R+'" fill="none" stroke="'+(over?'var(--expense)':'var(--bg)')+'" stroke-width="'+W+'"'+(over?' opacity=".25"':'')+'/>';
+  all.forEach(function(x){
+    var len=x.v/scale*L;if(len<=0)return;var d=Math.max(len-2,0.5);
+    svg+='<circle cx="66" cy="66" r="'+R+'" fill="none" stroke="'+x.c+'" stroke-width="'+W+'" stroke-dasharray="'+d.toFixed(2)+' '+(L-d).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 66 66)"><title>'+esc(x.k)+': '+fmt(x.v,main)+'</title></circle>';
+    off+=len;
+  });
+  if(over)svg+='<circle cx="66" cy="66" r="'+(R+W/2+3)+'" fill="none" stroke="var(--expense)" stroke-width="2"/>';
+  var left=l.total-st.exp;
+  svg+='</svg><div class="dc">'+(left>=0?'осталось<b>'+fmtShort(left,main)+'</b>из '+fmtShort(l.total,main):'<span style="color:var(--expense)">перебор</span><b style="color:var(--expense)">'+fmtShort(-left,main)+'</b>лимит '+fmtShort(l.total,main))+'</div></div>';
+  var lg=segs.map(function(x){
+    var p=Math.round(x.v/l.cats[x.k]*100);
+    return '<button class="lg" data-a="catops" data-v="'+esc(x.k)+'" data-ym="'+ym+'" style="padding:5px 0"><span class="dot" style="background:'+x.c+'"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(x.k)+'</span><b class="num" style="flex:none'+(p>=100?';color:var(--expense)':'')+'">'+p+'%</b></button>';
+  }).join('')+(rest>0?'<div class="lg" style="padding:5px 0"><span class="dot" style="background:var(--cother)"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Прочее</span><span class="muted small num" style="flex:none">'+nfCompact.format(rest)+'</span></div>':'');
+  return '<div class="card"><h3>Лимит месяца</h3><div class="row" style="gap:14px;align-items:center;margin-top:4px">'+svg+'<div class="grow small" style="min-width:0">'+lg+'</div></div>'+
+    '<div class="hint">Пустая часть кольца — сколько ещё можно потратить. Справа — сколько процентов лимита категории уже потрачено'+(over?'. Лимит месяца превышен — кольцо обведено красным':'')+'.</div></div>';
+}
+/* А: цветная полоска лимита с чертой «где по темпу месяца ты должен быть сегодня» */
+function limBarA(spent,limit,color,mark){
+  var p=limit>0?spent/limit*100:0,over=p>=100;
+  return '<div style="position:relative;height:8px;border-radius:4px;background:var(--bg);margin:6px 0 2px"><b style="display:block;height:100%;border-radius:4px;width:'+Math.min(100,Math.max(2,p))+'%;background:'+(over?'var(--expense)':color)+'"></b>'+(mark!=null?'<i style="position:absolute;top:-3px;left:'+mark+'%;width:2px;height:14px;background:var(--ink);opacity:.5;border-radius:1px"></i>':'')+'</div>';
+}
 function catLimitsCard(st){
   var l=limits(),ks=Object.keys(l.cats);if(!ks.length)return '';
   var main=S.settings.main;
@@ -1856,15 +1886,16 @@ function catLimitsCard(st){
   }).join('')+'</div>';
 }
 function viewLimits(){
-  var main=S.settings.main,l=limits(),mp=monthProgress(),st=mp.st;
+  var main=S.settings.main,l=limits(),mp=monthProgress(),st=mp.st,mark=Math.round((mp.dim-mp.daysLeft+1)/mp.dim*1000)/10;
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Лимиты</h1>';
   h+='<div class="card"><h3>Лимит на месяц</h3><label style="margin-top:0">Сколько можно потратить за месяц<div class="amtwrap"><input inputmode="decimal" data-lim="total" value="'+(l.total>0?esc(inp(l.total)):'')+'" placeholder="0" autocomplete="off"><span>'+main+'</span></div></label><div class="hint">Считаются расходы месяца в пересчёте на '+main+'. Пусто или 0 — без лимита. Приложение только показывает остаток и предупреждает, ничего не блокирует.</div>';
-  if(l.total>0){var left=l.total-st.exp;h+='<div class="row small" style="margin-top:10px"><span>Потрачено '+fmt(st.exp,main)+'</span><span class="'+(left<0?'neg':'muted')+'">'+(left>=0?'осталось '+fmt(left,main):'превышен на '+fmt(-left,main))+'</span></div>'+limBar(st.exp,l.total)+(left>0?'<div class="small muted" style="margin-top:8px">До конца месяца '+mp.daysLeft+' '+plural(mp.daysLeft,'день','дня','дней')+': можно ~'+fmt(left/mp.daysLeft,main)+' в день.</div>':'');}
+  if(l.total>0){var left=l.total-st.exp;h+='<div class="row small" style="margin-top:10px"><span>Потрачено '+fmt(st.exp,main)+'</span><span class="'+(left<0?'neg':'muted')+'">'+(left>=0?'осталось '+fmt(left,main):'превышен на '+fmt(-left,main))+'</span></div>'+limBarA(st.exp,l.total,'var(--c1)',mark)+(left>0?'<div class="small muted" style="margin-top:8px">До конца месяца '+mp.daysLeft+' '+plural(mp.daysLeft,'день','дня','дней')+': можно ~'+fmt(left/mp.daysLeft,main)+' в день.</div>':'');}
   h+='</div>';
   h+='<div class="card"><div class="row"><h3 style="margin:0">Лимиты по категориям</h3><button class="chip" data-a="newlim">+ Лимит</button></div>';
   var ks=Object.keys(l.cats);
   if(!ks.length)h+='<div class="small muted" style="margin-top:8px">Например, не больше 15 000 000 ₫ в месяц на «Продукты».</div>';
-  ks.forEach(function(c){var v=st.cats[c]||0;h+='<button class="item" data-a="editlim" data-v="'+esc(c)+'" style="display:block"><div class="row"><span>'+catIcon(c)+' '+esc(c)+'</span><span class="num small">'+fmt(v,main)+' из '+fmt(l.cats[c],main)+'</span></div>'+limBar(v,l.cats[c])+'</button>';});
+  ks.forEach(function(c,i){var v=st.cats[c]||0,ov=v-l.cats[c];h+='<button class="item" data-a="editlim" data-v="'+esc(c)+'" style="display:block"><div class="row"><span>'+catIcon(c)+' '+esc(c)+'</span><span class="num small"'+(ov>0?' style="color:var(--expense)"':'')+'>'+fmt(v,main)+' из '+fmt(l.cats[c],main)+(ov>0?' · +'+fmt(ov,main):'')+'</span></div>'+limBarA(v,l.cats[c],i<5?SERIES[i]:'var(--cother)',mark)+'</button>';});
+  if(ks.length||l.total>0)h+='<div class="hint">Черта на полоске — где по темпу месяца ты должен быть сегодня. Полоска правее черты — тратишь быстрее, чем нужно.</div>';
   return h+'</div>';
 }
 function openCatLim(cat){
