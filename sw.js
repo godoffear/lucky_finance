@@ -1,6 +1,6 @@
 // Кэш нужен, чтобы приложение открывалось без интернета.
-var CACHE='fin-v2',FONTS='fin-fonts';
-var FILES=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
+var CACHE='fin-v3',FONTS='fin-fonts';
+var FILES=['./','index.html','manifest.webmanifest','icon-192-v2.png','icon-512-v2.png'];
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(FILES);}));
   self.skipWaiting();
