@@ -260,7 +260,7 @@ function catTitle(t){return (t.cat||'Другое')+(t.sub?' · '+t.sub:'');}
 function catIcon(c){return esc(EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷');}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.22';
+var VERSION='2.23';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -1329,6 +1329,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.23',items:['Новая иконка: четырёхлистный клевер в золотой подкове']},
   {v:'2.22',items:['Новая категория «Мопед» с подкатегориями «Топливо», «Обслуживание» и «Покупка»','Траты «Мопед · Покупка» не входят в среднюю трату в день — разовая крупная покупка не портит прогнозы и «Пульс месяца»','У «Транспорта» теперь значок 🚕, чтобы не путать с мопедом']},
   {v:'2.21',items:['Свой календарь для выбора даты вместо браузерного — открывается на любом телефоне','Быстрые кнопки «Сегодня · Вчера · Позавчера» при вводе операции и накоплений']},
   {v:'2.20',items:['Накопления: у каждой валюты виден рублёвый эквивалент по курсу покупки и стоимость по рынку сегодня, с разницей','Новый раздел «Финпомощник» в «Ещё»: сводка твоих финансов для Claude — скачать файлом или скопировать текстом, и ссылка на страницу помощника в claude.ai']},
