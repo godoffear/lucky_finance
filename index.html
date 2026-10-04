@@ -44,6 +44,12 @@
   --hero:#1F2C3A; --hero-ink:#F2F5F7; --hero-muted:#9BAAB6;
   --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500; --c5:#d55181; --cother:#56636F;
 }
+/* Цветные темы: всегда в своём виде (светлом или тёмном), поэтому идут после блоков тёмной темы и перекрывают их */
+:root[data-pal="emerald"]{--bg:#E4F1EA;--surface:#FFFFFF;--ink:#0F2A1F;--muted:#5E7A6C;--line:#CFE3D7;--income:#138A55;--income-soft:#D3F1E2;--expense:#C8452F;--expense-soft:#F8E0D9;--fx:#0F7A57;--fx-soft:#D6EFE4;--gold:#C08A10;--gold-soft:#FBEFC8;--hero:#0B5D3E;--hero-ink:#F4FFF8;--hero-muted:#A9D5BE;--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--cother:#A9B3BB;--hero-bg:linear-gradient(135deg,#0B5D3E 0%,#13895A 55%,#2FB57A 100%);--hero-shadow:0 12px 30px -14px #0B5D3E;color-scheme:light}
+:root[data-pal="sunset"]{--bg:#FFF1E8;--surface:#FFFFFF;--ink:#2B1530;--muted:#8C6E78;--line:#F3D9CB;--income:#16825B;--income-soft:#DDF3E8;--expense:#D93B4A;--expense-soft:#FCE0E2;--fx:#7B3FD9;--fx-soft:#EEE3FC;--gold:#E08A00;--gold-soft:#FFEBC2;--hero:#C9406A;--hero-ink:#FFFFFF;--hero-muted:#FFE0D2;--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--cother:#A9B3BB;--hero-bg:linear-gradient(135deg,#FF7A59 0%,#F0457A 50%,#8E3FD9 100%);--hero-shadow:0 12px 30px -14px #C9406A;color-scheme:light}
+:root[data-pal="ocean"]{--bg:#E3F4F8;--surface:#FFFFFF;--ink:#0B2433;--muted:#5D7C8A;--line:#CBE5EC;--income:#11845E;--income-soft:#D5F1E6;--expense:#D9473B;--expense-soft:#FBE1DE;--fx:#0A7FB5;--fx-soft:#D6EDF8;--gold:#C98F00;--gold-soft:#FFF0C7;--hero:#0A6AA0;--hero-ink:#FFFFFF;--hero-muted:#CDEFF8;--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--cother:#A9B3BB;--hero-bg:linear-gradient(135deg,#0A4F8C 0%,#0A86B5 55%,#19C2C7 100%);--hero-shadow:0 12px 30px -14px #0A6AA0;color-scheme:light}
+:root[data-pal="neon"]{--bg:#0D0B1A;--surface:#171430;--ink:#ECE8FF;--muted:#8D86B5;--line:#2B2650;--income:#3EF0A9;--income-soft:#123A30;--expense:#FF5C8A;--expense-soft:#3D1730;--fx:#7C6CFF;--fx-soft:#251F55;--gold:#FFC94A;--gold-soft:#3A2E12;--hero:#5B25C9;--hero-ink:#FFFFFF;--hero-muted:#C9C2FF;--c1:#3987e5;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--cother:#56636F;--hero-bg:linear-gradient(135deg,#3A1C9C 0%,#7B2FF7 50%,#F72FA1 100%);--hero-shadow:0 12px 30px -14px #5B25C9;color-scheme:dark}
+:root[data-pal="lavender"]{--bg:#F1EEFB;--surface:#FFFFFF;--ink:#221B3A;--muted:#7C7499;--line:#E1DBF4;--income:#178A62;--income-soft:#DDF3EA;--expense:#D2456A;--expense-soft:#FBE2EA;--fx:#6A4FD8;--fx-soft:#E8E2FB;--gold:#C7900E;--gold-soft:#FCEFCB;--hero:#6A4FD8;--hero-ink:#FFFFFF;--hero-muted:#E2DAFF;--c1:#2a78d6;--c2:#eb6834;--c3:#1baf7a;--c4:#eda100;--c5:#e87ba4;--cother:#A9B3BB;--hero-bg:linear-gradient(135deg,#5B3FD1 0%,#8B6BEA 55%,#C79BF2 100%);--hero-shadow:0 12px 30px -14px #6A4FD8;color-scheme:light}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.4 'Onest',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
@@ -59,10 +65,14 @@ h3{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--muted)}
 .num{font-variant-numeric:tabular-nums}
 
 /* Balance card */
+.pals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pal{background:none;border:1px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--ink)}
+.pal i{display:block;width:100%;height:34px;border-radius:9px}
+.pal.on{border-color:var(--fx);box-shadow:inset 0 0 0 1px var(--fx)}
 .qod{margin:-6px 2px 12px;font-size:13px;line-height:1.45;color:var(--muted)}
 .qod q{font-style:italic;color:var(--ink);opacity:.8;quotes:'«' '»'}
 .qod span{white-space:nowrap}
-.hero{background:var(--hero);color:var(--hero-ink);border-radius:26px;padding:22px 20px 20px;cursor:pointer;position:relative;overflow:hidden;user-select:none}
+.hero{background:var(--hero-bg,var(--hero));box-shadow:var(--hero-shadow,none);color:var(--hero-ink);border-radius:26px;padding:22px 20px 20px;cursor:pointer;position:relative;overflow:hidden;user-select:none}
 .hero .lbl{font-size:13px;color:var(--hero-muted)}
 .hero .big{font:600 32px/1.15 'Unbounded','Onest',system-ui,sans-serif;margin:8px 0 6px;letter-spacing:-.02em;transition:filter .3s}
 .hero:not(.open) .big{filter:blur(13px)}
@@ -314,8 +324,10 @@ var QUOTES=[
 function quoteOfDay(){var d=Math.floor(new Date(today()+'T00:00:00Z').getTime()/864e5),n=QUOTES.length;return QUOTES[((d*17)%n+n)%n];}
 function catIcon(c){return esc(EMO[c]||(S.settings.catIcons&&S.settings.catIcons[c])||'🏷');}
 var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:96.6671,GBP:112.4289,CNY:12.567,JPY:0.535948,CHF:102.1071,AUD:59.9991,CAD:60.1927,VND:0.00328422,THB:2.53058,KRW:0.0609994,AED:22.9265,TRY:1.73135,KZT:0.189387,IDR:0.00474272,SGD:66.0114,HKD:10.7313,GEL:32.2893,INR:0.878971,UAH:1.8847,BYN:27.8486,PLN:22.1584,CZK:3.96447,SEK:8.57625,NOK:8.93001,NZD:48.1736,BRL:16.3433}};
-var KEY='fin-mvp-v1', TKEY='fin-mvp-theme';
-var VERSION='2.25';
+var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
+/* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
+var PALS=[["emerald", "Изумруд", "#0B5D3E", "linear-gradient(135deg,#0B5D3E 0%,#13895A 55%,#2FB57A 100%)", false], ["sunset", "Закат", "#C9406A", "linear-gradient(135deg,#FF7A59 0%,#F0457A 50%,#8E3FD9 100%)", false], ["ocean", "Океан", "#0A6AA0", "linear-gradient(135deg,#0A4F8C 0%,#0A86B5 55%,#19C2C7 100%)", false], ["neon", "Неон", "#5B25C9", "linear-gradient(135deg,#3A1C9C 0%,#7B2FF7 50%,#F72FA1 100%)", true], ["lavender", "Лаванда", "#6A4FD8", "linear-gradient(135deg,#5B3FD1 0%,#8B6BEA 55%,#C79BF2 100%)", false]];
+var VERSION='2.26';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -1386,6 +1398,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.26',items:['Пять цветных тем: Изумруд, Закат, Океан, Неон и Лаванда — «Ещё → Тема → Оформление»']},
   {v:'2.25',items:['В имени файла резервной копии теперь есть время: LuckyFinance_backup_2026-10-04_15-30.json']},
   {v:'2.24',items:['На главной — цитата дня о деньгах, каждый день новая (выключается в «Ещё → Тема»)','Иконка лежит в файлах с новыми именами, чтобы телефон заметил её смену']},
   {v:'2.23',items:['Новая иконка: четырёхлистный клевер в золотой подкове']},
@@ -1569,7 +1582,7 @@ function viewInvest(){
 function viewMore(){
   var sub={ai:viewAi,debts:viewDebts,exchange:viewExchange,savings:viewSavings,invest:viewInvest,curs:viewCurs,limits:viewLimits,rec:viewRec,tpl:viewTpl,recon:viewRecon,about:viewAbout}[nav.sub];
   if(sub)return sub();
-  var main=S.settings.main,theme=(function(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}})();
+  var main=S.settings.main,theme=(function(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}})(),pal=curPal();
   function it(v,ic,t1,t2){return '<button class="item" data-a="sub" data-v="'+v+'"><div class="ic">'+ic+'</div><div class="grow"><div class="t1">'+t1+'</div><div class="t2">'+t2+'</div></div><span class="muted">›</span></button>';}
   var h='<h1>Ещё</h1>';
   h+='<div class="grp">Деньги</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
@@ -1598,7 +1611,8 @@ function viewMore(){
     });
   }
   h+='</div>';
-  h+='<div class="card"><h3>Тема</h3><div class="row" style="margin-bottom:12px"><div class="grow"><div class="t1">Цитата дня на главной</div><div class="t2">Каждый день новая</div></div><button class="sw'+(S.settings.quote!==false?' on':'')+'" data-a="qtog" aria-label="Цитата дня" style="border:0;padding:0"></button></div><div class="chips" style="margin:0">'+[['auto','Как в телефоне'],['light','Светлая'],['dark','Тёмная']].map(function(t){return '<button class="chip'+(theme===t[0]?' on':'')+'" data-a="theme" data-v="'+t[0]+'">'+t[1]+'</button>';}).join('')+'</div></div>';
+  h+='<div class="card"><h3>Тема</h3><div class="row" style="margin-bottom:12px"><div class="grow"><div class="t1">Цитата дня на главной</div><div class="t2">Каждый день новая</div></div><button class="sw'+(S.settings.quote!==false?' on':'')+'" data-a="qtog" aria-label="Цитата дня" style="border:0;padding:0"></button></div><div class="small muted" style="margin-bottom:8px">Оформление</div><div class="pals">'+[['base','Классика','#16202B','linear-gradient(135deg,#16202B,#2C52D0)']].concat(PALS).map(function(x){return '<button class="pal'+(pal===x[0]?' on':'')+'" data-a="pal" data-v="'+x[0]+'" aria-label="'+x[1]+'"><i style="background:'+x[3]+'"></i><span>'+x[1]+'</span></button>';}).join('')+'</div>'+
+    (pal==='base'?'<div class="small muted" style="margin:14px 0 8px">Светлая или тёмная</div><div class="chips" style="margin:0">'+[['auto','Как в телефоне'],['light','Светлая'],['dark','Тёмная']].map(function(t){return '<button class="chip'+(theme===t[0]?' on':'')+'" data-a="theme" data-v="'+t[0]+'">'+t[1]+'</button>';}).join('')+'</div>':'<div class="hint">Цветная тема всегда выглядит одинаково; выбор «светлая / тёмная» работает для «Классики».</div>')+'</div>';
   var bk=backupCfg(),DOWN=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
   h+='<div class="card"><h3>Резервная копия</h3><div class="small muted">Данные лежат только в памяти этого устройства. Копия защитит их при смене телефона или очистке браузера.<br>'+(S.settings.lastBackup?'Последняя копия: '+new Date(S.settings.lastBackup).toLocaleDateString('ru-RU'):'Копий пока не было.')+'<br>Защита от автоочистки: '+(persisted===true?'включена':persisted===false?'браузер не подтвердил — делай копии чаще':'—')+'</div>'+
     '<button class="btn" data-a="export">Сделать резервную копию</button><button class="btn plain" data-a="import" style="margin-top:8px">Восстановить из копии</button>'+
@@ -3037,6 +3051,7 @@ var H={
   qtog:function(){S.settings.quote=S.settings.quote===false?true:false;save();render();},
   close:closeSheet,
   askyes:function(){var f=ask.fn;ask.fn=null;if(f)f();},
+  pal:function(el){var v=el.dataset.v;try{localStorage.setItem(PKEY,v);}catch(e){}applyPalette(v);render();},
   theme:function(el){var v=el.dataset.v;try{localStorage.setItem(TKEY,v);}catch(e){}applyTheme(v);render();},
   export:openExport,
   import:openImport,
@@ -3119,7 +3134,14 @@ function applyTheme(v){
   var r=document.documentElement;
   if(v==='light'||v==='dark')r.setAttribute('data-theme',v);else r.removeAttribute('data-theme');
 }
+function curPal(){try{return localStorage.getItem(PKEY)||'base';}catch(e){return 'base';}}
+function applyPalette(k){
+  var r=document.documentElement,pl=PALS.filter(function(x){return x[0]===k;})[0],m=document.querySelector('meta[name="theme-color"]');
+  if(pl)r.setAttribute('data-pal',k);else r.removeAttribute('data-pal');
+  if(m)m.setAttribute('content',pl?pl[2]:'#16202B');
+}
 try{applyTheme(localStorage.getItem(TKEY)||'auto');}catch(e){}
+applyPalette(curPal());
 (function(){
   var kb=document.getElementById('kbhide'),vv=window.visualViewport;
   function place(){
