@@ -328,7 +328,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["emerald", "Изумруд", "#0B5D3E", "linear-gradient(135deg,#0B5D3E 0%,#13895A 55%,#2FB57A 100%)", false], ["sunset", "Закат", "#C9406A", "linear-gradient(135deg,#FF7A59 0%,#F0457A 50%,#8E3FD9 100%)", false], ["ocean", "Океан", "#0A6AA0", "linear-gradient(135deg,#0A4F8C 0%,#0A86B5 55%,#19C2C7 100%)", false], ["neon", "Неон", "#5B25C9", "linear-gradient(135deg,#3A1C9C 0%,#7B2FF7 50%,#F72FA1 100%)", true], ["lavender", "Лаванда", "#6A4FD8", "linear-gradient(135deg,#5B3FD1 0%,#8B6BEA 55%,#C79BF2 100%)", false]];
-var VERSION='2.27';
+var VERSION='2.28';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -1399,6 +1399,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.28',items:['Копия на GitHub: «Ещё → Копия на GitHub» — репозиторий и токен вводятся один раз','Кнопка «Выгрузить сейчас» и автовыгрузка раз в день при открытии, если данные менялись','Токен хранится только на этом устройстве и в резервные копии не попадает']},
   {v:'2.27',items:['Новая категория «Мама» ❤️ для переводов маме','Переводы маме не входят в среднюю трату в день и не портят прогноз','Если «Мама» у тебя уже была своей категорией — старые траты подхватятся автоматически']},
   {v:'2.26',items:['Пять цветных тем: Изумруд, Закат, Океан, Неон и Лаванда — «Ещё → Тема → Оформление»']},
   {v:'2.25',items:['В имени файла резервной копии теперь есть время: LuckyFinance_backup_2026-10-04_15-30.json']},
@@ -1625,6 +1626,7 @@ function viewMore(){
     h+='<div class="hint">Напомню на главном экране начиная с '+esc(bk.time||'20:00')+' в '+DOWN[bk.dow].toLowerCase()+', если к этому времени копии ещё не было. А если копии нет больше недели — напомню в любой день. Приложение должно быть открыто в этот момент — присылать это, пока оно закрыто, браузеры не позволяют.</div>';
   }
   h+='</div>';
+  h+=ghCard();
   h+='<div class="card"><h3>Настройка</h3><button class="btn plain" data-a="wizard" style="margin-top:0">Мастер настройки</button><div class="hint">Добавит валюты и счета, ничего не удаляя.</div></div>';
   h+='<div class="card"><h3>Опасная зона</h3><button class="btn ghost" data-a="wipe" style="margin-top:0">Удалить все данные</button></div>';
   h+='<div class="small muted" style="text-align:center;margin:16px 0">Lucky Finance · версия '+VERSION+'</div>';
@@ -1983,6 +1985,47 @@ function deliverFile(name,text,mime){
     });
   }
   return Promise.resolve(downloadBlob(name,text,mime));
+}
+/* Копия в приватный репозиторий GitHub. Токен лежит отдельным ключом, в резервные копии и сводку для Claude не попадает */
+var GKEY='fin-mvp-gh',GH_BUSY=false;
+function ghCfg(){var g={};try{g=JSON.parse(localStorage.getItem(GKEY)||'{}')||{};}catch(e){}return g;}
+function ghSet(g){try{localStorage.setItem(GKEY,JSON.stringify(g));}catch(e){}}
+function ghReady(g){return !!(g.repo&&g.token&&/^[\w.-]+\/[\w.-]+$/.test(g.repo));}
+function ghHash(){var l=S.settings.lastBackup;S.settings.lastBackup=0;var j=JSON.stringify(S);S.settings.lastBackup=l;var h=5381;for(var i=0;i<j.length;i++)h=((h<<5)+h+j.charCodeAt(i))|0;return j.length+':'+h;}
+function ghErr(st){return st===401?'токен не принят — проверь или создай новый':st===403?'у токена нет права записи в репозиторий (Contents: Read and write)':st===404?'репозиторий не найден или у токена нет к нему доступа':st===422?'файл с таким именем уже есть — подожди минуту':st===0?'нет интернета':'ошибка GitHub '+st;}
+function ghUpload(silent){
+  var g=ghCfg();
+  if(!ghReady(g)){if(!silent)toast('Сначала укажи репозиторий и токен');return Promise.resolve(false);}
+  if(GH_BUSY)return Promise.resolve(false);
+  GH_BUSY=true;
+  var text=backupJson(),hash=ghHash(),name=bkName();
+  var body=JSON.stringify({message:'Резервная копия '+name,content:btoa(unescape(encodeURIComponent(text)))});
+  return fetch('https://api.github.com/repos/'+g.repo+'/contents/backups/'+name,{method:'PUT',headers:{'Authorization':'Bearer '+g.token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},body:body}).then(function(res){
+    GH_BUSY=false;var g2=ghCfg();
+    if(res.ok){g2.last=Date.now();g2.hash=hash;g2.err='';ghSet(g2);markBackup();if(!silent)toast('Копия выгружена на GitHub');if(nav.tab==='more')render();return true;}
+    g2.err=ghErr(res.status);ghSet(g2);if(!silent)toast('GitHub: '+g2.err);if(nav.tab==='more')render();return false;
+  }).catch(function(){GH_BUSY=false;var g2=ghCfg();g2.err=ghErr(0);ghSet(g2);if(!silent)toast('GitHub: '+g2.err);return false;});
+}
+/* автовыгрузка: раз в день при открытии, если данные менялись */
+function ghAuto(){
+  var g=ghCfg();if(!ghReady(g)||g.auto===false||!S.tx.length)return;
+  var d=g.last?new Date(g.last-new Date(g.last).getTimezoneOffset()*60000).toISOString().slice(0,10):'';
+  if(d===today())return;
+  if(g.hash&&g.hash===ghHash())return;
+  ghUpload(true);
+}
+function ghCard(){
+  var g=ghCfg(),h='<div class="card"><h3>Копия на GitHub</h3><div class="small muted">Копия кладётся в твой <b>приватный</b> репозиторий. Не используй репозиторий с этим сайтом — он публичный, и данные увидят все.</div>';
+  h+='<label>Репозиторий (владелец/название)<input id="ghrepo" autocapitalize="none" autocomplete="off" placeholder="godoffear/lucky_finance_backup" value="'+esc(g.repo||'')+'"></label>';
+  h+='<label>Токен<input id="ghtok" type="password" autocomplete="off" placeholder="'+(g.token?'сохранён — введи новый, чтобы заменить':'github_pat_…')+'"></label>';
+  h+='<button class="btn" data-a="ghsave" style="margin-top:12px">'+(ghReady(g)?'Сохранить':'Сохранить и проверить')+'</button>';
+  if(ghReady(g)){
+    h+='<button class="btn plain" data-a="ghnow" style="margin-top:8px">Выгрузить сейчас</button>';
+    h+='<div class="row" style="margin-top:16px"><div class="grow"><div class="t1">Каждый день автоматически</div><div class="t2">При открытии приложения, если данные менялись</div></div><button class="sw'+(g.auto!==false?' on':'')+'" data-a="ghauto" aria-label="Автовыгрузка" style="border:0;padding:0"></button></div>';
+    h+='<div class="hint'+(g.err?' warn':'')+'" style="margin-top:8px">'+(g.err?'Последняя попытка не удалась: '+esc(g.err):g.last?'Последняя выгрузка: '+new Date(g.last).toLocaleString('ru-RU'):'Выгрузок пока не было.')+'</div>';
+    h+='<button class="btn plain" data-a="ghoff" style="margin-top:8px">Забыть токен</button>';
+  }
+  return h+'</div>';
 }
 function openExport(){
   var can=typeof navigator.share==='function';
@@ -3023,6 +3066,15 @@ var H={
   homemore:function(){homeMore=!homeMore;render();},
   bksnz:function(){backupCfg().snz=today();save();render();},
   bkon:function(){var b=backupCfg();b.on=!b.on;save();render();},
+  ghsave:function(){
+    var g=ghCfg(),repo=($('#ghrepo').value||'').trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/$/,''),tok=($('#ghtok').value||'').trim();
+    if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){toast('Репозиторий пишется как владелец/название');return;}
+    if(tok)g.token=tok;if(!g.token){toast('Вставь токен');return;}
+    g.repo=repo;g.err='';ghSet(g);toast('Проверяю…');ghUpload(false).then(function(){render();});
+  },
+  ghnow:function(){toast('Выгружаю…');ghUpload(false);},
+  ghauto:function(){var g=ghCfg();g.auto=g.auto===false;ghSet(g);render();},
+  ghoff:function(){ask('Удалить токен и настройки GitHub с этого устройства?','Забыть',function(){try{localStorage.removeItem(GKEY);}catch(e){}render();toast('Токен удалён');});},
   bkdow:function(el){backupCfg().dow=+el.dataset.v;save();render();},
   appupdate:function(){applyAppUpdate();},
   svadj:function(){openSvAdj();},
@@ -3160,6 +3212,7 @@ applyPalette(curPal());
 C=compute();render();
 checkAppUpdate();
 askPersist();
+setTimeout(ghAuto,4000);
 try{
   var qa=new URLSearchParams(location.search).get('a');
   if(qa&&S.accounts.length&&({income:1,expense:1,exchange:1,transfer:1})[qa]){history.replaceState(null,'',location.pathname);setTimeout(function(){openOp(qa);},60);}
