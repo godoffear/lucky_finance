@@ -266,7 +266,13 @@ function topSegs(list,label){
   return top;
 }
 /* Подкатегории: пока только у «Мопеда». oneoff — разовые траты, которые не входят в среднюю трату в день */
-var SUBS={'Мопед':[{n:'Топливо',ic:'⛽'},{n:'Обслуживание',ic:'🔧'},{n:'Покупка',ic:'📦',oneoff:true}]};
+var SUBS={
+  'Продукты':[{n:'Фрукты и овощи',ic:'🍎'},{n:'Мясо, рыба, яйца',ic:'🥩'},{n:'Молочка, хлеб, бакалея',ic:'🥛'},{n:'Кулинария',ic:'🍱'},{n:'Прочее',ic:'🛒'}],
+  'Еда вне дома':[{n:'Кафе и рестораны',ic:'🍽'},{n:'Стритфуд',ic:'🌮'},{n:'Доставка',ic:'🛵'}],
+  'Кофе и напитки':[{n:'Кофе',ic:'☕'},{n:'Напитки',ic:'🧋'}],
+  'Здоровье':[{n:'Аптека',ic:'💊'},{n:'Врачи и анализы',ic:'🩺'},{n:'Страховка',ic:'🛡'}],
+  'Жильё':[{n:'Коммуналка',ic:'💡'},{n:'Прачечная',ic:'🧺'}],
+  'Мопед':[{n:'Топливо',ic:'⛽'},{n:'Обслуживание',ic:'🔧'},{n:'Покупка',ic:'📦',oneoff:true}]};
 function subInfo(cat,sub){return (SUBS[cat]||[]).filter(function(x){return x.n===sub;})[0]||null;}
 var ONEOFF_CATS=['Мама'];/* категории-переводы: не входят в среднюю трату в день */
 function isOneOff(t){if(ONEOFF_CATS.indexOf(t.cat)>=0)return true;var x=subInfo(t.cat,t.sub);return !!(x&&x.oneoff);}
@@ -328,7 +334,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["emerald", "Изумруд", "#0B5D3E", "linear-gradient(135deg,#0B5D3E 0%,#13895A 55%,#2FB57A 100%)", false], ["sunset", "Закат", "#C9406A", "linear-gradient(135deg,#FF7A59 0%,#F0457A 50%,#8E3FD9 100%)", false], ["ocean", "Океан", "#0A6AA0", "linear-gradient(135deg,#0A4F8C 0%,#0A86B5 55%,#19C2C7 100%)", false], ["neon", "Неон", "#5B25C9", "linear-gradient(135deg,#3A1C9C 0%,#7B2FF7 50%,#F72FA1 100%)", true], ["lavender", "Лаванда", "#6A4FD8", "linear-gradient(135deg,#5B3FD1 0%,#8B6BEA 55%,#C79BF2 100%)", false]];
-var VERSION='2.28';
+var VERSION='2.29';
 var NEW_VERSION=null;
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
@@ -1399,6 +1405,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'2.29',items:['Подкатегории (необязательные) у «Продуктов», «Еды вне дома», «Кофе и напитков», «Здоровья» и «Жилья»','В отчёте под категорией видна разбивка по подкатегориям; лимиты по-прежнему на уровне категории']},
   {v:'2.28',items:['Копия на GitHub: «Ещё → Копия на GitHub» — репозиторий и токен вводятся один раз','Кнопка «Выгрузить сейчас» и автовыгрузка раз в день при открытии, если данные менялись','Токен хранится только на этом устройстве и в резервные копии не попадает']},
   {v:'2.27',items:['Новая категория «Мама» ❤️ для переводов маме','Переводы маме не входят в среднюю трату в день и не портят прогноз','Если «Мама» у тебя уже была своей категорией — старые траты подхватятся автоматически']},
   {v:'2.26',items:['Пять цветных тем: Изумруд, Закат, Океан, Неон и Лаванда — «Ещё → Тема → Оформление»']},
