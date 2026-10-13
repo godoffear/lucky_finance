@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Lucky Finance</string>
+    <string name="title_activity_main">Lucky Finance</string>
+    <string name="package_name">com.luckyfinance.app</string>
+    <string name="custom_url_scheme">com.luckyfinance.app</string>
+    <string name="widget_desc">Остаток, траты за сегодня и быстрое добавление</string>
+    <string name="sc_expense">Расход</string>
+    <string name="sc_expense_long">Добавить расход</string>
+    <string name="sc_income">Доход</string>
+    <string name="sc_income_long">Добавить доход</string>
+    <string name="sc_exchange">Обмен</string>
+    <string name="sc_exchange_long">Обмен валюты</string>
+</resources>

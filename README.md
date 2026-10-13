@@ -13,8 +13,7 @@
 
 ## Как установить
 
-- **Android (Chrome):** меню ⋮ → «Установить приложение».
-- **iPhone (Safari):** «Поделиться» → «На экран „Домой“».
+Приложение для Android собирается в APK (Capacitor): `npm install`, затем `npm run sync` и сборка в `android/` (Android Studio или `./gradlew assembleDebug`). Веб-версия по-прежнему открывается в браузере.
 
 ## О данных
 

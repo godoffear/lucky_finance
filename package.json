@@ -1,0 +1,44 @@
+{
+  "name": "lucky-finance",
+  "version": "1.0.0",
+  "description": "**Получаешь в одной валюте, тратишь в другой? Ты по адресу.**",
+  "main": "sw.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build:www": "node scripts/build-www.js",
+    "sync": "node scripts/release.js && node scripts/build-www.js && cap sync android",
+    "open": "cap open android",
+    "release": "node scripts/release.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/godoffear/lucky_finance.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/godoffear/lucky_finance/issues"
+  },
+  "homepage": "https://github.com/godoffear/lucky_finance#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.4",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "private": true,
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
+  },
+  "minApk": 3
+}

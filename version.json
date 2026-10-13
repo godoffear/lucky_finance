@@ -1,1 +1,75 @@
-{"version":"2.32"}
+{
+ "version": "3.1",
+ "minApk": 3,
+ "notes": [
+  "«Ещё → Обновление приложения»: кнопка «Проверить обновление» догружает новую версию из GitHub без переустановки APK",
+  "Если новая версия не запустилась, приложение само возвращается на рабочую"
+ ],
+ "files": [
+  {
+   "p": "index.html",
+   "h": "28f4de7584484c9167437bc6e792b0dd150a8eeafedd5b4d63c5462f0836c164",
+   "s": 302540
+  },
+  {
+   "p": "manifest.webmanifest",
+   "h": "2c22ec6bbe3cd330a87ebb0b38f8ec560fcd8f52087fa4239fedb354a620a364",
+   "s": 1492
+  },
+  {
+   "p": "icon-192-v2.png",
+   "h": "d0f98f756c43fc72c7e6eb8d65735696d8ef07a0db5d554d22816384bbaf8992",
+   "s": 26708
+  },
+  {
+   "p": "icon-512-v2.png",
+   "h": "c94ce15092dd440fcb9f0341f446382e9c7ddacb8e816e265858a1561b41afc7",
+   "s": 133896
+  },
+  {
+   "p": "fonts/Yq6W-LOTXCb04q32xlpwtMZfvRIkSYZH.woff2",
+   "h": "54a956ea5b2cfddfea2d336dd36bfcba64f40fa8b2d41685d9d4edf4a2910ab8",
+   "s": 13856
+  },
+  {
+   "p": "fonts/Yq6W-LOTXCb04q32xlpwtcZfvRIkSYZH.woff2",
+   "h": "ed84482df7b95e6a56a113de1ba2a8d54337f499ba19d54ca697a7e15427ff5f",
+   "s": 117648
+  },
+  {
+   "p": "fonts/Yq6W-LOTXCb04q32xlpwu8ZfvRIkSQ.woff2",
+   "h": "d7f07f8a308ce0a7287d79a65a85cfbc0f4741ef426bf1a3902d24392cc71723",
+   "s": 50892
+  },
+  {
+   "p": "fonts/Yq6W-LOTXCb04q32xlpwv8ZfvRIkSYZH.woff2",
+   "h": "c3880f0c5afb7890a102bc4b9c8257703664388f708b4be880ec5f5f68e8ea9d",
+   "s": 31460
+  },
+  {
+   "p": "fonts/fonts.css",
+   "h": "21ff040f93ab1a7c3ef96de3974c51b331cdb9a685d0d30649d7439ab7cbd68b",
+   "s": 7910
+  },
+  {
+   "p": "fonts/gNMKW3F-SZuj7xmQ-HYoEoeyxMI.woff2",
+   "h": "505038d86b7b8f24704b1376f3485d60fadda767eb1c2196c3b07a9855c68d93",
+   "s": 12436
+  },
+  {
+   "p": "fonts/gNMKW3F-SZuj7xmR-HYoEoeyxMI.woff2",
+   "h": "f72bdc75595bf844f68b15e18dae7eb4f5829b633c402201c8e036d1dfc5f17b",
+   "s": 28428
+  },
+  {
+   "p": "fonts/gNMKW3F-SZuj7xmb-HYoEoeyxMI.woff2",
+   "h": "c3f4223046fb9623a0e92414d2834745cbebb260742e049aff103018b991fd47",
+   "s": 15828
+  },
+  {
+   "p": "fonts/gNMKW3F-SZuj7xmf-HYoEoey.woff2",
+   "h": "cc61cbd632bb677cd55f0eec9ebdd3e1525c5f30904cbf0769e2ac50d0fba992",
+   "s": 33808
+  }
+ ]
+}

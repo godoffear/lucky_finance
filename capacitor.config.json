@@ -1,0 +1,15 @@
+{
+  "appId": "com.luckyfinance.app",
+  "appName": "Lucky Finance",
+  "webDir": "www",
+  "backgroundColor": "#16202B",
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_notify",
+      "iconColor": "#C9A24B"
+    },
+    "SystemBars": {
+      "insetsHandling": "css"
+    }
+  }
+}

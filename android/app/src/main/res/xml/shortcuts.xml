@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut android:shortcutId="expense" android:enabled="true" android:icon="@drawable/ic_sc_expense"
+        android:shortcutShortLabel="@string/sc_expense" android:shortcutLongLabel="@string/sc_expense_long">
+        <intent android:action="android.intent.action.VIEW" android:data="luckyfinance://op/expense"
+            android:targetPackage="com.luckyfinance.app" android:targetClass="com.luckyfinance.app.MainActivity" />
+    </shortcut>
+    <shortcut android:shortcutId="income" android:enabled="true" android:icon="@drawable/ic_sc_income"
+        android:shortcutShortLabel="@string/sc_income" android:shortcutLongLabel="@string/sc_income_long">
+        <intent android:action="android.intent.action.VIEW" android:data="luckyfinance://op/income"
+            android:targetPackage="com.luckyfinance.app" android:targetClass="com.luckyfinance.app.MainActivity" />
+    </shortcut>
+    <shortcut android:shortcutId="exchange" android:enabled="true" android:icon="@drawable/ic_sc_exchange"
+        android:shortcutShortLabel="@string/sc_exchange" android:shortcutLongLabel="@string/sc_exchange_long">
+        <intent android:action="android.intent.action.VIEW" android:data="luckyfinance://op/exchange"
+            android:targetPackage="com.luckyfinance.app" android:targetClass="com.luckyfinance.app.MainActivity" />
+    </shortcut>
+</shortcuts>
