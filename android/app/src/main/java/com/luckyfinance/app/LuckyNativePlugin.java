@@ -1,7 +1,13 @@
 package com.luckyfinance.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import androidx.core.content.FileProvider;
+import java.io.File;
 import android.graphics.Bitmap;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
@@ -29,6 +35,38 @@ public class LuckyNativePlugin extends Plugin {
         e.apply();
         LuckyWidget.refreshAll(getContext());
         call.resolve();
+    }
+
+    /** Открывает системную установку скачанного APK. Если разрешения «Установка из этого источника» ещё нет, открывает его настройку. */
+    @PluginMethod
+    public void installApk(PluginCall call) {
+        try {
+            Context c = getContext();
+            File f = new File(call.getString("path", ""));
+            String cache = c.getCacheDir().getCanonicalPath();
+            if (!f.exists() || !f.getCanonicalPath().startsWith(cache)) {
+                call.reject("file not found");
+                return;
+            }
+            JSObject r = new JSObject();
+            if (Build.VERSION.SDK_INT >= 26 && !c.getPackageManager().canRequestPackageInstalls()) {
+                Intent s = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + c.getPackageName()));
+                s.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                c.startActivity(s);
+                r.put("needPermission", true);
+                call.resolve(r);
+                return;
+            }
+            Uri u = FileProvider.getUriForFile(c, c.getPackageName() + ".fileprovider", f);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setDataAndType(u, "application/vnd.android.package-archive");
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(i);
+            r.put("needPermission", false);
+            call.resolve(r);
+        } catch (Exception e) {
+            call.reject("install failed");
+        }
     }
 
     @PluginMethod

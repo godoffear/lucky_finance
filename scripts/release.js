@@ -17,6 +17,20 @@ const files = list.map(p => {
   const b = fs.readFileSync(path.join(root, p));
   return { p, h: crypto.createHash('sha256').update(b).digest('hex'), s: b.length };
 });
+// Данные об APK: при --with-apk берём свежую сборку, иначе сохраняем прежние из version.json
+let apk;
+if (process.argv.includes('--with-apk')) {
+  const src = path.join(root, 'android/app/build/outputs/apk/debug/app-debug.apk');
+  fs.mkdirSync(path.join(root, 'apk'), { recursive: true });
+  fs.copyFileSync(src, path.join(root, 'apk/LuckyFinance.apk'));
+  const b = fs.readFileSync(path.join(root, 'apk/LuckyFinance.apk'));
+  const gradle = fs.readFileSync(path.join(root, 'android/app/build.gradle'), 'utf8');
+  apk = { p: 'apk/LuckyFinance.apk', h: crypto.createHash('sha256').update(b).digest('hex'), s: b.length, build: +(gradle.match(/versionCode (\d+)/) || [])[1] };
+} else {
+  try { apk = JSON.parse(fs.readFileSync(path.join(root, 'version.json'), 'utf8')).apk; } catch (e) {}
+}
 const out = { version, minApk: pkg.minApk || 1, notes, files };
+if (apk) out.apk = apk;
 fs.writeFileSync(path.join(root, 'version.json'), JSON.stringify(out, null, 1) + '\n');
+console.log(apk ? 'APK в version.json: сборка ' + apk.build + ', ' + apk.s + ' байт' : 'APK в version.json нет');
 console.log('version.json: версия', version, '· файлов', files.length, '· нужен APK не ниже', out.minApk);

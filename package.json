@@ -10,7 +10,8 @@
     "build:www": "node scripts/build-www.js",
     "sync": "node scripts/release.js && node scripts/build-www.js && cap sync android",
     "open": "cap open android",
-    "release": "node scripts/release.js"
+    "release": "node scripts/release.js",
+    "release:apk": "node scripts/release.js --with-apk"
   },
   "repository": {
     "type": "git",
@@ -40,5 +41,5 @@
   "devDependencies": {
     "@capacitor/assets": "^3.0.5"
   },
-  "minApk": 4
+  "minApk": 5
 }

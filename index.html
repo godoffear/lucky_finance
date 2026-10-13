@@ -349,7 +349,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='3.2';
+var VERSION='3.3';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1424,11 +1424,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'3.3',items:['Новая сборка приложения теперь скачивается и устанавливается прямо из «Ещё → Обновление приложения», без браузера']},
   {v:'3.2',items:['Виджетов теперь три: маленький 2×2, полоска 4×1 и подробный 4×2','«Ещё → Виджет на рабочем столе»: валюта сумм и скрытие цифр','Копия на GitHub отправляется каждый вечер сама, даже если приложение закрыто (час выбирается, по умолчанию 22:10)']},
   {v:'3.1',items:['«Ещё → Обновление приложения»: кнопка «Проверить обновление» догружает новую версию из GitHub без переустановки APK','Если новая версия не запустилась, приложение само возвращается на рабочую']},
   {v:'3.0',items:['Приложение для Android: кнопка «Назад» закрывает шторки и возвращает на предыдущий экран','Две новые тёмные темы: «Эспрессо» (кофейная) и чёрная AMOLED; остальные цветные темы убраны. Цвет значков статус-бара подстраивается под тему','Напоминания о постоянных платежах и о превышении лимита — уведомлениями','Виджет на рабочий стол и ярлыки быстрого добавления (долгое нажатие на иконку)','Автокопия данных файлом на телефон и страховочная копия внутри приложения','Экспорт месяца: таблица CSV и отчёт PDF','Лёгкие шрифты внутри приложения, вибро-отклик, без лишнего про установку в браузере']},
   {v:'2.32',items:['В форме расхода — переключатель «Разовая трата»: расход виден во всех отчётах, но не входит в среднюю трату в день и прогнозы','«Мопед · Покупка» и «Мама» по-прежнему разовые по умолчанию, но отметку можно снять','В «Итогах месяца» среднее в день теперь считается без разовых трат, как в «Пульсе»','У разовых трат в списке операций значок 📌']},
-  {v:'2.31',items:['Отчёт: пока нет 30 дней данных, прогноз — одна компактная плашка','«Пульс месяца» выше; разовые траты отмечены золотой меткой и не искажают шкалу','Категории: показаны топ-5, остальные сворачиваются в «Ещё N категорий»','Подкатегории в отчёте — полосками с суммами','Графики по месяцам показывают только месяцы с данными']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -2207,7 +2207,7 @@ function notifCard(){
 /* ---------- Обновление приложения из GitHub ---------- */
 /* Приложение сверяет version.json на GitHub Pages, скачивает файлы новой версии в память телефона
    и переключается на них без переустановки APK. Если новая версия не запустилась два раза подряд, возвращается встроенная. */
-var UPD_URL='https://godoffear.github.io/lucky_finance/',UPD_RELEASES='https://github.com/godoffear/lucky_finance/releases/latest';
+var UPD_URL='https://godoffear.github.io/lucky_finance/';
 var UPD={state:'',info:null,busy:false,msg:'',apk:null};
 function updBase(){var u=UPD_URL;try{u=localStorage.getItem('fin-mvp-upurl')||UPD_URL;}catch(e){}return u.replace(/\/?$/,'/');}
 function verCmp(a,b){var x=String(a).split('.'),y=String(b).split('.');for(var i=0;i<Math.max(x.length,y.length);i++){var p=+x[i]||0,q=+y[i]||0;if(p!==q)return p>q?1:-1;}return 0;}
@@ -2261,6 +2261,40 @@ function updApply(){
     if(nav.tab==='more'&&!nav.sub)render();
   });
 }
+/* Новая сборка APK: скачиваем файл прямо в приложении и открываем системную установку */
+function updApk(){
+  var info=UPD.info,a=info&&info.apk;if(UPD.busy||!a)return;
+  UPD.busy=true;
+  function status(m){UPD.msg=m;if(nav.tab==='more'&&!nav.sub)render();}
+  function fail(e){UPD.busy=false;UPD.msg='Не удалось скачать APK: '+(e&&e.message?e.message:'ошибка')+'. Попробуй ещё раз.';if(nav.tab==='more'&&!nav.sub)render();}
+  status('Скачиваю APK…');
+  fetch(updBase()+a.p+'?v='+encodeURIComponent(a.build||info.version),{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('http '+r.status);
+    var total=+r.headers.get('content-length')||a.s||0,rd=r.body&&r.body.getReader?r.body.getReader():null;
+    if(!rd)return r.arrayBuffer();
+    var parts=[],got=0;
+    function pump(){return rd.read().then(function(x){
+      if(x.done){var out=new Uint8Array(got),o=0;parts.forEach(function(p){out.set(p,o);o+=p.length;});return out.buffer;}
+      parts.push(x.value);got+=x.value.length;if(total)status('Скачиваю APK: '+Math.min(99,Math.round(got/total*100))+'%');
+      return pump();
+    });}
+    return pump();
+  }).then(function(buf){
+    return sha256Hex(buf).then(function(h){
+      if(h&&a.h&&h!==a.h)throw new Error('файл повреждён, контрольная сумма не совпала');
+      return ncall('Filesystem','writeFile',{path:'apk/LuckyFinance.apk',data:bytesToB64(buf),directory:'CACHE',recursive:true});
+    });
+  }).then(function(w){
+    if(!w||!w.uri)throw new Error('не удалось сохранить файл');
+    var path=decodeURIComponent(w.uri.replace(/^file:\/\//,''));
+    return ncall('LuckyNative','installApk',{path:path});
+  }).then(function(r){
+    UPD.busy=false;
+    if(r===null)throw new Error('установка не поддерживается этой сборкой');
+    UPD.msg=r.needPermission?'Включи «Разрешить установку из этого источника» для Lucky Finance, вернись назад и нажми кнопку ещё раз.':'Подтверди установку в окне Android — приложение обновится и откроется само.';
+    if(nav.tab==='more'&&!nav.sub)render();
+  }).catch(fail);
+}
 /* Возврат на встроенную версию, если обновление не запускается (вызывается из начала страницы) */
 function updCleanup(){
   if(!IS_APP)return;
@@ -2279,7 +2313,11 @@ function updateCard(){
     if(UPD.info.notes&&UPD.info.notes.length)h+='<div class="small" style="line-height:1.7;margin-top:4px">'+UPD.info.notes.map(function(x){return '• '+esc(x);}).join('<br>')+'</div>';
     h+='<button class="btn" data-a="updgo" style="margin-top:12px"'+(UPD.busy?' disabled':'')+'>Обновить сейчас</button><div class="hint">Данные не затрагиваются. Перед обновлением лишней копии не нужно: автокопия делается сама.</div>';
   }
-  if(UPD.state==='needapk')h+='<div class="hint warn" style="margin-top:8px">Версия '+esc(UPD.info.version)+' требует нового APK-файла.</div><a class="btn" href="'+UPD_RELEASES+'" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;margin-top:10px">Скачать новый APK</a>';
+  if(UPD.state==='needapk'){
+    h+='<div style="margin-top:10px"><b>Доступна версия '+esc(UPD.info.version)+'</b></div>';
+    if(UPD.info.notes&&UPD.info.notes.length)h+='<div class="small" style="line-height:1.7;margin-top:4px">'+UPD.info.notes.map(function(x){return '• '+esc(x);}).join('<br>')+'</div>';
+    h+=(UPD.info.apk?'<button class="btn" data-a="updapk" style="margin-top:12px"'+(UPD.busy?' disabled':'')+'>Скачать и установить'+(UPD.info.apk.s?' ('+(UPD.info.apk.s/1048576).toFixed(1).replace('.',',')+' МБ)':'')+'</button><div class="hint">Android один раз спросит подтверждение установки. Данные сохранятся.</div>':'<div class="hint warn">Для этой версии нужен новый APK, но файла в GitHub пока нет.</div>');
+  }
   if(UPD.state!=='new')h+='<button class="btn plain" data-a="updcheck" style="margin-top:12px"'+(UPD.busy?' disabled':'')+'>Проверить обновление</button>';
   return h+'</div>';
 }
@@ -3404,6 +3442,7 @@ var H={
   updcheck:function(){updCheck(false);},
   widhide:function(){S.settings.whide=!S.settings.whide;save();render();nativeSync();},
   updgo:function(){updApply();},
+  updapk:function(){updApk();},
   repcsv:function(el){exportMonthCsv(el.dataset.ym);},
   reppdf:function(el){exportMonthPdf(el.dataset.ym);},
   notiftog:function(){
