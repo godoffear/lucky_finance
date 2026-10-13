@@ -4,7 +4,9 @@
     <string name="title_activity_main">Lucky Finance</string>
     <string name="package_name">com.luckyfinance.app</string>
     <string name="custom_url_scheme">com.luckyfinance.app</string>
-    <string name="widget_desc">Остаток, траты за сегодня и быстрое добавление</string>
+    <string name="widget_desc">Подробный: остаток, траты за сегодня, кнопки добавления</string>
+    <string name="widget_small_desc">Маленький: остаток и на сколько хватит денег</string>
+    <string name="widget_strip_desc">Полоска: остаток и кнопки «−» и «+»</string>
     <string name="sc_expense">Расход</string>
     <string name="sc_expense_long">Добавить расход</string>
     <string name="sc_income">Доход</string>

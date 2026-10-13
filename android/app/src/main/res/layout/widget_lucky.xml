@@ -16,6 +16,7 @@
 
     <TextView
         android:id="@+id/w_title"
+        android:text="128 450 ₽"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
@@ -25,6 +26,7 @@
 
     <TextView
         android:id="@+id/w_line1"
+        android:text="Сегодня −2 100 ₽"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
@@ -33,6 +35,7 @@
 
     <TextView
         android:id="@+id/w_line2"
+        android:text="Хватит на 94 дня"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"

@@ -2,6 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/widget_desc"
     android:initialLayout="@layout/widget_lucky"
+    android:previewLayout="@layout/widget_lucky"
     android:minWidth="250dp"
     android:minHeight="110dp"
     android:resizeMode="horizontal|vertical"

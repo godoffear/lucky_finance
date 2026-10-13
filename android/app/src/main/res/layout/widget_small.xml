@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/w_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lucky Finance"
+        android:textColor="#9BAAB6"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/w_title"
+        android:text="128 450 ₽"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:autoSizeMaxTextSize="24sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:textColor="#F2F5F7"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/w_line1"
+        android:text="Сегодня −2 100 ₽"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:autoSizeMaxTextSize="12sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:textColor="#C9D3DB" />
+
+    <TextView
+        android:id="@+id/w_line2"
+        android:text="Хватит на 94 дня"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoSizeMaxTextSize="12sp"
+        android:autoSizeMinTextSize="8sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
+        android:textColor="#E6C25A" />
+</LinearLayout>

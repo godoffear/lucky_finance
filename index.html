@@ -349,7 +349,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='3.1';
+var VERSION='3.2';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1424,11 +1424,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'3.2',items:['Виджетов теперь три: маленький 2×2, полоска 4×1 и подробный 4×2','«Ещё → Виджет на рабочем столе»: валюта сумм и скрытие цифр','Копия на GitHub отправляется каждый вечер сама, даже если приложение закрыто (час выбирается, по умолчанию 22:10)']},
   {v:'3.1',items:['«Ещё → Обновление приложения»: кнопка «Проверить обновление» догружает новую версию из GitHub без переустановки APK','Если новая версия не запустилась, приложение само возвращается на рабочую']},
   {v:'3.0',items:['Приложение для Android: кнопка «Назад» закрывает шторки и возвращает на предыдущий экран','Две новые тёмные темы: «Эспрессо» (кофейная) и чёрная AMOLED; остальные цветные темы убраны. Цвет значков статус-бара подстраивается под тему','Напоминания о постоянных платежах и о превышении лимита — уведомлениями','Виджет на рабочий стол и ярлыки быстрого добавления (долгое нажатие на иконку)','Автокопия данных файлом на телефон и страховочная копия внутри приложения','Экспорт месяца: таблица CSV и отчёт PDF','Лёгкие шрифты внутри приложения, вибро-отклик, без лишнего про установку в браузере']},
   {v:'2.32',items:['В форме расхода — переключатель «Разовая трата»: расход виден во всех отчётах, но не входит в среднюю трату в день и прогнозы','«Мопед · Покупка» и «Мама» по-прежнему разовые по умолчанию, но отметку можно снять','В «Итогах месяца» среднее в день теперь считается без разовых трат, как в «Пульсе»','У разовых трат в списке операций значок 📌']},
   {v:'2.31',items:['Отчёт: пока нет 30 дней данных, прогноз — одна компактная плашка','«Пульс месяца» выше; разовые траты отмечены золотой меткой и не искажают шкалу','Категории: показаны топ-5, остальные сворачиваются в «Ещё N категорий»','Подкатегории в отчёте — полосками с суммами','Графики по месяцам показывают только месяцы с данными']},
-  {v:'2.30',items:['Подкатегории у «Спорта»: «Тренажёрный зал» и «Спортивное питание»']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -2044,7 +2044,11 @@ var MIR_T=0;
 function mirrorSave(){
   if(!IS_APP||!S||(!S.accounts.length&&!S.tx.length))return;
   clearTimeout(MIR_T);
-  MIR_T=setTimeout(function(){ncall('Filesystem','writeFile',{path:'lucky-mirror.json',data:JSON.stringify(S),directory:'DATA',encoding:'utf8'});},1500);
+  MIR_T=setTimeout(function(){
+    ncall('Filesystem','writeFile',{path:'lucky-mirror.json',data:JSON.stringify(S),directory:'DATA',encoding:'utf8'}).then(function(){
+      ncall('Filesystem','writeFile',{path:'lucky-mirror.hash',data:ghHash(),directory:'DATA',encoding:'utf8'});
+    });
+  },1500);
 }
 function mirrorCheck(){
   if(!IS_APP||S.accounts.length||S.tx.length)return;
@@ -2135,14 +2139,23 @@ function mainTotal(){
   });
   return total;
 }
+function widCur(){
+  var c=S.settings.wcur||'';
+  if(c&&c!==S.settings.main&&rateToMain(c)==null)return S.settings.main;
+  return c||S.settings.main;
+}
 function pushWidget(){
   if(!IS_APP)return;
   try{
-    var main=S.settings.main,line2='',rw=runway();
+    var main=S.settings.main,cur=widCur(),k=cur===main?1:rateToMain(cur),line2='',rw=runway(),hide=!!S.settings.whide;
     if(S.accounts.length&&rw&&rw.total&&rw.total.days!=null&&isFinite(rw.total.days))line2='Хватит на '+Math.floor(rw.total.days)+' '+plural(Math.floor(rw.total.days),'день','дня','дней');
     var t=today(),spent=0;
     S.tx.forEach(function(x){if(x.type==='expense'&&!x.opening&&x.date===t){var v=txToMain(x);if(v!=null)spent+=v;}});
-    ncall('LuckyNative','updateWidget',{title:S.accounts.length?fmt(mainTotal(),main):'Добавь счета',line1:S.accounts.length?'Сегодня потрачено '+fmt(spent,main):'',line2:line2});
+    ncall('LuckyNative','updateWidget',{
+      title:S.accounts.length?(hide?'••••••':fmt(mainTotal()/k,cur)):'Добавь счета',
+      line1:S.accounts.length?(hide?'':'Сегодня −'+fmt(spent/k,cur)):'',
+      line2:line2
+    });
   }catch(e){}
 }
 var NAT_T=0;
@@ -2176,10 +2189,17 @@ function reportExportCard(ym){
   if(!monthTxList(ym).length)return '';
   return '<div class="card"><h3>Экспорт месяца</h3><div class="small muted">«'+esc(monthLabel(ym))+'»: все операции для Excel или итоги для печати.</div><div style="display:flex;gap:10px;margin-top:12px"><button class="btn plain" style="margin:0;flex:1" data-a="repcsv" data-ym="'+ym+'">Таблица CSV</button><button class="btn plain" style="margin:0;flex:1" data-a="reppdf" data-ym="'+ym+'">Отчёт PDF</button></div></div>';
 }
+function widgetCard(){
+  if(!IS_APP)return '';
+  var curs=uniq(S.accounts.map(function(a){return a.cur;}).concat([S.settings.main])),cur=widCur();
+  return '<div class="card"><h3>Виджет на рабочем столе</h3><div class="small muted">Три размера: «Lucky Finance» в списке виджетов (долгое нажатие на пустое место рабочего стола → Виджеты).</div>'+
+    '<label>Показывать суммы в валюте<select data-wid="cur">'+curs.map(function(c){return '<option value="'+esc(c)+'"'+(c===cur?' selected':'')+'>'+esc(c)+(c===S.settings.main?' (основная)':'')+'</option>';}).join('')+'</select></label>'+
+    '<div class="row" style="margin-top:12px"><div class="grow"><div class="t1">Скрывать суммы</div><div class="t2">На виджете точки вместо цифр</div></div><button class="sw'+(S.settings.whide?' on':'')+'" data-a="widhide" aria-label="Скрывать суммы" style="border:0;padding:0"></button></div></div>';
+}
 function notifCard(){
   if(!IS_APP)return '';
   var st=fbkState(),on=!st.off;
-  return '<div class="card"><h3>Уведомления</h3><div class="row"><div class="grow"><div class="t1">Напоминать о платежах</div><div class="t2">В 9:00 в день постоянного платежа и при превышении лимита</div></div><button class="sw'+(notifOn()?' on':'')+'" data-a="notiftog" aria-label="Уведомления" style="border:0;padding:0"></button></div></div>'+
+  return widgetCard()+'<div class="card"><h3>Уведомления</h3><div class="row"><div class="grow"><div class="t1">Напоминать о платежах</div><div class="t2">В 9:00 в день постоянного платежа и при превышении лимита</div></div><button class="sw'+(notifOn()?' on':'')+'" data-a="notiftog" aria-label="Уведомления" style="border:0;padding:0"></button></div></div>'+
     '<div class="card"><h3>Автокопия на телефоне</h3><div class="small muted">Раз в день, если данные менялись, файл копии сохраняется в память телефона. Хранятся 14 последних.</div>'+
     '<div class="row" style="margin-top:10px"><div class="grow"><div class="t1">Автокопия файлом</div><div class="t2">'+(st.at?'Последняя: '+esc(dshort(new Date(st.at-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10)))+' · '+esc(fbkPlace(st.dir)):'Ещё не создавалась')+'</div></div><button class="sw'+(on?' on':'')+'" data-a="fbktog" aria-label="Автокопия" style="border:0;padding:0"></button></div>'+
     '<button class="btn plain" data-a="fbknow" style="margin-top:10px">Сохранить копию сейчас</button></div>';
@@ -2269,9 +2289,11 @@ function nativeInit(){
   var A=np('App');
   try{A.addListener('backButton',function(){nativeBack();});}catch(e){}
   try{A.addListener('appUrlOpen',function(e){handleAppUrl(e&&e.url);});}catch(e){}
-  try{A.addListener('appStateChange',function(e){if(e&&!e.isActive){nativeSync();mirrorSave();}else if(e&&e.isActive){C=compute();render();}});}catch(e){}
+  try{A.addListener('appStateChange',function(e){if(e&&!e.isActive){nativeSync();mirrorSave();}else if(e&&e.isActive){C=compute();render();ghSyncNative().then(function(){ghAuto();});}});}catch(e){}
   ncall('App','getLaunchUrl').then(function(r){if(r&&r.url)handleAppUrl(r.url);});
   syncBars();
+  mirrorSave();
+  ghPushJob();ghSyncNative().then(function(){ghAuto();});
   if(window.matchMedia){try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){setTimeout(syncBars,50);});}catch(e){}}
   setTimeout(function(){
     mirrorCheck();
@@ -2305,13 +2327,31 @@ function ghUpload(silent){
     g2.err=ghErr(res.status);ghSet(g2);if(!silent)toast('GitHub: '+g2.err);if(nav.tab==='more')render();return false;
   }).catch(function(){GH_BUSY=false;var g2=ghCfg();g2.err=ghErr(0);ghSet(g2);if(!silent)toast('GitHub: '+g2.err);return false;});
 }
-/* автовыгрузка: раз в день при открытии, если данные менялись */
+/* Автовыгрузка. В приложении: вечером в выбранный час (фоновое задание Android) или при открытии, если вечер уже прошёл, а копии сегодня не было.
+   Запасной вариант: копии не было больше 30 часов. В браузере: раз в день при открытии. Только если данные менялись. */
+function localDayOf(ms){return new Date(ms-new Date(ms).getTimezoneOffset()*60000).toISOString().slice(0,10);}
 function ghAuto(){
   var g=ghCfg();if(!ghReady(g)||g.auto===false||!S.tx.length)return;
-  var d=g.last?new Date(g.last-new Date(g.last).getTimezoneOffset()*60000).toISOString().slice(0,10):'';
-  if(d===today())return;
   if(g.hash&&g.hash===ghHash())return;
+  if(g.last&&localDayOf(g.last)===today())return;
+  if(IS_APP&&new Date().getHours()<(g.hour||22)&&g.last&&Date.now()-g.last<30*36e5)return;
   ghUpload(true);
+}
+function ghPushJob(){
+  if(!IS_APP)return;
+  var g=ghCfg();
+  ncall('LuckyNative','setBackupJob',{enabled:ghReady(g)&&g.auto!==false,repo:g.repo||'',token:g.token||'',hour:g.hour||22});
+}
+/* Узнаём, что фоновое задание успело выгрузить, пока приложение было закрыто */
+function ghSyncNative(){
+  if(!IS_APP)return Promise.resolve();
+  return ncall('LuckyNative','getBackupState').then(function(st){
+    if(!st)return;
+    var g=ghCfg(),ch=false;
+    if(st.lastAt>(g.last||0)){g.last=st.lastAt;g.hash=st.lastHash||g.hash;g.err='';ch=true;if(st.lastAt>(S.settings.lastBackup||0)){S.settings.lastBackup=st.lastAt;save();}}
+    else if(st.err&&st.errAt>(g.last||0)&&g.err!==st.err){g.err=st.err;ch=true;}
+    if(ch){ghSet(g);if(nav.tab==='more'&&!nav.sub)render();}
+  });
 }
 function ghCard(){
   var g=ghCfg(),h='<div class="card"><h3>Копия на GitHub</h3><div class="small muted">Копия кладётся в твой <b>приватный</b> репозиторий. Не используй репозиторий с этим сайтом — он публичный, и данные увидят все.</div>';
@@ -2320,7 +2360,8 @@ function ghCard(){
   h+='<button class="btn" data-a="ghsave" style="margin-top:12px">'+(ghReady(g)?'Сохранить':'Сохранить и проверить')+'</button>';
   if(ghReady(g)){
     h+='<button class="btn plain" data-a="ghnow" style="margin-top:8px">Выгрузить сейчас</button>';
-    h+='<div class="row" style="margin-top:16px"><div class="grow"><div class="t1">Каждый день автоматически</div><div class="t2">При открытии приложения, если данные менялись</div></div><button class="sw'+(g.auto!==false?' on':'')+'" data-a="ghauto" aria-label="Автовыгрузка" style="border:0;padding:0"></button></div>';
+    h+='<div class="row" style="margin-top:16px"><div class="grow"><div class="t1">'+(IS_APP?'Каждый вечер автоматически':'Каждый день автоматически')+'</div><div class="t2">'+(IS_APP?'Даже если приложение закрыто, если данные менялись. Телефон может сдвинуть время на несколько минут.':'При открытии приложения, если данные менялись')+'</div></div><button class="sw'+(g.auto!==false?' on':'')+'" data-a="ghauto" aria-label="Автовыгрузка" style="border:0;padding:0"></button></div>';
+    if(IS_APP&&g.auto!==false)h+='<label>Во сколько отправлять<select data-ghh="1">'+[19,20,21,22,23].map(function(x){return '<option value="'+x+'"'+((g.hour||22)===x?' selected':'')+'>'+x+':10</option>';}).join('')+'</select></label>';
     h+='<div class="hint'+(g.err?' warn':'')+'" style="margin-top:8px">'+(g.err?'Последняя попытка не удалась: '+esc(g.err):g.last?'Последняя выгрузка: '+new Date(g.last).toLocaleString('ru-RU'):'Выгрузок пока не было.')+'</div>';
     h+='<button class="btn plain" data-a="ghoff" style="margin-top:8px">Забыть токен</button>';
   }
@@ -3353,14 +3394,15 @@ var H={
     var g=ghCfg(),repo=($('#ghrepo').value||'').trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/$/,''),tok=($('#ghtok').value||'').trim();
     if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){toast('Репозиторий пишется как владелец/название');return;}
     if(tok)g.token=tok;if(!g.token){toast('Вставь токен');return;}
-    g.repo=repo;g.err='';ghSet(g);toast('Проверяю…');ghUpload(false).then(function(){render();});
+    g.repo=repo;g.err='';ghSet(g);ghPushJob();toast('Проверяю…');ghUpload(false).then(function(){render();});
   },
   ghnow:function(){toast('Выгружаю…');ghUpload(false);},
-  ghauto:function(){var g=ghCfg();g.auto=g.auto===false;ghSet(g);render();},
-  ghoff:function(){ask('Удалить токен и настройки GitHub с этого устройства?','Забыть',function(){try{localStorage.removeItem(GKEY);}catch(e){}render();toast('Токен удалён');});},
+  ghauto:function(){var g=ghCfg();g.auto=g.auto===false;ghSet(g);ghPushJob();render();},
+  ghoff:function(){ask('Удалить токен и настройки GitHub с этого устройства?','Забыть',function(){try{localStorage.removeItem(GKEY);}catch(e){}ghPushJob();render();toast('Токен удалён');});},
   bkdow:function(el){backupCfg().dow=+el.dataset.v;save();render();},
   svadj:function(){openSvAdj();},
   updcheck:function(){updCheck(false);},
+  widhide:function(){S.settings.whide=!S.settings.whide;save();render();nativeSync();},
   updgo:function(){updApply();},
   repcsv:function(el){exportMonthCsv(el.dataset.ym);},
   reppdf:function(el){exportMonthPdf(el.dataset.ym);},
@@ -3439,6 +3481,8 @@ document.addEventListener('change',function(e){
   if(el.id==='bkfile'){readBkFile(el);return;}
   if(el.dataset.bk==='time'){backupCfg().time=el.value||'20:00';save();render();return;}
   if(el.dataset.nf){nav[el.dataset.nf]=el.value;render();return;}
+  if(el.dataset.wid==='cur'){S.settings.wcur=el.value;save();render();nativeSync();return;}
+  if(el.dataset.ghh){var gg=ghCfg();gg.hour=+el.value||22;ghSet(gg);ghPushJob();render();return;}
   if(el.dataset.lim==='total'){var v=num(el.value),l=S.settings.limit||(S.settings.limit={total:0,cats:{}});l.total=v>0?v:0;commit();return;}
   if(el.dataset.f==='cat'&&F&&F.type){
     if(el.value!==F.cat)F.sub='';
@@ -3509,7 +3553,7 @@ nativeInit();
 try{localStorage.removeItem('fin-mvp-trial');localStorage.removeItem('fin-mvp-trialn');var rv=localStorage.getItem('fin-mvp-reverted');if(rv){localStorage.removeItem('fin-mvp-reverted');setTimeout(function(){toast('Версия '+rv+' не запустилась, вернулась прежняя');},800);}}catch(e){}
 if(IS_APP){setTimeout(updCleanup,4000);setTimeout(function(){var t=+(localStorage.getItem('fin-mvp-updchk')||0);if(Date.now()-t>12*36e5)updCheck(true);},6000);}
 askPersist();
-setTimeout(ghAuto,4000);
+if(!IS_APP)setTimeout(ghAuto,4000);
 try{
   var qa=new URLSearchParams(location.search).get('a');
   if(qa&&S.accounts.length&&({income:1,expense:1,exchange:1,transfer:1})[qa]){history.replaceState(null,'',location.pathname);setTimeout(function(){openOp(qa);},60);}

@@ -36,6 +36,24 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/lucky_widget_info" />
         </receiver>
 
+        <receiver
+            android:name=".LuckyWidgetSmall"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/lucky_widget_small_info" />
+        </receiver>
+
+        <receiver
+            android:name=".LuckyWidgetStrip"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/lucky_widget_strip_info" />
+        </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

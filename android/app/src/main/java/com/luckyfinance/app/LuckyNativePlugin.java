@@ -32,6 +32,29 @@ public class LuckyNativePlugin extends Plugin {
     }
 
     @PluginMethod
+    public void setBackupJob(PluginCall call) {
+        boolean enabled = Boolean.TRUE.equals(call.getBoolean("enabled", false));
+        SharedPreferences.Editor e = getContext().getSharedPreferences(GhBackupWorker.PREFS, Context.MODE_PRIVATE).edit();
+        e.putBoolean("enabled", enabled);
+        e.putString("repo", call.getString("repo", ""));
+        e.putString("token", call.getString("token", ""));
+        e.apply();
+        GhBackupWorker.schedule(getContext(), enabled, call.getInt("hour", 22));
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void getBackupState(PluginCall call) {
+        SharedPreferences p = getContext().getSharedPreferences(GhBackupWorker.PREFS, Context.MODE_PRIVATE);
+        JSObject r = new JSObject();
+        r.put("lastAt", p.getLong("lastAt", 0));
+        r.put("lastHash", p.getString("lastHash", ""));
+        r.put("err", p.getString("err", ""));
+        r.put("errAt", p.getLong("errAt", 0));
+        call.resolve(r);
+    }
+
+    @PluginMethod
     public void printHtml(final PluginCall call) {
         final String html = call.getString("html", "");
         final String name = call.getString("name", "LuckyFinance");
