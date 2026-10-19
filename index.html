@@ -349,7 +349,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='3.3';
+var VERSION='3.4';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1424,11 +1424,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'3.4',items:['Обмен и перевод: можно выбрать любой другой счёт — в той же валюте сохранится как перевод, в другой как обмен']},
   {v:'3.3',items:['Новая сборка приложения теперь скачивается и устанавливается прямо из «Ещё → Обновление приложения», без браузера']},
   {v:'3.2',items:['Виджетов теперь три: маленький 2×2, полоска 4×1 и подробный 4×2','«Ещё → Виджет на рабочем столе»: валюта сумм и скрытие цифр','Копия на GitHub отправляется каждый вечер сама, даже если приложение закрыто (час выбирается, по умолчанию 22:10)']},
   {v:'3.1',items:['«Ещё → Обновление приложения»: кнопка «Проверить обновление» догружает новую версию из GitHub без переустановки APK','Если новая версия не запустилась, приложение само возвращается на рабочую']},
   {v:'3.0',items:['Приложение для Android: кнопка «Назад» закрывает шторки и возвращает на предыдущий экран','Две новые тёмные темы: «Эспрессо» (кофейная) и чёрная AMOLED; остальные цветные темы убраны. Цвет значков статус-бара подстраивается под тему','Напоминания о постоянных платежах и о превышении лимита — уведомлениями','Виджет на рабочий стол и ярлыки быстрого добавления (долгое нажатие на иконку)','Автокопия данных файлом на телефон и страховочная копия внутри приложения','Экспорт месяца: таблица CSV и отчёт PDF','Лёгкие шрифты внутри приложения, вибро-отклик, без лишнего про установку в браузере']},
-  {v:'2.32',items:['В форме расхода — переключатель «Разовая трата»: расход виден во всех отчётах, но не входит в среднюю трату в день и прогнозы','«Мопед · Покупка» и «Мама» по-прежнему разовые по умолчанию, но отметку можно снять','В «Итогах месяца» среднее в день теперь считается без разовых трат, как в «Пульсе»','У разовых трат в списке операций значок 📌']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1751,12 +1751,19 @@ function renderOp(){
   h+='<label>'+({income:'На какой счёт',expense:'С какого счёта',exchange:'Отдаю со счёта',transfer:'Откуда'}[t])+'<select data-f="acc">'+opts(S.accounts,F.acc)+'</select></label>';
   h+='<label>'+(t==='exchange'?'Отдаю':'Сумма')+'<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" placeholder="0" autocomplete="off"><span>'+A.cur+'</span></div></label>';
   if(t==='transfer'||t==='exchange'){
-    var toList=t==='transfer'?S.accounts.filter(function(a){return a.id!==F.acc&&a.cur===A.cur;}):S.accounts.filter(function(a){return a.cur!==A.cur;});
-    if(!toList.some(function(a){return a.id===F.to;}))F.to=toList[0]?toList[0].id:'';
-    if(!toList.length)h+='<div class="hint warn" style="margin-top:14px">'+(t==='transfer'?'Для перевода нужен второй счёт в '+A.cur+'.':'Для обмена нужен счёт в другой валюте.')+'</div>';
+    /* Можно выбрать любой другой счёт: в той же валюте сохранится как перевод, в другой — как обмен */
+    var toList=S.accounts.filter(function(a){return a.id!==F.acc;});
+    if(!toList.some(function(a){return a.id===F.to;})){
+      var pref=toList.filter(function(a){return t==='exchange'?a.cur!==A.cur:a.cur===A.cur;});
+      F.to=pref[0]?pref[0].id:(toList[0]?toList[0].id:'');
+    }
+    if(!toList.length)h+='<div class="hint warn" style="margin-top:14px">Нужен второй счёт. Добавь его в разделе «Счета».</div>';
     else{
       h+='<label>'+(t==='exchange'?'Получаю на счёт':'Куда')+'<select data-f="to">'+opts(toList,F.to)+'</select></label>';
-      if(t==='exchange'){var B=getAcc(F.to);h+='<label>Получаю<div class="amtwrap"><input inputmode="decimal" data-f="toS" value="'+esc(F.toS)+'" placeholder="0" autocomplete="off"><span>'+(B?B.cur:'')+'</span></div></label>';}
+      var B=getAcc(F.to);
+      if(B&&B.cur===A.cur&&t==='exchange')h+='<div class="hint">Оба счёта в '+esc(A.cur)+' — сохранится как перевод.</div>';
+      if(B&&B.cur!==A.cur&&t==='transfer')h+='<div class="hint">Валюты разные — сохранится как обмен, укажи, сколько получаешь.</div>';
+      if(B&&B.cur!==A.cur){h+='<label>Получаю<div class="amtwrap"><input inputmode="decimal" data-f="toS" value="'+esc(F.toS)+'" placeholder="0" autocomplete="off"><span>'+(B?B.cur:'')+'</span></div></label>';}
     }
   }
   if(t==='income'||t==='expense'){
@@ -1798,7 +1805,7 @@ function updateHint(){
     var r=simulate(A.id,x);
     if(r)s+='По FIFO ≈ '+fmt(r.cost,main)+(r.est>1e-9?' (часть по ориентировочному курсу)':'')+(r.unknown>1e-9?' (+ '+fmt(r.unknown,A.cur)+' без курса)':'');
   }
-  if(F.type==='exchange'&&x>0&&y>0){var B=getAcc(F.to);if(B)s+='Курс: '+pairRate(A.cur,B.cur,x,y);}
+  if((F.type==='exchange'||F.type==='transfer')&&x>0&&y>0){var B=getAcc(F.to);if(B&&B.cur!==A.cur)s+='Курс: '+pairRate(A.cur,B.cur,x,y);}
   el.innerHTML=s||('На счёте: '+fmt(bal,A.cur));
 }
 function saveOp(){
@@ -1815,8 +1822,10 @@ function saveOp(){
   if(F.type==='transfer'||F.type==='exchange'){
     if(!F.to){toast('Выбери счёт, куда идут деньги');return;}
     t.to=F.to;
-    if(F.type==='transfer')t.toAmount=x;
-    else{var y=num(F.toS);if(!(y>0)){toast('Введи, сколько получаешь');return;}t.toAmount=y;}
+    var SA=getAcc(F.acc),SB=getAcc(F.to);
+    if(!SA||!SB){toast('Выбери счёт, куда идут деньги');return;}
+    if(SA.cur===SB.cur){t.type='transfer';t.toAmount=x;}
+    else{var y=num(F.toS);if(!(y>0)){toast('Введи, сколько получаешь');return;}t.type='exchange';t.toAmount=y;}
   }
   var i=S.tx.findIndex(function(o){return o.id===t.id;});
   if(i>=0)S.tx[i]=t;else S.tx.push(t);
