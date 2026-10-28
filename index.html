@@ -280,7 +280,7 @@ function topSegs(list,label){
 /* Подкатегории: пока только у «Мопеда». oneoff — разовые траты, которые не входят в среднюю трату в день */
 var SUBS={
   'Продукты':[{n:'Фрукты и овощи',ic:'🍎'},{n:'Мясо, рыба, яйца',ic:'🥩'},{n:'Молочка, хлеб, бакалея',ic:'🥛'},{n:'Кулинария',ic:'🍱'},{n:'Сладости и снеки',ic:'🍫'},{n:'Прочее',ic:'🛒'}],
-  'Еда вне дома':[{n:'Кафе и рестораны',ic:'🍽'},{n:'Стритфуд',ic:'🌮'},{n:'Доставка',ic:'🛵'}],
+  'Еда вне дома':[{n:'Стритфуд',ic:'🌮'},{n:'Доставка',ic:'🛵'}],
   'Кофе и напитки':[{n:'Кофе',ic:'☕'},{n:'Напитки',ic:'🧋'}],
   'Здоровье':[{n:'Аптека',ic:'💊'},{n:'Врачи и анализы',ic:'🩺'},{n:'Страховка',ic:'🛡'}],
   'Спорт':[{n:'Тренажёрный зал',ic:'🏋'},{n:'Пиклбол',ic:'🏓'},{n:'Спортивное питание',ic:'🥤'}],
@@ -350,7 +350,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='3.6';
+var VERSION='3.7';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -394,6 +394,12 @@ function normalize(o){
   if(!s.settings.backup||typeof s.settings.backup!=='object')s.settings.backup={on:true,dow:0,time:'20:00',snz:''};
   if(!s.settings.recon.accs)s.settings.recon.accs={};
   s.accounts.forEach(function(a){if(!a.rc)a.rc=today();});
+  /* 3.7: «Кафе и рестораны» переехали из «Еды вне дома» в «Развлечения» — один раз переносим старые записи */
+  if(!(o.settings&&o.settings.migCafe)){
+    var mv=function(x){if(x.cat==='Еда вне дома'&&x.sub==='Кафе и рестораны')x.cat='Развлечения';};
+    s.tx.forEach(mv);(s.tpl||[]).forEach(mv);
+    s.settings.migCafe=true;
+  }
   sanitize(s);
   /* 2.18: категория «Еда» переименована в «Продукты» — один раз переносим старые данные */
   if(!(o.settings&&o.settings.migFood)){
@@ -1425,11 +1431,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'3.7',items:['«Кафе и рестораны» теперь только в «Развлечениях»; в «Еде вне дома» остались «Стритфуд» и «Доставка» (еда с собой). Старые записи перенесены']},
   {v:'3.6',items:['Подкатегория «Пиклбол» 🏓 у «Спорта»','Подкатегории у «Развлечений»: кафе и рестораны, кино и концерты, экскурсии и парки, игры и клубы']},
   {v:'3.5',items:['Подкатегория «Сладости и снеки» 🍫 у «Продуктов» — видно в отчёте, сколько на них уходит']},
   {v:'3.4',items:['Обмен и перевод: можно выбрать любой другой счёт — в той же валюте сохранится как перевод, в другой как обмен']},
   {v:'3.3',items:['Новая сборка приложения теперь скачивается и устанавливается прямо из «Ещё → Обновление приложения», без браузера']},
-  {v:'3.2',items:['Виджетов теперь три: маленький 2×2, полоска 4×1 и подробный 4×2','«Ещё → Виджет на рабочем столе»: валюта сумм и скрытие цифр','Копия на GitHub отправляется каждый вечер сама, даже если приложение закрыто (час выбирается, по умолчанию 22:10)']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
