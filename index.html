@@ -66,6 +66,18 @@ h2{font:600 18px/1.2 'Unbounded','Onest',system-ui,sans-serif;margin:0 0 4px}
 h3{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--muted)}
 .muted{color:var(--muted)}
 .small{font-size:13px}
+.spoil summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;font-weight:600;gap:8px}
+.spoil summary::-webkit-details-marker{display:none}
+.spoil summary::before{content:'›';color:var(--muted);transition:transform .15s;margin-right:6px}
+.spoil[open] summary::before{transform:rotate(90deg)}
+.spoil summary span:first-child{flex:1}
+.spoil .sps{color:var(--muted);font-weight:500}
+.spoil[open] .sps{display:none}
+.spoil[open] summary{margin-bottom:10px}
+.cbx{width:18px;height:18px;border:1.5px solid var(--muted);border-radius:5px;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:8px}
+.cbx.on{background:var(--gold);border-color:var(--gold);color:#16202B}
+.lg.dimmed{opacity:.45}
+button.sub{display:flex;align-items:center}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .num{font-variant-numeric:tabular-nums}
@@ -368,7 +380,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.0';
+var VERSION='4.1';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1118,7 +1130,7 @@ function changesCard(st,pv,dl){
 /* «Пульс месяца»: расходы по дням, средняя в день и лимит в день */
 function pulseCard(ym){
   var main=S.settings.main,dim=new Date(+ym.slice(0,4),+ym.slice(5,7),0).getDate(),t=today(),day={},sum=0,n=0,i;
-  var oneoff=0,oo={};S.tx.forEach(function(x){if(x.type!=='expense'||x.opening||x.date.slice(0,7)!==ym)return;var v=txToMain(x);if(v==null)return;var d=+x.date.slice(8,10);sum+=v;if(isOneOff(x)){oneoff+=v;oo[d]=(oo[d]||0)+v;}else day[d]=(day[d]||0)+v;});
+  var oneoff=0,oo={};S.tx.forEach(function(x){if(x.type!=='expense'||x.opening||x.date.slice(0,7)!==ym||(RFILT&&!RFILT(x)))return;var v=txToMain(x);if(v==null)return;var d=+x.date.slice(8,10);sum+=v;if(isOneOff(x)){oneoff+=v;oo[d]=(oo[d]||0)+v;}else day[d]=(day[d]||0)+v;});
   var last=ym===t.slice(0,7)?+t.slice(8,10):dim;if(!sum)return '';var anyOo=oneoff>0;
   var avg=(sum-oneoff)/last,l=limits(),lim=l.total>0?l.total/dim:0,vs=[];
   for(i=1;i<=last;i++)vs.push(day[i]||0);vs.sort(function(a,b){return a-b;});
@@ -1232,12 +1244,17 @@ function ringRow(st,g,pct,done){
   else eta='За последние 3 месяца откладываний не было — прогноз появится после первых.';
   return '<div class="row" style="margin-top:10px;align-items:center;gap:16px">'+ring+'<div class="grow"><div class="num" style="font-weight:600">'+fmt(st.sum,main)+'</div><div class="small muted">из '+fmt(g.target,main)+'</div>'+(done?'':'<div class="small" style="margin-top:6px">Осталось '+fmt(rem,main)+'</div>')+'<div class="small muted" style="margin-top:6px">'+eta+'</div></div></div>';
 }
+var RFILT=null;
+function SUBS_OF_CAT(c){return (SUBS[c]||[]).map(function(x){return x.n;});}
+function rsel(){return nav.rsel||[];}
+function rpass(t){var fc=rsel();return !fc.length||fc.indexOf(t.cat||'')>=0||!!(t.sub&&fc.indexOf(ckey(t.cat,t.sub))>=0);}
 function monthStats(ym,upto){
   var s={inc:0,exp:0,one:0,cats:{},subs:{},big:[],miss:0,est:false};
   S.tx.forEach(function(t){
     if(t.opening||t.date.slice(0,7)!==ym)return;
     if(upto&&+t.date.slice(8,10)>upto)return;
     if(t.type!=='income'&&t.type!=='expense')return;
+    if(RFILT&&t.type==='expense'&&!RFILT(t))return;
     var v=txToMain(t);if(v==null){s.miss++;return;}
     if(t.type==='income')s.inc+=v;
     else{s.exp+=v;if(isOneOff(t))s.one+=v;s.cats[t.cat]=(s.cats[t.cat]||0)+v;if(t.sub){var sb=s.subs[t.cat]||(s.subs[t.cat]={});sb[t.sub]=(sb[t.sub]||0)+v;}s.big.push({t:t,v:v});var i=C.info[t.id];if(i&&i.est>1e-9)s.est=true;}
@@ -1302,40 +1319,59 @@ function capitalCard(){
   if(missing)h+='<div class="hint warn" style="margin-top:8px">Для части валют нет курса — сумма может быть занижена.</div>';
   return h+'</div>';
 }
+function reportCats(stAll,stF,ym){
+  var main=S.settings.main,sel=rsel(),on=sel.length>0;
+  var cats=Object.keys(stAll.cats).map(function(k){return [k,stAll.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
+  if(!cats.length)return '';
+  var segs=topSegs(cats),col={};segs.forEach(function(x){if(!x.other)col[x.k]=x.c;});
+  var cats2=Object.keys(stF.cats).map(function(k){return [k,stF.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var dsegs=on?cats2.map(function(c,i){return {v:c[1],c:col[c[0]]||'var(--cother)',t:c[0]+': '+fmt(c[1],main)};}):segs.map(function(x){return {v:x.v,c:x.c,t:x.k+': '+fmt(x.v,main)};});
+  var h='<div class="card"><h3>Расходы по категориям</h3>';
+  if(on)h+='<div class="row" style="padding:2px 0 6px"><div class="grow"><div class="t1">Выбрано: '+fmt(stF.exp,main)+'</div><div class="t2">'+Math.round(stF.exp/stAll.exp*100)+'% от всех расходов месяца</div></div><button class="chip sm" data-a="rreset">Сбросить</button></div>';
+  h+='<div style="display:flex;justify-content:center;margin:4px 0 8px">'+donut(dsegs,(on?'выбрано':'расходы')+'<b>'+fmtShort(on?stF.exp:stAll.exp,main)+'</b>')+'</div>';
+  var shown=(nav.catMore||on)?cats:cats.slice(0,5),hid=(nav.catMore||on)?[]:cats.slice(5);
+  function inSel(c,sub){return sel.indexOf(c)>=0||(sub&&sel.indexOf(ckey(c,sub))>=0);}
+  function box(v){return '<span class="cbx'+(v?' on':'')+'">'+(v?'✓':'')+'</span>';}
+  shown.forEach(function(c){
+    var cc=col[c[0]]||'var(--cother)',cs=inSel(c[0]),part=!cs&&sel.some(function(x){return x.indexOf(c[0]+' › ')===0;}),dim=on&&!cs&&!part;
+    h+='<button class="lg'+(dim?' dimmed':'')+'" data-a="rcat" data-v="'+esc(c[0])+'">'+box(cs||part)+'<span class="dot" style="background:'+cc+'"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+catIcon(c[0])+' '+esc(c[0])+' <span class="muted small">'+Math.round(c[1]/stAll.exp*100)+'%</span></span><span class="num">'+fmt(c[1],main)+'</span></button>';
+    var sb=stAll.subs[c[0]];if(sb){var rest=c[1];Object.keys(sb).forEach(function(k){rest-=sb[k];});
+      var srows=(SUBS[c[0]]||[]).filter(function(x){return sb[x.n];}).map(function(x){return {n:x.ic+' '+x.n,k:x.n,v:sb[x.n]};});
+      if(rest>1e-6&&srows.length)srows.push({n:'без подкатегории',v:rest});
+      h+='<div style="--sc:'+cc+';padding-bottom:6px'+(dim?';opacity:.45':'')+'">'+srows.map(function(r){var on2=r.k&&inSel(c[0],r.k);return (r.k?'<button class="sub" data-a="rsub" data-v="'+esc(c[0])+'" data-s="'+esc(r.k)+'" style="width:100%;background:none;border:0;color:inherit;text-align:left;font:inherit">':'<div class="sub">')+(r.k?box(on2):'')+'<span class="sn">'+esc(r.n)+'</span><span class="sbar"><i style="width:'+Math.max(3,Math.round(r.v/c[1]*100))+'%"></i></span><span class="num">'+fmt(r.v,main)+'</span>'+(r.k?'</button>':'</div>');}).join('')+'</div>';}
+  });
+  if(hid.length){var hs=0;hid.forEach(function(c){hs+=c[1];});
+    h+='<button class="lg" data-a="catmore"><span class="dot" style="background:var(--cother)"></span><span class="grow">Ещё '+hid.length+' '+plural(hid.length,'категория','категории','категорий')+' <span class="muted small">'+Math.round(hs/stAll.exp*100)+'% · показать</span></span><span class="num">'+fmt(hs,main)+'</span></button>';}
+  else if(nav.catMore&&!on&&cats.length>5)h+='<button class="btn plain sm" data-a="catmore">Свернуть</button>';
+  h+='<div class="hint">Отметь категории галочками — отчёт ниже пересчитается только по ним.</div>';
+  if(on)h+='<button class="btn plain sm" data-a="rops">Показать операции</button>';
+  return h+'</div>';
+}
 function viewReport(){
   var main=S.settings.main,cur=today().slice(0,7),ym=nav.rep||cur;if(ym>cur)ym=cur;
-  /* текущий месяц сравниваем с теми же днями прошлого, иначе в начале месяца всегда «−100%» */
-  var isCur=ym===cur,st=monthStats(ym),pv=monthStats(shiftMonth(ym,-1),isCur?+today().slice(8,10):0),dl=isCur?'к тем же дням прошлого месяца':'к прошлому месяцу';
-  var ml=new Date(ym+'-01T00:00:00').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}).replace(/\s*г\.$/,'');
+  var isCur=ym===cur,ml=new Date(ym+'-01T00:00:00').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}).replace(/\s*г\.$/,'');
   ml=ml.charAt(0).toUpperCase()+ml.slice(1);
-  var h='<h1>Отчёт</h1>'+runwayCard()+forecastCard()+'<div class="row" style="margin-top:14px"><button class="chip" data-a="repmonth" data-v="-1">‹</button><div style="font-weight:600">'+ml+'</div><button class="chip" data-a="repmonth" data-v="1"'+(ym>=cur?' disabled style="opacity:.35"':'')+'>›</button></div>';
-  if(!st.inc&&!st.exp)h+='<div class="card empty"><b>В этом месяце операций нет</b>Как только появятся доходы и расходы, здесь будет отчёт.</div>';
+  var stAll=monthStats(ym),on=rsel().length>0;
+  RFILT=on?rpass:null;
+  try{
+  /* текущий месяц сравниваем с теми же днями прошлого, иначе в начале месяца всегда «−100%» */
+  var st=monthStats(ym),pv=monthStats(shiftMonth(ym,-1),isCur?+today().slice(8,10):0),dl=isCur?'к тем же дням прошлого месяца':'к прошлому месяцу';
+  var h='<h1>Отчёт</h1><div class="row" style="margin-top:14px"><button class="chip" data-a="repmonth" data-v="-1">‹</button><div style="font-weight:600">'+ml+'</div><button class="chip" data-a="repmonth" data-v="1"'+(ym>=cur?' disabled style="opacity:.35"':'')+'>›</button></div>';
+  if(!stAll.inc&&!stAll.exp)h+='<div class="card empty"><b>В этом месяце операций нет</b>Как только появятся доходы и расходы, здесь будет отчёт.</div>';
   else{
     var days=ym===cur?+today().slice(8,10):new Date(+ym.slice(0,4),+ym.slice(5,7),0).getDate();
     var net=st.inc-st.exp;
-    h+='<div class="card"><h3>Итоги месяца</h3>'+
+    h+=reportCats(stAll,st,ym);
+    if(on)h+='<div class="card"><h3>Итоги: выбранные категории</h3>'+
+      '<div class="row" style="padding:6px 0"><span>Расходы</span><div class="amt neg num">'+fmt(st.exp,main)+delta(st.exp,pv.exp,true,dl).replace('<small','<small style="display:block"')+'</div></div>'+
+      '<div class="small muted" style="margin-top:8px">В среднем в день: '+fmt((st.exp-st.one)/days,main)+(st.one>0?' — без разовых трат ('+fmt(st.one,main)+')':'')+'</div></div>'+pulseCard(ym);
+    else h+='<div class="card"><h3>Итоги месяца</h3>'+
       '<div class="row" style="padding:6px 0"><span>Доходы</span><div class="amt pos num">'+fmt(st.inc,main)+delta(st.inc,pv.inc,false,dl).replace('<small','<small style="display:block"')+'</div></div>'+
       '<div class="row" style="padding:6px 0"><span>Расходы</span><div class="amt neg num">'+fmt(st.exp,main)+delta(st.exp,pv.exp,true,dl).replace('<small','<small style="display:block"')+'</div></div>'+
       '<div class="row" style="padding:8px 0 0;border-top:1px solid var(--line);margin-top:6px"><span>Разница</span><div class="amt num '+(net>=0?'pos':'neg')+'">'+(net>=0?'+':'−')+fmt(Math.abs(net),main)+'</div></div>'+
       '<div class="small muted" style="margin-top:8px">В среднем в день: '+fmt((st.exp-st.one)/days,main)+(st.one>0?' — без разовых трат ('+fmt(st.one,main)+')':'')+'</div></div>'+pulseCard(ym);
-    var cats=Object.keys(st.cats).map(function(k){return [k,st.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
-    if(cats.length){
-      var segs=topSegs(cats),col={};segs.forEach(function(x){if(!x.other)col[x.k]=x.c;});
-      h+='<div class="card"><h3>Расходы по категориям</h3><div style="display:flex;justify-content:center;margin:4px 0 8px">'+donut(segs.map(function(x){return {v:x.v,c:x.c,t:x.k+': '+fmt(x.v,main)};}),'расходы<b>'+fmtShort(st.exp,main)+'</b>')+'</div>';
-      var shown=nav.catMore?cats:cats.slice(0,5),hid=nav.catMore?[]:cats.slice(5);
-      shown.forEach(function(c){
-        var cc=col[c[0]]||'var(--cother)';
-        h+='<button class="lg" data-a="catops" data-v="'+esc(c[0])+'" data-ym="'+ym+'"><span class="dot" style="background:'+cc+'"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+catIcon(c[0])+' '+esc(c[0])+' <span class="muted small">'+Math.round(c[1]/st.exp*100)+'%</span></span><span class="num">'+fmt(c[1],main)+'</span></button>';
-        var sb=st.subs[c[0]];if(sb){var rest=c[1];Object.keys(sb).forEach(function(k){rest-=sb[k];});
-          var srows=(SUBS[c[0]]||[]).filter(function(x){return sb[x.n];}).map(function(x){return {n:x.ic+' '+x.n,v:sb[x.n]};});
-          if(rest>1e-6&&srows.length)srows.push({n:'без подкатегории',v:rest});
-          h+='<div style="--sc:'+cc+';padding-bottom:6px">'+srows.map(function(r){return '<div class="sub"><span class="sn">'+esc(r.n)+'</span><span class="sbar"><i style="width:'+Math.max(3,Math.round(r.v/c[1]*100))+'%"></i></span><span class="num">'+fmt(r.v,main)+'</span></div>';}).join('')+'</div>';}
-      });
-      if(hid.length){var hs=0;hid.forEach(function(c){hs+=c[1];});
-        h+='<button class="lg" data-a="catmore"><span class="dot" style="background:var(--cother)"></span><span class="grow">Ещё '+hid.length+' '+plural(hid.length,'категория','категории','категорий')+' <span class="muted small">'+Math.round(hs/st.exp*100)+'% · показать</span></span><span class="num">'+fmt(hs,main)+'</span></button>';}
-      else if(nav.catMore&&cats.length>5)h+='<button class="btn plain sm" data-a="catmore">Свернуть</button>';
-      h+='<div class="hint">Нажми на категорию, чтобы увидеть её операции.</div></div>'+changesCard(st,pv,dl);
-    }
+    h+=spoil('run','На сколько хватит денег',runSum(),runwayCard())+spoil('fc','Прогноз на конец месяца',fcSum(),forecastCard());
+    if(Object.keys(st.cats).length)h+=changesCard(st,pv,dl);
     h+=limitDonutCard(st,ym);
     var big=st.big.sort(function(a,b){return b.v-a.v;}).slice(0,3);
     if(big.length){
@@ -1370,6 +1406,7 @@ function viewReport(){
   if(notes.length)h+='<div class="small muted" style="margin:12px 4px">'+notes.join(' ')+'</div>';
   h+=reportExportCard(ym);
   return h;
+  }finally{RFILT=null;}
 }
 
 /* ---------- Насколько выгодно ты меняешь: твой курс против рыночного на дату обмена ---------- */
@@ -1507,11 +1544,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.1',items:['«Отчёт»: расходы по категориям теперь вверху, у категорий и подкатегорий есть галочки — график, итоги и «Пульс месяца» считаются только по выбранным','«На сколько хватит денег» и «Прогноз на конец месяца» свёрнуты в спойлеры']},
   {v:'4.0',items:['Главная стала проще: три главных числа (всего, потрачено сегодня, на сколько хватит), три кнопки, топ-3 категории','«Обмен» и «Перевод» объединены в «Перевод»: форма сама показывает, перевод это или обмен','Из «Ещё» убраны долги, инвестиции, шаблоны, сверка, финпомощник, постоянные платежи, лимиты, цитата дня и напоминания о копии (данные сохраняются)','«Ещё» сгруппировано, длинные пояснения свёрнуты']},
   {v:'3.9',items:['«Операции»: фильтры в одном окне, можно выбрать несколько категорий и подкатегорий','Сверху видна сумма найденных операций, есть режим «По категориям» со сворачиваемыми группами']},
   {v:'3.8',items:['Пять операций октября (19, 21, 23, 25 и 28 числа) перенесены в «Спорт · Пиклбол»']},
   {v:'3.7',items:['«Кафе и рестораны» теперь только в «Развлечениях»; в «Еде вне дома» остались «Стритфуд» и «Доставка» (еда с собой). Старые записи перенесены']},
-  {v:'3.6',items:['Подкатегория «Пиклбол» 🏓 у «Спорта»','Подкатегории у «Развлечений»: кафе и рестораны, кино и концерты, экскурсии и парки, игры и клубы']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -2913,6 +2950,13 @@ function fcWaitText(){
   var rw=runway(),left=FC_DAYS-(rw.since||0);
   return 'Прогноз появится, когда накопится '+FC_DAYS+' дней операций — так средняя трата в день будет честной. '+(rw.since?'Осталось '+left+' '+plural(left,'день','дня','дней')+'.':'Начни вносить расходы.');
 }
+function spoil(k,title,sum,html){
+  if(!html)return '';
+  var inner=html.replace(/<h3>.*?<\/h3>/,'');
+  return '<details class="card spoil" data-sp="'+k+'"'+((nav.sp||{})[k]?' open':'')+'><summary><span>'+title+'</span><span class="num sps">'+sum+'</span></summary>'+inner+'</details>';
+}
+function runSum(){var rw=runway();if(!rw.per.length||!fcReady())return '';var d=rw.total?rw.total.days:rw.per[0].days;return approxDays(d);}
+function fcSum(){if(!fcReady())return '';var f=forecast();if(!f||!f.total)return '';var t=f.total;return (t.end<0?'−':'≈ ')+fmt(Math.abs(t.end),S.settings.main);}
 function runwayCard(){
   var rw=runway(),main=S.settings.main;
   if(!rw.per.length)return '';
@@ -3361,6 +3405,10 @@ var H={
   repmonth:function(el){var cur=today().slice(0,7),n=shiftMonth(nav.rep||cur,+el.dataset.v);if(n>cur)return;nav.rep=n;render();},
   sub:function(el){nav.tab='more';nav.acc=null;nav.sub=el.dataset.v;render();window.scrollTo(0,0);},
   catmore:function(){nav.catMore=!nav.catMore;render();},
+  rcat:function(el){var c=el.dataset.v,a=rsel().slice(),i=a.indexOf(c);if(i>=0)a.splice(i,1);else{a=a.filter(function(x){return x.indexOf(c+' › ')!==0;});a.push(c);}nav.rsel=a;render();},
+  rsub:function(el){var c=el.dataset.v,k=ckey(c,el.dataset.s),a=rsel().slice(),i=a.indexOf(c);if(i>=0){a.splice(i,1);SUBS_OF_CAT(c).forEach(function(n){var kk=ckey(c,n);if(n!==el.dataset.s&&a.indexOf(kk)<0)a.push(kk);});}else{var j=a.indexOf(k);if(j>=0)a.splice(j,1);else a.push(k);}nav.rsel=a;render();},
+  rreset:function(){nav.rsel=[];render();},
+  rops:function(){nav.filter='expense';nav.fcats=rsel().slice();nav.per='ym';nav.pym=nav.rep||today().slice(0,7);nav.q='';nav.facc='';go('ops');},
   back2:function(){nav.sub=null;render();window.scrollTo(0,0);},
   save:function(el){openSave(el.dataset.v);},
   savesv:saveSv,
@@ -3585,6 +3633,7 @@ var H={
   },
   wipe:function(){ask('Удалить все счета, операции и настройки? Это нельзя отменить — сначала сделай резервную копию.','Удалить всё',function(){undoable(function(){S=fresh();nav={tab:'home',acc:null,filter:'all',sub:null,rep:'',q:'',per:'all',facc:'',fcat:''};},'Всё удалено');});}
 };
+document.addEventListener('toggle',function(e){var k=e.target&&e.target.dataset&&e.target.dataset.sp;if(k){nav.sp=nav.sp||{};nav.sp[k]=e.target.open;}},true);
 document.addEventListener('click',function(e){
   var el=e.target.closest('[data-a]');if(!el)return;
   var f=H[el.dataset.a];if(f)f(el,e);
