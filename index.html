@@ -69,6 +69,12 @@ h3{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--muted)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .num{font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;text-align:left;display:block;width:100%}
+.tile .tv{font:600 17px/1.25 'Unbounded','Onest',system-ui,sans-serif;margin-top:6px;letter-spacing:-.01em}
+.mvplate{background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:12px;font-size:14px}
+.mvplate .mvt{font-weight:600;margin-top:3px}.mvplate .mvt.fx{color:var(--fx)}
+details.dt summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:8px}
 .opsbar{position:sticky;top:0;z-index:4;background:var(--bg);margin:10px -4px 0;padding:8px 4px;border-bottom:1px solid var(--line)}
 .grpbtn{width:100%;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:8px;text-align:left}
 .grpbtn .ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:var(--bg)}
@@ -362,7 +368,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='3.9';
+var VERSION='4.0';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -769,54 +775,27 @@ function viewHome(){
     var r=rateToMain(a.cur);
     if(r==null){if(Math.abs(b)>0&&missing.indexOf(a.cur)<0)missing.push(a.cur);}else total+=b*r;
   });
-  var q=S.settings.quote!==false?quoteOfDay():null;
   var h='<div class="row"><h1>Lucky Finance</h1><button class="calcbtn" data-a="calc" aria-label="Быстрый конвертер" title="Быстрый конвертер">🧮</button></div>';
-  if(q)h+='<div class="qod"><q>'+esc(q[0])+'</q>'+(q[1]?' <span>— '+esc(q[1])+'</span>':'')+'</div>';
   var vcs=[main];favCurs().forEach(function(c){if(vcs.length<3&&vcs.indexOf(c)<0&&S.accounts.some(function(a){return a.cur===c;}))vcs.push(c);});
   var vc=vcs.indexOf(S.settings.view)>=0?S.settings.view:main,vinfo=vc===main?{r:1,src:''}:rateInfo(vc);
   var incl=S.accounts.filter(function(a){return !a.excl;}).length;
-  var exclNames=S.accounts.filter(function(a){return a.excl;}).map(function(a){return esc(a.name);}).join(', ');
   var shown=total,scur=main;
   if(vc!==main&&vinfo.r){shown=total/vinfo.r;scur=vc;}
   h+='<div class="hero'+(reveal?' open':'')+'" data-a="reveal"><div class="lbl">Всего на счетах</div><div class="big num">'+fmt(shown,scur)+'</div>'+
     '<div class="vc">'+vcs.map(function(c){return '<button data-a="viewcur" data-v="'+c+'" class="'+(c===scur?'on':'')+'">'+c+'</button>';}).join('')+'<button data-a="pick" class="pk">Счета: '+incl+' из '+S.accounts.length+'</button></div>'+
-    /* пояснения свёрнуты, чтобы не занимали место; при нехватке курса — значок у кнопки */
-    '<button class="more" data-a="heroinfo" aria-expanded="'+heroInfo+'">'+(heroInfo?'Скрыть подробности ▴':'Подробнее ▾')+(missing.length&&!heroInfo?' <span class="warnc">· нет курса</span>':'')+'</button>'+
-    (heroInfo?
-      '<div class="tap" style="margin-top:4px">'+(reveal?'Нажми на карточку, чтобы скрыть сумму':'Нажми на карточку, чтобы показать сумму')+'</div>'+
-      (exclNames?'<div class="miss">Не входят в сумму: '+exclNames+'</div>':'')+
-      (scur!==main?'<div class="miss">Курс: '+showRate(vc,vinfo.r)+' ('+vinfo.src+')</div>':'')+
-      (missing.length?'<div class="miss">Не учтены: '+missing.join(', ')+' — нет курса (задай в «Ещё → Курсы валют»)</div>':'')
-    :'')+
+    (scur!==main?'<div class="miss">Курс: '+showRate(vc,vinfo.r)+' ('+vinfo.src+')</div>':'')+
+    (missing.length?'<div class="miss"><span class="warnc">Не учтены: '+missing.join(', ')+' — нет курса (задай в «Ещё → Курсы валют»)</span></div>':'')+
     '</div>';
-  h+='<div class="qa-grid">'+
+  /* ещё два главных числа: сколько потрачено сегодня и на сколько хватит денег */
+  var rw=runway(),ready=fcReady(),daysTxt=(ready&&rw&&rw.total&&rw.total.days!=null)?approxDays(rw.total.days):'—';
+  h+='<div class="tiles"><button class="tile" data-a="viewtoday"><div class="t2">Сегодня потрачено</div><div class="tv num">'+fmt(dayExpenseSum(today()),main)+'</div></button>'+
+    (ready?'<button class="tile" data-a="runway"><div class="t2">Хватит денег на</div><div class="tv">'+daysTxt+'</div></button>':'<div class="tile"><div class="t2">Хватит денег на</div><div class="tv">—</div><div class="small muted">нужно 30 дней данных</div></div>')+'</div>';
+  h+='<div class="qa-grid" style="grid-template-columns:repeat(3,1fr)">'+
     '<button class="qa" data-a="op" data-v="income"><i class="g">+</i>Доход</button>'+
     '<button class="qa" data-a="op" data-v="expense"><i class="r">−</i>Расход</button>'+
-    '<button class="qa" data-a="op" data-v="exchange"><i class="b">⇄</i>Обмен</button>'+
-    '<button class="qa" data-a="op" data-v="transfer"><i class="b">↔</i>Перевод</button></div>';
-
-  if(backupDue()){
-    h+='<div class="card" style="border-color:var(--fx)"><div class="row"><div class="grow"><div class="t1">Пора сделать резервную копию</div><div class="t2">Данные лежат только в этом браузере</div></div><button class="chip" data-a="export">Копия</button><button class="chip" data-a="bksnz" style="margin-left:6px">Позже</button></div></div>';
-  }
-  var hasForeign=S.accounts.some(function(a){return a.cur!==main;});
-  var extras=[];
-  var recH=recHome();if(recH)extras.push(recH);
-  var reconH=reconHome();if(reconH)extras.push(reconH);
-  var rw=runway();
-  if(fcReady()){
-    var fc=forecast(),fcLine='';
-    if(fc&&fc.total)fcLine='<div class="t2" style="margin-top:4px">К концу месяца '+(fc.total.end<0?'<b class="neg">не хватит '+fmt(-fc.total.end,main)+'</b>':'≈ <b>'+fmt(fc.total.end,main)+'</b>')+'</div>';
-    extras.push('<div class="card" data-a="runway" style="cursor:pointer;padding:12px 16px"><div class="row"><div class="grow"><div class="t2">На сколько хватит денег</div><div class="t1" style="white-space:normal">'+rw.per.slice(0,3).map(function(x){return x.cur+': '+approxDays(x.days);}).join(' · ')+'</div>'+fcLine+'</div><span class="muted small">Разбор ›</span></div></div>');
-  }
-  var limH=limitHome();if(limH)extras.push(limH);
-  var dbH=debtHome();if(dbH)extras.push(dbH);
-  var todaySpent=dayExpenseSum(today());
-  if(todaySpent>0)extras.push('<div class="card" data-a="viewtoday" style="cursor:pointer;padding:12px 16px"><div class="row"><div class="t1">Сегодня потрачено</div><span class="amt num">'+fmt(todaySpent,main)+'</span></div></div>');
-  var HOME_SHOW=2;
-  if(extras.length){
-    h+=(homeMore?extras:extras.slice(0,HOME_SHOW)).join('');
-    if(extras.length>HOME_SHOW)h+='<button class="btn plain sm" data-a="homemore" style="width:100%;margin-top:4px">'+(homeMore?'Свернуть':'Показать ещё · '+(extras.length-HOME_SHOW))+'</button>';
-  }
+    '<button class="qa" data-a="op" data-v="transfer"><i class="b">⇄</i>Перевод</button></div>';
+  var gh=ghCfg();
+  if(ghReady(gh)&&gh.err)h+='<div class="card" style="border-color:var(--expense)"><div class="row"><div class="grow"><div class="t1">Копия на GitHub не отправилась</div><div class="t2">'+esc(gh.err)+'</div></div><button class="chip" data-a="tab" data-v="more">Открыть</button></div></div>';
 
   // Сводка за месяц
   var ym=today().slice(0,7),inc=0,exp=0,cats={};
@@ -826,7 +805,7 @@ function viewHome(){
     var v=txToMain(t);if(v==null)return;
     if(t.type==='income')inc+=v;else{exp+=v;cats[t.cat]=(cats[t.cat]||0)+v;}
   });
-  var top=Object.keys(cats).map(function(k){return [k,cats[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,5);
+  var top=Object.keys(cats).map(function(k){return [k,cats[k]];}).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
   var mname=new Date().toLocaleDateString('ru-RU',{month:'long'});
   h+='<div class="card"><h3>Сводка за '+mname+'</h3><div class="row"><div><div class="small muted">Доходы</div><div class="amt pos num" style="text-align:left">'+fmt(inc,main)+'</div></div><div style="text-align:right"><div class="small muted">Расходы</div><div class="amt neg num">'+fmt(exp,main)+'</div></div></div>';
   if(top.length){
@@ -834,6 +813,7 @@ function viewHome(){
     top.forEach(function(c){h+='<div style="margin-top:10px"><div class="row small"><span>'+catIcon(c[0])+' '+esc(c[0])+'</span><span class="num">'+fmt(c[1],main)+'</span></div><div class="bar"><b style="width:'+Math.max(4,Math.round(c[1]/top[0][1]*100))+'%"></b></div></div>';});
     h+='</div>';
   }else h+='<div class="small muted" style="margin-top:10px">В этом месяце расходов пока нет.</div>';
+  if(Object.keys(cats).length>3)h+='<button class="btn plain sm" data-a="tab" data-v="report" style="margin-top:12px">Все категории</button>';
   h+='</div>';
 
   // Последние
@@ -1527,11 +1507,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.0',items:['Главная стала проще: три главных числа (всего, потрачено сегодня, на сколько хватит), три кнопки, топ-3 категории','«Обмен» и «Перевод» объединены в «Перевод»: форма сама показывает, перевод это или обмен','Из «Ещё» убраны долги, инвестиции, шаблоны, сверка, финпомощник, постоянные платежи, лимиты, цитата дня и напоминания о копии (данные сохраняются)','«Ещё» сгруппировано, длинные пояснения свёрнуты']},
   {v:'3.9',items:['«Операции»: фильтры в одном окне, можно выбрать несколько категорий и подкатегорий','Сверху видна сумма найденных операций, есть режим «По категориям» со сворачиваемыми группами']},
   {v:'3.8',items:['Пять операций октября (19, 21, 23, 25 и 28 числа) перенесены в «Спорт · Пиклбол»']},
   {v:'3.7',items:['«Кафе и рестораны» теперь только в «Развлечениях»; в «Еде вне дома» остались «Стритфуд» и «Доставка» (еда с собой). Старые записи перенесены']},
   {v:'3.6',items:['Подкатегория «Пиклбол» 🏓 у «Спорта»','Подкатегории у «Развлечений»: кафе и рестораны, кино и концерты, экскурсии и парки, игры и клубы']},
-  {v:'3.5',items:['Подкатегория «Сладости и снеки» 🍫 у «Продуктов» — видно в отчёте, сколько на них уходит']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1693,21 +1673,13 @@ function viewMore(){
   function it(v,ic,t1,t2){return '<button class="item" data-a="sub" data-v="'+v+'"><div class="ic">'+ic+'</div><div class="grow"><div class="t1">'+t1+'</div><div class="t2">'+t2+'</div></div><span class="muted">›</span></button>';}
   var h='<h1>Ещё</h1>'+updateCard();
   h+='<div class="grp">Деньги</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
-    it('exchange','⇄','Обмен валюты','Средний курс, остатки, сколько обменяно')+
     it('savings','🐷','Накопления и цель','Откладываешь только ты, вручную')+
-    it('invest','📈','Инвестиции','Что куда вложено и сколько стоит')+
-    it('ai','💬','Финпомощник','Вопросы Claude о твоих деньгах')+
-    it('debts','🤝','Долги и займы','Кто кому сколько должен')+'</div>';
-  h+='<div class="grp">Планирование</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
-    it('rec','🔁','Постоянные платежи','Аренда, интернет, подписки — напомню внести')+
-    it('recon','⚖️','Сверка остатков','Проверка, что деньги сходятся')+
-    it('limits','🎯','Лимиты','На месяц и по категориям')+
-    it('tpl','⚡','Шаблоны трат','Быстрый ввод частых расходов')+'</div>';
+    it('exchange','⇄','Обмен валюты','Средний курс, остатки, сколько обменяно')+'</div>';
   h+='<div class="grp">Настройки</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
     it('curs','💱','Мои валюты','Какие валюты показывать в списках')+
     it('about','ℹ️','О приложении','Что это и что менялось по версиям')+'</div>';
   h+='<div class="card"><h3>Основная валюта</h3><select data-set="main">'+curOptions(main)+'</select><div class="hint">Лучше менять до добавления операций: в ней показываются итоги и считается курс по FIFO.</div></div>';
-  h+='<div class="card"><h3>Курсы валют</h3><div class="small">Рыночные курсы: '+(S.mkt?dlong(S.mkt.date):'ещё не загружались')+'. Курсы ЦБ РФ (запасные): '+dlong(S.auto.date)+'. Обновляются сами при открытии приложения.</div><div class="hint">Какой курс берётся: 1) по FIFO — средний курс, по которому ты реально получил деньги, что сейчас лежат в этой валюте; 2) заданный вручную; 3) рыночный из интернета; 4) ЦБ РФ.</div><div class="row small muted" style="margin-top:10px"><span>'+rateAgeText()+'</span><button class="chip" data-a="refresh">Обновить курсы</button></div>'+rateDiag();
+  h+='<div class="card"><h3>Курсы валют</h3><div class="small">Рыночные курсы: '+(S.mkt?dlong(S.mkt.date):'ещё не загружались.')+' Курсы ЦБ РФ (запасные): '+dlong(S.auto.date)+' Обновляются сами при открытии приложения.</div><details class="dt"><summary>Как выбирается курс</summary><div class="hint">1) по FIFO — средний курс, по которому ты реально получил деньги, что сейчас лежат в этой валюте; 2) заданный вручную; 3) рыночный из интернета; 4) ЦБ РФ.</div></details><div class="row small muted" style="margin-top:10px"><span>'+rateAgeText()+'</span><button class="chip" data-a="refresh">Обновить курсы</button></div>'+rateDiag();
   var foreign=[];S.accounts.forEach(function(a){if(a.cur!==main&&foreign.indexOf(a.cur)<0)foreign.push(a.cur);});
   if(foreign.length){
     h+='<div class="small muted" style="margin-top:14px">Задать курс вручную (необязательно) — используется, если по FIFO курса нет:</div>';
@@ -1718,17 +1690,12 @@ function viewMore(){
     });
   }
   h+='</div>';
-  h+='<div class="card"><h3>Тема</h3><div class="row" style="margin-bottom:12px"><div class="grow"><div class="t1">Цитата дня на главной</div><div class="t2">Каждый день новая</div></div><button class="sw'+(S.settings.quote!==false?' on':'')+'" data-a="qtog" aria-label="Цитата дня" style="border:0;padding:0"></button></div><div class="small muted" style="margin-bottom:8px">Оформление</div><div class="pals">'+[['base','Классика','#16202B','linear-gradient(135deg,#16202B,#2C52D0)']].concat(PALS).map(function(x){return '<button class="pal'+(pal===x[0]?' on':'')+'" data-a="pal" data-v="'+x[0]+'" aria-label="'+x[1]+'"><i style="background:'+x[3]+'"></i><span>'+x[1]+'</span></button>';}).join('')+'</div>'+
+  h+='<div class="card"><h3>Тема</h3><div class="small muted" style="margin-bottom:8px">Оформление</div><div class="pals">'+[['base','Классика','#16202B','linear-gradient(135deg,#16202B,#2C52D0)']].concat(PALS).map(function(x){return '<button class="pal'+(pal===x[0]?' on':'')+'" data-a="pal" data-v="'+x[0]+'" aria-label="'+x[1]+'"><i style="background:'+x[3]+'"></i><span>'+x[1]+'</span></button>';}).join('')+'</div>'+
     (pal==='base'?'<div class="small muted" style="margin:14px 0 8px">Светлая или тёмная</div><div class="chips" style="margin:0">'+[['auto','Как в телефоне'],['light','Светлая'],['dark','Тёмная']].map(function(t){return '<button class="chip'+(theme===t[0]?' on':'')+'" data-a="theme" data-v="'+t[0]+'">'+t[1]+'</button>';}).join('')+'</div>':'<div class="hint">Цветная тема всегда выглядит одинаково; выбор «светлая / тёмная» работает для «Классики».</div>')+'</div>';
   var bk=backupCfg(),DOWN=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-  h+='<div class="card"><h3>Резервная копия</h3><div class="small muted">Данные лежат только в памяти этого устройства. Копия защитит их при смене телефона или очистке браузера.<br>'+(S.settings.lastBackup?'Последняя копия: '+new Date(S.settings.lastBackup).toLocaleDateString('ru-RU'):'Копий пока не было.')+'<br>Защита от автоочистки: '+(persisted===true?'включена':persisted===false?'браузер не подтвердил — делай копии чаще':'—')+'</div>'+
-    '<button class="btn" data-a="export">Сделать резервную копию</button><button class="btn plain" data-a="import" style="margin-top:8px">Восстановить из копии</button>'+
-    '<div class="row" style="margin-top:16px"><h3 style="margin:0">Напоминать</h3><button class="sw'+(bk.on?' on':'')+'" data-a="bkon" aria-label="Напоминать" style="border:0;padding:0"></button></div>';
-  if(bk.on){
-    h+='<div class="small muted" style="margin-top:12px">День недели</div><div class="chips" style="margin-top:6px">'+DOWN.map(function(nm,i){return '<button class="chip'+(bk.dow===i?' on':'')+'" data-a="bkdow" data-v="'+i+'">'+nm+'</button>';}).join('')+'</div>';
-    h+='<label style="margin-top:12px">Время<input type="time" data-bk="time" value="'+esc(bk.time||'20:00')+'"></label>';
-    h+='<div class="hint">Напомню на главном экране начиная с '+esc(bk.time||'20:00')+' в '+DOWN[bk.dow].toLowerCase()+', если к этому времени копии ещё не было. А если копии нет больше недели — напомню в любой день. Напоминание появляется на главном экране, когда ты открываешь приложение.</div>';
-  }
+  h+='<div class="grp">Копии</div>';
+  h+='<div class="card"><h3>Резервная копия</h3><div class="small muted">Копия защитит данные при смене телефона или очистке хранилища. Сами копии уходят каждый вечер (см. ниже).<br>'+(S.settings.lastBackup?'Последняя копия: '+new Date(S.settings.lastBackup).toLocaleDateString('ru-RU'):'Копий пока не было.')+'</div>'+
+    '<button class="btn" data-a="export">Сделать резервную копию</button><button class="btn plain" data-a="import" style="margin-top:8px">Восстановить из копии</button>';
   h+='</div>';
   h+=ghCard();
   h+=notifCard();
@@ -1829,7 +1796,7 @@ function renderOp(){
   var t=F.type,A=getAcc(F.acc);
   if(!A){F.acc=S.accounts[0].id;A=getAcc(F.acc);}
   function opts(list,sel){return list.map(function(a){return '<option value="'+a.id+'"'+(a.id===sel?' selected':'')+'>'+esc(a.name)+' · '+a.cur+'</option>';}).join('');}
-  var mkBtns=(t==='expense'&&!F.opening)?'<button class="ib plus'+(F.showTpl?' on':'')+'" data-a="tplopen" title="Шаблон или постоянный платёж" aria-label="Шаблон или постоянный платёж">+</button>':'';
+  var mkBtns='';
   var h='<div class="row"><h2>'+(F.edit?'Изменить операцию':'Новая операция')+'</h2>'+mkBtns+'</div>';
   if(F.showTpl){
     h+='<div class="card" style="background:var(--bg);border:0">';
@@ -1847,28 +1814,28 @@ function renderOp(){
       ((F.recId||F.isRec)?'':'<button class="chip'+(F.mkRec?' on':'')+'" data-a="mkrec">🔁 Повторять каждый месяц</button>')+
       '</div><div class="hint" id="mkhint2"></div><button class="btn plain sm" data-a="tplopen">Готово</button></div>';
   }
-  if(!F.opening)h+='<div class="seg">'+[['income','Доход'],['expense','Расход'],['exchange','Обмен'],['transfer','Перевод']].map(function(k){return '<button data-a="optype" data-v="'+k[0]+'" class="'+(t===k[0]?'on '+k[0]:'')+'">'+k[1]+'</button>';}).join('')+'</div>';
+  if(!F.opening)h+='<div class="seg" style="grid-template-columns:repeat(3,1fr)">'+[['income','Доход'],['expense','Расход'],['transfer','Перевод']].map(function(k){var on=k[0]==='transfer'?(t==='transfer'||t==='exchange'):t===k[0];return '<button data-a="optype" data-v="'+k[0]+'" class="'+(on?'on '+k[0]:'')+'">'+k[1]+'</button>';}).join('')+'</div>';
   if((t==='income'||t==='expense')&&!F.edit&&!F.opening){
   }
   h+='<label>Дата</label>'+dateInput('data-f="date"',F.date,{quick:true});
-  h+='<label>'+({income:'На какой счёт',expense:'С какого счёта',exchange:'Отдаю со счёта',transfer:'Откуда'}[t])+'<select data-f="acc">'+opts(S.accounts,F.acc)+'</select></label>';
-  h+='<label>'+(t==='exchange'?'Отдаю':'Сумма')+'<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" placeholder="0" autocomplete="off"><span>'+A.cur+'</span></div></label>';
-  if(t==='transfer'||t==='exchange'){
-    /* Можно выбрать любой другой счёт: в той же валюте сохранится как перевод, в другой — как обмен */
+  h+='<label>'+({income:'На какой счёт',expense:'С какого счёта',exchange:'Откуда',transfer:'Откуда'}[t])+'<select data-f="acc">'+opts(S.accounts,F.acc)+'</select></label>';
+  /* Перевод и обмен — одна форма: один счёт → другой. Одна валюта — перевод, разные — обмен (тогда нужна сумма «Получаю») */
+  var isMove=(t==='transfer'||t==='exchange'),B=null,diff=false;
+  if(isMove){
     var toList=S.accounts.filter(function(a){return a.id!==F.acc;});
     if(!toList.some(function(a){return a.id===F.to;})){
       var pref=toList.filter(function(a){return t==='exchange'?a.cur!==A.cur:a.cur===A.cur;});
       F.to=pref[0]?pref[0].id:(toList[0]?toList[0].id:'');
     }
+    B=getAcc(F.to);diff=!!(B&&B.cur!==A.cur);
     if(!toList.length)h+='<div class="hint warn" style="margin-top:14px">Нужен второй счёт. Добавь его в разделе «Счета».</div>';
     else{
-      h+='<label>'+(t==='exchange'?'Получаю на счёт':'Куда')+'<select data-f="to">'+opts(toList,F.to)+'</select></label>';
-      var B=getAcc(F.to);
-      if(B&&B.cur===A.cur&&t==='exchange')h+='<div class="hint">Оба счёта в '+esc(A.cur)+' — сохранится как перевод.</div>';
-      if(B&&B.cur!==A.cur&&t==='transfer')h+='<div class="hint">Валюты разные — сохранится как обмен, укажи, сколько получаешь.</div>';
-      if(B&&B.cur!==A.cur){h+='<label>Получаю<div class="amtwrap"><input inputmode="decimal" data-f="toS" value="'+esc(F.toS)+'" placeholder="0" autocomplete="off"><span>'+(B?B.cur:'')+'</span></div></label>';}
+      h+='<label>Куда<select data-f="to">'+opts(toList,F.to)+'</select></label>';
+      if(B)h+='<div class="mvplate"><div>'+esc(A.name)+' <span class="muted">('+A.cur+')</span> → '+esc(B.name)+' <span class="muted">('+B.cur+')</span></div><div class="mvt'+(diff?' fx':'')+'">'+(diff?'Обмен валюты '+A.cur+' → '+B.cur:'Перевод между своими счетами')+'</div></div>';
     }
   }
+  h+='<label>'+(isMove&&diff?'Отдаю':'Сумма')+'<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" placeholder="0" autocomplete="off"><span>'+A.cur+'</span></div></label>';
+  if(isMove&&diff)h+='<label>Получаю<div class="amtwrap"><input inputmode="decimal" data-f="toS" value="'+esc(F.toS)+'" placeholder="0" autocomplete="off"><span>'+B.cur+'</span></div></label>';
   if(t==='income'||t==='expense'){
     if(!F.opening){
       var allc=catsFor(t),freq=freqCats(t),shown=freq.slice();
@@ -2311,10 +2278,9 @@ function widgetCard(){
 function notifCard(){
   if(!IS_APP)return '';
   var st=fbkState(),on=!st.off;
-  return widgetCard()+'<div class="card"><h3>Уведомления</h3><div class="row"><div class="grow"><div class="t1">Напоминать о платежах</div><div class="t2">В 9:00 в день постоянного платежа и при превышении лимита</div></div><button class="sw'+(notifOn()?' on':'')+'" data-a="notiftog" aria-label="Уведомления" style="border:0;padding:0"></button></div></div>'+
-    '<div class="card"><h3>Автокопия на телефоне</h3><div class="small muted">Раз в день, если данные менялись, файл копии сохраняется в память телефона. Хранятся 14 последних.</div>'+
+  return '<div class="card"><h3>Автокопия на телефоне</h3><div class="small muted">Раз в день, если данные менялись, файл копии сохраняется в память телефона. Хранятся 14 последних.</div>'+
     '<div class="row" style="margin-top:10px"><div class="grow"><div class="t1">Автокопия файлом</div><div class="t2">'+(st.at?'Последняя: '+esc(dshort(new Date(st.at-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10)))+' · '+esc(fbkPlace(st.dir)):'Ещё не создавалась')+'</div></div><button class="sw'+(on?' on':'')+'" data-a="fbktog" aria-label="Автокопия" style="border:0;padding:0"></button></div>'+
-    '<button class="btn plain" data-a="fbknow" style="margin-top:10px">Сохранить копию сейчас</button></div>';
+    '<button class="btn plain" data-a="fbknow" style="margin-top:10px">Сохранить копию сейчас</button></div>'+'<div class="grp">Телефон</div>'+widgetCard();
 }
 /* ---------- Обновление приложения из GitHub ---------- */
 /* Приложение сверяет version.json на GitHub Pages, скачивает файлы новой версии в память телефона
