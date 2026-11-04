@@ -380,7 +380,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.1';
+var VERSION='4.2';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -435,6 +435,18 @@ function normalize(o){
     var PK={mvexd4y4ij51:1,mvhl5hmtos0f:1,mvkkb7seibm8:1,mvnhg43m3cad:1,mvsbh9yjvpc7:1};
     s.tx.forEach(function(t){if(PK[t.id]&&t.cat==='Спорт')t.sub='Пиклбол';});
     s.settings.migPickle=true;
+  }
+  /* 4.2: разовая правка по просьбе владельца после сверки с BIDV (1–3 ноября): пиклбол 01.11 — 100 000, добавлены пиклбол 03.11 и парковка 01.11 */
+  if(!(o.settings&&o.settings.migNov)){
+    var pk1=s.tx.filter(function(t){return t.id==='mvxdd2d9lk3x'&&t.amount===80000&&t.cat==='Спорт';})[0];
+    if(pk1){
+      pk1.amount=100000;
+      var nid=function(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);};
+      [['2026-11-03',100000,'Спорт','Пиклбол',''],['2026-11-01',210000,'Мопед','Обслуживание','Парковка за 2 месяца']].forEach(function(r){
+        s.tx.push({id:nid(),seq:(s.seq=(s.seq||1)+1)-1,date:r[0],type:'expense',acc:pk1.acc,amount:r[1],note:r[4],cat:r[2],sub:r[3]});
+      });
+    }
+    s.settings.migNov=true;
   }
   sanitize(s);
   /* 2.18: категория «Еда» переименована в «Продукты» — один раз переносим старые данные */
@@ -1544,11 +1556,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.2',items:['Правка по сверке с банком: пиклбол 01.11 исправлен на 100 000, добавлены пиклбол 03.11 (100 000) и парковка мопеда 01.11 (210 000)']},
   {v:'4.1',items:['«Отчёт»: расходы по категориям теперь вверху, у категорий и подкатегорий есть галочки — график, итоги и «Пульс месяца» считаются только по выбранным','«На сколько хватит денег» и «Прогноз на конец месяца» свёрнуты в спойлеры']},
   {v:'4.0',items:['Главная стала проще: три главных числа (всего, потрачено сегодня, на сколько хватит), три кнопки, топ-3 категории','«Обмен» и «Перевод» объединены в «Перевод»: форма сама показывает, перевод это или обмен','Из «Ещё» убраны долги, инвестиции, шаблоны, сверка, финпомощник, постоянные платежи, лимиты, цитата дня и напоминания о копии (данные сохраняются)','«Ещё» сгруппировано, длинные пояснения свёрнуты']},
   {v:'3.9',items:['«Операции»: фильтры в одном окне, можно выбрать несколько категорий и подкатегорий','Сверху видна сумма найденных операций, есть режим «По категориям» со сворачиваемыми группами']},
   {v:'3.8',items:['Пять операций октября (19, 21, 23, 25 и 28 числа) перенесены в «Спорт · Пиклбол»']},
-  {v:'3.7',items:['«Кафе и рестораны» теперь только в «Развлечениях»; в «Еде вне дома» остались «Стритфуд» и «Доставка» (еда с собой). Старые записи перенесены']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
