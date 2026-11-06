@@ -66,6 +66,10 @@ h2{font:600 18px/1.2 'Unbounded','Onest',system-ui,sans-serif;margin:0 0 4px}
 h3{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--muted)}
 .muted{color:var(--muted)}
 .small{font-size:13px}
+.hm{display:grid;grid-template-columns:minmax(76px,1.6fr) repeat(7,1fr);gap:3px;align-items:center}
+.hm .hh{font-size:11px;color:var(--muted);text-align:center}
+.hm .hn{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hm .hc{height:28px;border-radius:6px;font-size:10px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
 .spoil summary{display:flex;justify-content:space-between;align-items:center;cursor:pointer;list-style:none;font-weight:600;gap:8px}
 .spoil summary::-webkit-details-marker{display:none}
 .spoil summary::before{content:'›';color:var(--muted);transition:transform .15s;margin-right:6px}
@@ -380,7 +384,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.2';
+var VERSION='4.3';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1359,7 +1363,61 @@ function reportCats(stAll,stF,ym){
   if(on)h+='<button class="btn plain sm" data-a="rops">Показать операции</button>';
   return h+'</div>';
 }
+function mondayOf(d){var x=new Date(d+'T00:00:00'),k=(x.getDay()+6)%7;return addDays(d,-k);}
+function addDays(d,n){var x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
+function weekStats(mon){
+  var end=addDays(mon,6),o={tot:0,days:[0,0,0,0,0,0,0],cats:{},cd:{},n:0,miss:0};
+  S.tx.forEach(function(t){
+    if(t.opening||t.type!=='expense'||t.date<mon||t.date>end)return;
+    var v=txToMain(t);if(v==null){o.miss++;return;}
+    var i=Math.round((new Date(t.date+'T00:00:00')-new Date(mon+'T00:00:00'))/864e5),c=t.cat||'Другое';
+    o.tot+=v;o.n++;o.days[i]+=v;o.cats[c]=(o.cats[c]||0)+v;(o.cd[c]=o.cd[c]||[0,0,0,0,0,0,0])[i]+=v;
+  });
+  return o;
+}
+function repSwitch(){
+  if(S.settings.noWeek)return '';
+  var m=nav.rmode==='week';
+  return '<div class="chips" style="margin:10px 0 0"><button class="chip'+(m?'':' on')+'" data-a="rmode" data-v="month">Месяц</button><button class="chip'+(m?' on':'')+'" data-a="rmode" data-v="week">Неделя</button></div>';
+}
+function viewWeek(){
+  var main=S.settings.main,t0=today(),curMon=mondayOf(t0),mon=nav.rweek||curMon;if(mon>curMon)mon=curMon;
+  var isCur=mon===curMon,st=weekStats(mon),pvMon=addDays(mon,-7),pv=weekStats(pvMon);
+  var passed=isCur?Math.round((new Date(t0+'T00:00:00')-new Date(mon+'T00:00:00'))/864e5)+1:7;
+  var pvSame=0;for(var i=0;i<passed;i++)pvSame+=pv.days[i];
+  var lab=dshort(mon)+' – '+dshort(addDays(mon,6)),DN=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  var h='<h1>Отчёт</h1>'+repSwitch()+'<div class="row" style="margin-top:14px"><button class="chip" data-a="repweek" data-v="-1">‹</button><div style="font-weight:600">'+lab+(isCur?' <span class="muted small">· эта неделя</span>':'')+'</div><button class="chip" data-a="repweek" data-v="1"'+(isCur?' disabled style="opacity:.35"':'')+'>›</button></div>';
+  if(!st.n){return h+'<div class="card empty"><b>На этой неделе расходов нет</b>Как только появятся траты, здесь будет отчёт.</div>';}
+  var dl=isCur?'к тем же дням прошлой недели':'к прошлой неделе';
+  h+='<div class="card"><h3>Итоги недели</h3><div class="row" style="padding:6px 0"><span>Расходы</span><div class="amt neg num">'+fmt(st.tot,main)+delta(st.tot,isCur?pvSame:pv.tot,true,dl).replace('<small','<small style="display:block"')+'</div></div>'+
+    '<div class="small muted" style="margin-top:6px">В среднем в день: '+fmt(st.tot/passed,main)+' · операций: '+st.n+'</div></div>';
+  var mx=Math.max.apply(null,st.days),big=st.days.indexOf(mx);
+  h+='<div class="card"><h3>По дням</h3><div class="cols">'+st.days.map(function(v,i){
+    var ds=addDays(mon,i),fut=ds>t0;
+    return '<button class="col" data-a="pday" data-v="'+ds+'"'+(fut?' disabled':'')+' style="background:none;border:0;color:inherit;font:inherit"><div class="pair"><i class="b" style="height:'+(mx?Math.max(v>0?4:1,Math.round(v/mx*100)):1)+'%;width:60%;max-width:22px"></i></div>'+DN[i]+'</button>';
+  }).join('')+'</div><div class="small" style="margin-top:6px">Самый дорогой день: '+DN[big]+', '+dshort(addDays(mon,big))+' — '+fmt(mx,main)+'</div></div>';
+  var cats=Object.keys(st.cats).map(function(k){return [k,st.cats[k]];}).sort(function(a,b){return b[1]-a[1];});
+  h+='<div class="card"><h3>Куда ушло</h3>'+cats.slice(0,5).map(function(c){return '<div class="row" style="padding:5px 0"><div class="grow">'+catIcon(c[0])+' '+esc(c[0])+' <span class="muted small">'+Math.round(c[1]/st.tot*100)+'%</span></div><span class="num">'+fmt(c[1],main)+'</span></div>';}).join('')+(cats.length>5?'<div class="small muted" style="margin-top:6px">И ещё '+(cats.length-5)+' '+plural(cats.length-5,'категория','категории','категорий')+'</div>':'')+'</div>';
+  /* тепловая карта: 6 главных категорий × 7 дней */
+  var top=cats.slice(0,6),rest=cats.slice(6),cmx=0;
+  var rows=top.map(function(c){return {n:c[0],d:st.cd[c[0]]};});
+  if(rest.length){var rd=[0,0,0,0,0,0,0];rest.forEach(function(c){st.cd[c[0]].forEach(function(v,i){rd[i]+=v;});});rows.push({n:'Остальное',d:rd,ic:'…'});}
+  rows.forEach(function(r){r.d.forEach(function(v){if(v>cmx)cmx=v;});});
+  function k(v){var x=v/1000;return x>=10?Math.round(x)+'':x.toFixed(1).replace('.',',');}
+  var g='<div class="hm"><div></div>'+DN.map(function(d){return '<div class="hh">'+d+'</div>';}).join('');
+  rows.forEach(function(r){
+    g+='<div class="hn">'+(r.ic||catIcon(r.n))+' '+esc(r.n)+'</div>'+r.d.map(function(v,i){
+      var fut=addDays(mon,i)>t0;
+      return '<div class="hc" style="background:'+(v>0?'color-mix(in srgb,var(--expense) '+Math.round(12+68*v/cmx)+'%,transparent)':'transparent')+(fut?';opacity:.3':'')+'" title="'+esc(r.n)+', '+DN[i]+': '+fmt(v,main)+'">'+(v>0?k(v):'')+'</div>';
+    }).join('');
+  });
+  g+='</div><div class="small muted" style="margin-top:8px">Числа в тыс. '+(cinfo(main).s||main)+'. Чем темнее клетка, тем больше потрачено.</div>';
+  h+=spoil('hm','Тепловая карта недели','',g);
+  if(st.miss)h+='<div class="small muted" style="margin:12px 4px">Не учтено операций: '+st.miss+' — для их валюты нет курса.</div>';
+  return h;
+}
 function viewReport(){
+  if(nav.rmode==='week'&&!S.settings.noWeek)return viewWeek();
   var main=S.settings.main,cur=today().slice(0,7),ym=nav.rep||cur;if(ym>cur)ym=cur;
   var isCur=ym===cur,ml=new Date(ym+'-01T00:00:00').toLocaleDateString('ru-RU',{month:'long',year:'numeric'}).replace(/\s*г\.$/,'');
   ml=ml.charAt(0).toUpperCase()+ml.slice(1);
@@ -1368,7 +1426,7 @@ function viewReport(){
   try{
   /* текущий месяц сравниваем с теми же днями прошлого, иначе в начале месяца всегда «−100%» */
   var st=monthStats(ym),pv=monthStats(shiftMonth(ym,-1),isCur?+today().slice(8,10):0),dl=isCur?'к тем же дням прошлого месяца':'к прошлому месяцу';
-  var h='<h1>Отчёт</h1><div class="row" style="margin-top:14px"><button class="chip" data-a="repmonth" data-v="-1">‹</button><div style="font-weight:600">'+ml+'</div><button class="chip" data-a="repmonth" data-v="1"'+(ym>=cur?' disabled style="opacity:.35"':'')+'>›</button></div>';
+  var h='<h1>Отчёт</h1>'+repSwitch()+'<div class="row" style="margin-top:14px"><button class="chip" data-a="repmonth" data-v="-1">‹</button><div style="font-weight:600">'+ml+'</div><button class="chip" data-a="repmonth" data-v="1"'+(ym>=cur?' disabled style="opacity:.35"':'')+'>›</button></div>';
   if(!stAll.inc&&!stAll.exp)h+='<div class="card empty"><b>В этом месяце операций нет</b>Как только появятся доходы и расходы, здесь будет отчёт.</div>';
   else{
     var days=ym===cur?+today().slice(8,10):new Date(+ym.slice(0,4),+ym.slice(5,7),0).getDate();
@@ -1556,11 +1614,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.3',items:['«Отчёт»: переключатель «Месяц / Неделя» (неделя с понедельника по воскресенье, можно листать), итоги, столбики по дням, куда ушло и тепловая карта в спойлере','Переключатель можно скрыть в «Ещё»']},
   {v:'4.2',items:['Правка по сверке с банком: пиклбол 01.11 исправлен на 100 000, добавлены пиклбол 03.11 (100 000) и парковка мопеда 01.11 (210 000)']},
   {v:'4.1',items:['«Отчёт»: расходы по категориям теперь вверху, у категорий и подкатегорий есть галочки — график, итоги и «Пульс месяца» считаются только по выбранным','«На сколько хватит денег» и «Прогноз на конец месяца» свёрнуты в спойлеры']},
   {v:'4.0',items:['Главная стала проще: три главных числа (всего, потрачено сегодня, на сколько хватит), три кнопки, топ-3 категории','«Обмен» и «Перевод» объединены в «Перевод»: форма сама показывает, перевод это или обмен','Из «Ещё» убраны долги, инвестиции, шаблоны, сверка, финпомощник, постоянные платежи, лимиты, цитата дня и напоминания о копии (данные сохраняются)','«Ещё» сгруппировано, длинные пояснения свёрнуты']},
   {v:'3.9',items:['«Операции»: фильтры в одном окне, можно выбрать несколько категорий и подкатегорий','Сверху видна сумма найденных операций, есть режим «По категориям» со сворачиваемыми группами']},
-  {v:'3.8',items:['Пять операций октября (19, 21, 23, 25 и 28 числа) перенесены в «Спорт · Пиклбол»']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1739,6 +1797,7 @@ function viewMore(){
     });
   }
   h+='</div>';
+  h+='<div class="card"><div class="row"><div class="grow"><div class="t1">Недельный отчёт</div><div class="t2">Переключатель «Месяц / Неделя» в «Отчёте»</div></div><button class="sw'+(S.settings.noWeek?'':' on')+'" data-a="wktog" aria-label="Недельный отчёт" style="border:0;padding:0"></button></div></div>';
   h+='<div class="card"><h3>Тема</h3><div class="small muted" style="margin-bottom:8px">Оформление</div><div class="pals">'+[['base','Классика','#16202B','linear-gradient(135deg,#16202B,#2C52D0)']].concat(PALS).map(function(x){return '<button class="pal'+(pal===x[0]?' on':'')+'" data-a="pal" data-v="'+x[0]+'" aria-label="'+x[1]+'"><i style="background:'+x[3]+'"></i><span>'+x[1]+'</span></button>';}).join('')+'</div>'+
     (pal==='base'?'<div class="small muted" style="margin:14px 0 8px">Светлая или тёмная</div><div class="chips" style="margin:0">'+[['auto','Как в телефоне'],['light','Светлая'],['dark','Тёмная']].map(function(t){return '<button class="chip'+(theme===t[0]?' on':'')+'" data-a="theme" data-v="'+t[0]+'">'+t[1]+'</button>';}).join('')+'</div>':'<div class="hint">Цветная тема всегда выглядит одинаково; выбор «светлая / тёмная» работает для «Классики».</div>')+'</div>';
   var bk=backupCfg(),DOWN=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
@@ -3419,6 +3478,9 @@ var H={
   catmore:function(){nav.catMore=!nav.catMore;render();},
   rcat:function(el){var c=el.dataset.v,a=rsel().slice(),i=a.indexOf(c);if(i>=0)a.splice(i,1);else{a=a.filter(function(x){return x.indexOf(c+' › ')!==0;});a.push(c);}nav.rsel=a;render();},
   rsub:function(el){var c=el.dataset.v,k=ckey(c,el.dataset.s),a=rsel().slice(),i=a.indexOf(c);if(i>=0){a.splice(i,1);SUBS_OF_CAT(c).forEach(function(n){var kk=ckey(c,n);if(n!==el.dataset.s&&a.indexOf(kk)<0)a.push(kk);});}else{var j=a.indexOf(k);if(j>=0)a.splice(j,1);else a.push(k);}nav.rsel=a;render();},
+  rmode:function(el){nav.rmode=el.dataset.v;render();},
+  repweek:function(el){var cm=mondayOf(today()),n=addDays(nav.rweek||cm,7*(+el.dataset.v));if(n>cm)return;nav.rweek=n;render();},
+  wktog:function(){S.settings.noWeek=!S.settings.noWeek;if(S.settings.noWeek)nav.rmode='month';save();render();},
   rreset:function(){nav.rsel=[];render();},
   rops:function(){nav.filter='expense';nav.fcats=rsel().slice();nav.per='ym';nav.pym=nav.rep||today().slice(0,7);nav.q='';nav.facc='';go('ops');},
   back2:function(){nav.sub=null;render();window.scrollTo(0,0);},
