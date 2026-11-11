@@ -287,8 +287,8 @@ var CUR={
 var WEAK=['VND','JPY','KRW'];
 var TYPES={cash:'Наличные',card_ru:'Карта РФ',card_vn:'Карта Вьетнама',card_other:'Другая карта',crypto:'Крипта',broker:'Брокер',other:'Другое'};
 var INC=['Зарплата','Подработка','Подарок','Другое'];
-var EXP=['Продукты','Еда вне дома','Кофе и напитки','Транспорт','Мопед','Аренда жилья','Жильё','Связь','Подписки','Развлечения','Здоровье','Покупки','Быт и хозтовары','Одежда','Путешествия','Спорт','Образование','Подарки','Мама','Питомцы','Красота','Дети','Дом и ремонт','Другое'];
-var EMO={'Корректировка':'⚖️','Продукты':'🛒','Еда':'🍜','Еда вне дома':'🍽','Кофе и напитки':'☕','Аренда жилья':'🔑','Подписки':'🎟','Быт и хозтовары':'🧻','Транспорт':'🚕','Мопед':'🛵','Жильё':'🏠','Связь':'📱','Развлечения':'🎬','Здоровье':'💊','Покупки':'🛍','Одежда':'👕','Путешествия':'✈️','Спорт':'🏋','Образование':'📚','Подарки':'🎁','Мама':'❤️','Питомцы':'🐾','Красота':'💅','Дети':'👶','Дом и ремонт':'🔧','Зарплата':'💼','Подработка':'🧾','Подарок':'🎁','Начальный остаток':'🏁','Другое':'📄'};
+var EXP=['Продукты','Кофе и напитки','Еда вне дома','Мопед','Сигареты','Спорт','Покупки','Другое','Жильё','Одежда','Развлечения','Здоровье','Образование','Транспорт','Подписки','Быт и хозтовары','Красота','Связь','Мама','Аренда жилья'];
+var EMO={'Корректировка':'⚖️','Продукты':'🛒','Еда':'🍜','Еда вне дома':'🍽','Кофе и напитки':'☕','Сигареты':'🚬','Аренда жилья':'🔑','Подписки':'🎟','Быт и хозтовары':'🧻','Транспорт':'🚕','Мопед':'🛵','Жильё':'🏠','Связь':'📱','Развлечения':'🎬','Здоровье':'💊','Покупки':'🛍','Одежда':'👕','Путешествия':'✈️','Спорт':'🏋','Образование':'📚','Подарки':'🎁','Мама':'❤️','Питомцы':'🐾','Красота':'💅','Дети':'👶','Дом и ремонт':'🔧','Зарплата':'💼','Подработка':'🧾','Подарок':'🎁','Начальный остаток':'🏁','Другое':'📄'};
 var ICONSET=['🏷','🛒','☕','🍺','🎮','🎵','🚗','🌿','💻','🧴','🧸','🎨','⚽','🎓','💡','🧹','🚬','🎗','🧳','📦'];
 var nfCompact=new Intl.NumberFormat('ru-RU',{notation:'compact',maximumFractionDigits:1});
 function fmtShort(n,c){var f=fmt(n,c);return f.length<=10?f:nfCompact.format(n)+'\u00A0'+(cinfo(c).s||c);}
@@ -313,14 +313,19 @@ function topSegs(list,label){
 }
 /* Подкатегории: пока только у «Мопеда». oneoff — разовые траты, которые не входят в среднюю трату в день */
 var SUBS={
-  'Продукты':[{n:'Фрукты и овощи',ic:'🍎'},{n:'Мясо, рыба, яйца',ic:'🥩'},{n:'Молочка, хлеб, бакалея',ic:'🥛'},{n:'Кулинария',ic:'🍱'},{n:'Сладости и снеки',ic:'🍫'},{n:'Прочее',ic:'🛒'}],
+  'Продукты':[{n:'Фрукты и овощи',ic:'🍎'},{n:'Молочка, хлеб, бакалея',ic:'🥛'},{n:'Мясо, рыба, яйца',ic:'🥩'},{n:'Сладости и снеки',ic:'🍫'},{n:'Прочее',ic:'🛒'},{n:'Кулинария',ic:'🍱'}],
   'Еда вне дома':[{n:'Стритфуд',ic:'🌮'},{n:'Доставка',ic:'🛵'}],
-  'Кофе и напитки':[{n:'Кофе',ic:'☕'},{n:'Напитки',ic:'🧋'}],
-  'Здоровье':[{n:'Аптека',ic:'💊'},{n:'Врачи и анализы',ic:'🩺'},{n:'Страховка',ic:'🛡'}],
-  'Спорт':[{n:'Тренажёрный зал',ic:'🏋'},{n:'Пиклбол',ic:'🏓'},{n:'Спортивное питание',ic:'🥤'}],
+  'Кофе и напитки':[{n:'Напитки',ic:'🧋'},{n:'Кофе',ic:'☕'}],
+  'Здоровье':[{n:'Врачи и анализы',ic:'🩺'},{n:'Аптека',ic:'💊'},{n:'Страховка',ic:'🛡'}],
+  'Спорт':[{n:'Пиклбол',ic:'🏓'},{n:'Спортивное питание',ic:'🥤'},{n:'Тренажёрный зал',ic:'🏋'}],
   'Развлечения':[{n:'Кафе и рестораны',ic:'🍷'},{n:'Кино и концерты',ic:'🎬'},{n:'Экскурсии и парки',ic:'🎡'},{n:'Игры и клубы',ic:'🎯'}],
   'Жильё':[{n:'Коммуналка',ic:'💡'},{n:'Прачечная',ic:'🧺'}],
-  'Мопед':[{n:'Топливо',ic:'⛽'},{n:'Обслуживание',ic:'🔧'},{n:'Покупка',ic:'📦',oneoff:true}]};
+  'Мопед':[{n:'Обслуживание',ic:'🔧'},{n:'Топливо',ic:'⛽'},{n:'Покупка',ic:'📦',oneoff:true}]};
+function subsFor(cat){
+  var base=SUBS[cat];if(!base)return [];
+  var n={};S.tx.forEach(function(t){if(!t.opening&&t.cat===cat&&t.sub)n[t.sub]=(n[t.sub]||0)+1;});
+  return base.slice().sort(function(a,b){return (n[b.n]||0)-(n[a.n]||0);});
+}
 function subInfo(cat,sub){return (SUBS[cat]||[]).filter(function(x){return x.n===sub;})[0]||null;}
 var ONEOFF_CATS=['Мама'];/* категории-переводы: не входят в среднюю трату в день */
 function defOneOff(cat,sub){if(ONEOFF_CATS.indexOf(cat)>=0)return true;var x=subInfo(cat,sub);return !!(x&&x.oneoff);}
@@ -384,7 +389,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.3';
+var VERSION='4.4';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -859,12 +864,13 @@ function viewAccounts(){
     if(a.cur!==main){var r=rateToMain(a.cur);if(r!=null)h+='<div class="small muted" style="margin-top:4px">≈ '+fmt(A.bal*r,main)+'</div>';}
     h+='<button class="btn plain" data-a="setbal" data-id="'+a.id+'" style="margin-top:14px">Указать, сколько сейчас на счёте</button><button class="btn plain" data-a="togacc" data-id="'+a.id+'" style="margin-top:8px">'+(a.excl?'Не входит в общую сумму — включить':'Входит в общую сумму — отключить')+'</button></div>';
     if(a.cur!==main){
-      h+='<div class="card"><h3>Партии (FIFO)</h3><div class="small muted" style="margin:-4px 0 6px">Тратятся сверху вниз: сначала самые старые.</div>';
-      if(!A.lots.length)h+='<div class="small muted">Партий нет — на счёте пусто.</div>';
+      var lh='<div class="card"><h3>Партии (FIFO)</h3><div class="small muted" style="margin:-4px 0 6px">Тратятся сверху вниз: сначала самые старые.</div>';
+      if(!A.lots.length)lh+='<div class="small muted">Партий нет — на счёте пусто.</div>';
       A.lots.forEach(function(l){
-        h+='<div class="row" style="padding:7px 0;border-top:1px solid var(--line)"><div><div class="t1 num">'+fmt(l.amt,a.cur)+'</div><div class="t2">'+dshort(l.date)+'</div></div><div class="small muted" style="text-align:right">'+(l.rate!=null?(l.est?'ориентировочно: ':'')+(l.src===main?showRate(a.cur,l.rate):'1 '+a.cur+' = '+nfRate.format(l.rate)+' '+l.src):'курс не указан')+'</div></div>';
+        lh+='<div class="row" style="padding:7px 0;border-top:1px solid var(--line)"><div><div class="t1 num">'+fmt(l.amt,a.cur)+'</div><div class="t2">'+dshort(l.date)+'</div></div><div class="small muted" style="text-align:right">'+(l.rate!=null?(l.est?'ориентировочно: ':'')+(l.src===main?showRate(a.cur,l.rate):'1 '+a.cur+' = '+nfRate.format(l.rate)+' '+l.src):'курс не указан')+'</div></div>';
       });
-      h+='</div>';
+      lh+='</div>';
+      h+=spoil('fifo_'+a.id,'Партии и курсы (FIFO)',A.lots.length?A.lots.length+' '+plural(A.lots.length,'партия','партии','партий'):'пусто',lh);
     }
     var ops=S.tx.filter(function(t){return t.acc===a.id||t.to===a.id;}).sort(cmp).reverse(),lim=nav.accAll?ops.length:50,day='';
     h+='<div class="card"><h3>Операции</h3>'+(ops.length?ops.slice(0,lim).map(function(t){
@@ -1460,7 +1466,6 @@ function viewReport(){
       return '<div class="col"><div class="pair"><i class="a" style="height:'+Math.round(o.x.inc/mx*100)+'%"></i><i class="b" style="height:'+Math.round(o.x.exp/mx*100)+'%"></i></div>'+lab+'</div>';
     }).join('')+'</div><div class="small muted" style="margin-top:10px"><span class="pos">■</span> доходы &nbsp; <span class="neg">■</span> расходы</div></div>';
   }
-  h+=capitalCard();
   // инвестиции
   if(S.inv.length){
     var inv=0,now=0,miss=[];
@@ -1474,7 +1479,6 @@ function viewReport(){
   if(st.miss)notes.push('Не учтено операций: '+st.miss+' — для их валюты нет курса.');
   if(st.est)notes.push('Часть расходов в иностранной валюте оценена по ориентировочному курсу (помечено * в списке операций).');
   if(notes.length)h+='<div class="small muted" style="margin:12px 4px">'+notes.join(' ')+'</div>';
-  h+=reportExportCard(ym);
   return h;
   }finally{RFILT=null;}
 }
@@ -1614,11 +1618,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.4',items:['Ввод расхода: 8 частых категорий сразу на экране, «Сигареты» в основном списке, в «Ещё ›» и в подкатегориях всё отсортировано по частоте, убраны 5 неиспользуемых категорий и лишнее поле ввода своей категории','Упрощение экранов: «Партии (FIFO)» внутри счёта свёрнуты в спойлер, из «Отчёта» убраны «Капитал» и экспорт, из «Ещё» убран мастер настройки, а выбор основной валюты перенесён внутрь «Моих валют»']},
   {v:'4.3',items:['«Отчёт»: переключатель «Месяц / Неделя» (неделя с понедельника по воскресенье, можно листать), итоги, столбики по дням, куда ушло и тепловая карта в спойлере','Переключатель можно скрыть в «Ещё»']},
   {v:'4.2',items:['Правка по сверке с банком: пиклбол 01.11 исправлен на 100 000, добавлены пиклбол 03.11 (100 000) и парковка мопеда 01.11 (210 000)']},
   {v:'4.1',items:['«Отчёт»: расходы по категориям теперь вверху, у категорий и подкатегорий есть галочки — график, итоги и «Пульс месяца» считаются только по выбранным','«На сколько хватит денег» и «Прогноз на конец месяца» свёрнуты в спойлеры']},
   {v:'4.0',items:['Главная стала проще: три главных числа (всего, потрачено сегодня, на сколько хватит), три кнопки, топ-3 категории','«Обмен» и «Перевод» объединены в «Перевод»: форма сама показывает, перевод это или обмен','Из «Ещё» убраны долги, инвестиции, шаблоны, сверка, финпомощник, постоянные платежи, лимиты, цитата дня и напоминания о копии (данные сохраняются)','«Ещё» сгруппировано, длинные пояснения свёрнуты']},
-  {v:'3.9',items:['«Операции»: фильтры в одном окне, можно выбрать несколько категорий и подкатегорий','Сверху видна сумма найденных операций, есть режим «По категориям» со сворачиваемыми группами']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1783,9 +1787,8 @@ function viewMore(){
     it('savings','🐷','Накопления и цель','Откладываешь только ты, вручную')+
     it('exchange','⇄','Обмен валюты','Средний курс, остатки, сколько обменяно')+'</div>';
   h+='<div class="grp">Настройки</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
-    it('curs','💱','Мои валюты','Какие валюты показывать в списках')+
+    it('curs','💱','Мои валюты','Основная: '+main+(S.settings.favs.length?' · в списках: '+S.settings.favs.join(', '):''))+
     it('about','ℹ️','О приложении','Что это и что менялось по версиям')+'</div>';
-  h+='<div class="card"><h3>Основная валюта</h3><select data-set="main">'+curOptions(main)+'</select><div class="hint">Лучше менять до добавления операций: в ней показываются итоги и считается курс по FIFO.</div></div>';
   h+='<div class="card"><h3>Курсы валют</h3><div class="small">Рыночные курсы: '+(S.mkt?dlong(S.mkt.date):'ещё не загружались.')+' Курсы ЦБ РФ (запасные): '+dlong(S.auto.date)+' Обновляются сами при открытии приложения.</div><details class="dt"><summary>Как выбирается курс</summary><div class="hint">1) по FIFO — средний курс, по которому ты реально получил деньги, что сейчас лежат в этой валюте; 2) заданный вручную; 3) рыночный из интернета; 4) ЦБ РФ.</div></details><div class="row small muted" style="margin-top:10px"><span>'+rateAgeText()+'</span><button class="chip" data-a="refresh">Обновить курсы</button></div>'+rateDiag();
   var foreign=[];S.accounts.forEach(function(a){if(a.cur!==main&&foreign.indexOf(a.cur)<0)foreign.push(a.cur);});
   if(foreign.length){
@@ -1807,7 +1810,6 @@ function viewMore(){
   h+='</div>';
   h+=ghCard();
   h+=notifCard();
-  h+='<div class="card"><h3>Настройка</h3><button class="btn plain" data-a="wizard" style="margin-top:0">Мастер настройки</button><div class="hint">Добавит валюты и счета, ничего не удаляя.</div></div>';
   h+='<div class="card"><h3>Опасная зона</h3><button class="btn ghost" data-a="wipe" style="margin-top:0">Удалить все данные</button></div>';
   h+='<div class="small muted" style="text-align:center;margin:16px 0">Lucky Finance · версия '+VERSION+'</div>';
   return h;
@@ -1841,15 +1843,18 @@ function openCurPicker(onPick,onBack,noFav){
   openSheet('<h2>Выбери валюту</h2><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" autocomplete="off">'+curGroups('picker')+'<button class="btn plain" data-a="curback">Назад</button>');
 }
 function viewCurs(){
-  var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Мои валюты</h1><div class="small muted">Включи только те валюты, с которыми работаешь: именно они будут в списках выбора и в обновлении курсов. Валюты, уже используемые в счетах и активах, скрыть нельзя.</div><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" style="margin-top:12px" autocomplete="off">';
+  var main=S.settings.main;
+  var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Мои валюты</h1>';
+  h+='<div class="card"><h3>Основная валюта</h3><select data-set="main">'+curOptions(main)+'</select><div class="hint">В ней показываются итоги и считается курс по FIFO.</div></div>';
+  h+='<div class="small muted" style="margin-top:12px">Включи только те валюты, с которыми работаешь: именно они будут в списках выбора и в обновлении курсов. Валюты, уже используемые в счетах и активах, скрыть нельзя.</div><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" style="margin-top:10px" autocomplete="off">';
   h+=curGroups('screen');
   h+='<div class="card"><h3>Своя валюта</h3><input id="newcur" placeholder="Код, например DOT" maxlength="8" autocomplete="off" style="margin-top:0"><button class="btn plain sm" data-a="addcur">Добавить</button></div>';
   return h;
 }
 
 function openCatPicker(type){
-  var all=catsFor(type);
-  openSheet('<h2>Категория</h2><input data-ctq="1" placeholder="Поиск категории…" autocomplete="off"><div class="card" style="margin-top:10px;padding:4px 16px">'+all.map(function(c){return '<button class="item" data-ct="'+esc(c.toLowerCase())+'" data-a="catpick" data-v="'+esc(c)+'"><div class="ic">'+catIcon(c)+'</div><div class="grow"><div class="t1">'+esc(c)+'</div></div></button>';}).join('')+'</div>');
+  var all=catsFor(type),n=catCounts(type);
+  openSheet('<h2>Категория</h2><input data-ctq="1" placeholder="Поиск категории…" autocomplete="off"><div class="card" style="margin-top:10px;padding:4px 16px">'+all.map(function(c){return '<button class="item" data-ct="'+esc(c.toLowerCase())+'" data-a="catpick" data-v="'+esc(c)+'"><div class="ic">'+catIcon(c)+'</div><div class="grow"><div class="t1">'+esc(c)+'</div></div>'+(n[c]?'<span class="small muted num">'+n[c]+'</span>':'')+'</button>';}).join('')+'</div>');
 }
 function filterCats(q){
   q=(q||'').trim().toLowerCase();
@@ -1882,14 +1887,17 @@ function ask(msg,yes,fn){
 }
 
 /* Операция */
-function freqCats(type){
+function catCounts(type){
   var n={};S.tx.forEach(function(t){if(t.type===type&&t.cat&&!t.opening)n[t.cat]=(n[t.cat]||0)+1;});
-  return Object.keys(n).sort(function(a,b){return n[b]-n[a];}).slice(0,6);
+  return n;
 }
 function catsFor(type){
-  var base=type==='income'?INC:EXP;
+  var base=type==='income'?INC:EXP,n=catCounts(type);
   var used=[];S.tx.forEach(function(t){if(t.type===type&&t.cat&&!t.opening&&base.indexOf(t.cat)<0&&used.indexOf(t.cat)<0)used.push(t.cat);});
-  return base.concat(used);
+  return base.concat(used).sort(function(a,b){return (n[b]||0)-(n[a]||0);});
+}
+function freqCats(type){
+  return catsFor(type).slice(0,type==='expense'?8:6);
 }
 function openOp(type,t){
   if(!S.accounts.length){toast('Сначала добавь счёт');go('accounts');return;}
@@ -1946,21 +1954,15 @@ function renderOp(){
   if(isMove&&diff)h+='<label>Получаю<div class="amtwrap"><input inputmode="decimal" data-f="toS" value="'+esc(F.toS)+'" placeholder="0" autocomplete="off"><span>'+B.cur+'</span></div></label>';
   if(t==='income'||t==='expense'){
     if(!F.opening){
-      var allc=catsFor(t),freq=freqCats(t),shown=freq.slice();
-      allc.forEach(function(c){if(shown.length<6&&shown.indexOf(c)<0)shown.push(c);});
-      h+='<label>Категория</label><div class="chips" style="margin-top:2px">'+shown.map(function(c){return '<button class="chip'+(F.cat===c?' on':'')+'" data-a="cat" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+'<button class="chip" data-a="catall">Ещё ›</button></div>';
+      var allc=catsFor(t),shown=freqCats(t);
+      h+='<label>Категория</label><div class="chips" style="margin-top:2px">'+shown.map(function(c){return '<button class="chip'+(F.cat===c?' on':'')+'" data-a="cat" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+(allc.length>shown.length?'<button class="chip" data-a="catall">Ещё ›</button>':'')+'</div>';
       if(F.cat&&shown.indexOf(F.cat)<0)h+='<div class="chips" style="margin-top:6px"><button class="chip on" data-a="cat" data-v="'+esc(F.cat)+'">'+catIcon(F.cat)+' '+esc(F.cat)+'</button></div>';
-      if(SUBS[F.cat])h+='<div class="small muted" style="margin-top:10px">Подкатегория (необязательно)</div><div class="chips" style="margin-top:4px">'+SUBS[F.cat].map(function(x){return '<button class="chip'+(F.sub===x.n?' on':'')+'" data-a="subcat" data-v="'+esc(x.n)+'">'+x.ic+' '+esc(x.n)+'</button>';}).join('')+'</div>'+(subInfo(F.cat,F.sub)&&subInfo(F.cat,F.sub).oneoff?'<div class="hint">Разовая трата: не войдёт в среднюю трату в день и прогнозы.</div>':'');
+      if(SUBS[F.cat])h+='<div class="small muted" style="margin-top:10px">Подкатегория (необязательно)</div><div class="chips" style="margin-top:4px">'+subsFor(F.cat).map(function(x){return '<button class="chip'+(F.sub===x.n?' on':'')+'" data-a="subcat" data-v="'+esc(x.n)+'">'+x.ic+' '+esc(x.n)+'</button>';}).join('')+'</div>'+(subInfo(F.cat,F.sub)&&subInfo(F.cat,F.sub).oneoff?'<div class="hint">Разовая трата: не войдёт в среднюю трату в день и прогнозы.</div>':'');
       if(t==='expense'){var oneEff=F.oneoff!==undefined?F.oneoff:defOneOff(F.cat,F.sub);
         h+='<button class="item" data-a="oneoff" style="margin-top:10px"><div class="grow"><div class="t1">📌 Разовая трата</div><div class="t2" style="white-space:normal">Учитывается в отчётах, но не входит в среднюю трату в день и прогнозы</div></div><span class="sw'+(oneEff?' on':'')+'"></span></button>';}
-      h+='<input data-f="cat" value="'+esc(F.cat)+'" placeholder="Или впиши свою категорию" autocomplete="off">';
-      if(F.showIcon){
-        var known=(EMO[(F.cat||'').trim()]!=null)||(S.settings.catIcons[(F.cat||'').trim()]!=null);
-        if(!known&&(F.cat||'').trim())h+='<div class="small muted" style="margin-top:8px">Выбери значок для «'+esc(F.cat.trim())+'»</div><div class="catgrid">'+ICONSET.map(function(e){return '<button data-a="caticon" data-v="'+e+'" class="'+(F.icon===e?'on':'')+'">'+e+'</button>';}).join('')+'</div>';
-      }
     }
   }
-  h+='<label>Заметка<input data-f="note" value="'+esc(F.note)+'" placeholder="Необязательно. #Далат — тег поездки" autocomplete="off"></label>';
+  h+='<label>Заметка<input data-f="note" value="'+esc(F.note)+'" placeholder="Необязательно" autocomplete="off"></label>';
   h+='<div class="hint" id="hint"></div>';
   h+='<button class="btn '+(t==='income'?'income':t==='expense'?'expense':'')+'" data-a="saveop">'+(F.edit?'Сохранить':'Добавить')+'</button>';
   if(F.edit&&!F.opening)h+='<button class="btn plain" data-a="repeat" style="margin-top:8px">Повторить сегодня</button>';
