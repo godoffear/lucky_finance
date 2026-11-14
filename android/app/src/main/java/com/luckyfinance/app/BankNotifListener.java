@@ -27,14 +27,23 @@ public class BankNotifListener extends NotificationListenerService {
             String body = (big != null && big.length() > 0) ? big.toString() : (text != null ? text.toString() : "");
             String all = (title != null ? title : "") + "\n" + body;
             if (!all.contains("Transaction amount") || !all.contains("Ending balance")) return;
+            enqueue(this, all, sbn.getPostTime());
+        } catch (Exception e) {
+            /* молча: чужое уведомление не должно ронять службу */
+        }
+    }
+
+    /** Кладёт текст в очередь (без дублей). Используется и для SMS. */
+    static void enqueue(Context c, String all, long t) {
+        try {
             synchronized (LOCK) {
-                SharedPreferences p = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+                SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
                 JSONArray q = new JSONArray(p.getString("q", "[]"));
                 for (int i = 0; i < q.length(); i++) {
                     if (all.equals(q.getJSONObject(i).optString("x"))) return;
                 }
                 JSONObject o = new JSONObject();
-                o.put("t", sbn.getPostTime());
+                o.put("t", t);
                 o.put("x", all);
                 q.put(o);
                 JSONArray cut = new JSONArray();
@@ -42,7 +51,7 @@ public class BankNotifListener extends NotificationListenerService {
                 p.edit().putString("q", cut.toString()).apply();
             }
         } catch (Exception e) {
-            /* молча: чужое уведомление не должно ронять службу */
+            /* молча */
         }
     }
 }

@@ -101,6 +101,7 @@ public class LuckyNativePlugin extends Plugin {
         synchronized (BankNotifListener.LOCK) {
             r.put("q", getContext().getSharedPreferences(BankNotifListener.PREFS, Context.MODE_PRIVATE).getString("q", "[]"));
         }
+        r.put("sms", androidx.core.content.ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.RECEIVE_SMS) == android.content.pm.PackageManager.PERMISSION_GRANTED);
         r.put("access", NotificationManagerCompat.getEnabledListenerPackages(getContext()).contains(getContext().getPackageName()));
         call.resolve(r);
     }
@@ -120,6 +121,12 @@ public class LuckyNativePlugin extends Plugin {
         } catch (Exception e) {
             call.reject("queue failed");
         }
+    }
+
+    @PluginMethod
+    public void requestSms(PluginCall call) {
+        getActivity().requestPermissions(new String[]{android.Manifest.permission.RECEIVE_SMS}, 9101);
+        call.resolve();
     }
 
     @PluginMethod
