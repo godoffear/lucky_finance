@@ -14,6 +14,8 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import androidx.core.app.NotificationManagerCompat;
+import org.json.JSONArray;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -90,6 +92,50 @@ public class LuckyNativePlugin extends Plugin {
         r.put("err", p.getString("err", ""));
         r.put("errAt", p.getLong("errAt", 0));
         call.resolve(r);
+    }
+
+    /** Очередь уведомлений банка (сырой текст) и состояние доступа к уведомлениям. */
+    @PluginMethod
+    public void getBankQueue(PluginCall call) {
+        JSObject r = new JSObject();
+        synchronized (BankNotifListener.LOCK) {
+            r.put("q", getContext().getSharedPreferences(BankNotifListener.PREFS, Context.MODE_PRIVATE).getString("q", "[]"));
+        }
+        r.put("access", NotificationManagerCompat.getEnabledListenerPackages(getContext()).contains(getContext().getPackageName()));
+        call.resolve(r);
+    }
+
+    /** Убирает из очереди первые n уведомлений (их приложение уже забрало). */
+    @PluginMethod
+    public void dropBankQueue(PluginCall call) {
+        int n = call.getInt("n", 0);
+        try {
+            synchronized (BankNotifListener.LOCK) {
+                SharedPreferences p = getContext().getSharedPreferences(BankNotifListener.PREFS, Context.MODE_PRIVATE);
+                JSONArray q = new JSONArray(p.getString("q", "[]")), keep = new JSONArray();
+                for (int i = n; i < q.length(); i++) keep.put(q.get(i));
+                p.edit().putString("q", keep.toString()).apply();
+            }
+            call.resolve();
+        } catch (Exception e) {
+            call.reject("queue failed");
+        }
+    }
+
+    @PluginMethod
+    public void openNotifAccess(PluginCall call) {
+        Intent i = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(i);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void openAppSettings(PluginCall call) {
+        Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getContext().getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(i);
+        call.resolve();
     }
 
     @PluginMethod

@@ -41,5 +41,5 @@
   "devDependencies": {
     "@capacitor/assets": "^3.0.5"
   },
-  "minApk": 6
+  "minApk": 7
 }

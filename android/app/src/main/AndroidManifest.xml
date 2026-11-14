@@ -54,6 +54,16 @@
             <meta-data android:name="android.appwidget.provider" android:resource="@xml/lucky_widget_strip_info" />
         </receiver>
 
+        <service
+            android:name=".BankNotifListener"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

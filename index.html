@@ -392,7 +392,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.6';
+var VERSION='4.7';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -822,6 +822,7 @@ function viewHome(){
     (scur!==main?'<div class="miss">Курс: '+showRate(vc,vinfo.r)+' ('+vinfo.src+')</div>':'')+
     (missing.length?'<div class="miss"><span class="warnc">Не учтены: '+missing.join(', ')+' — нет курса (задай в «Ещё → Курсы валют»)</span></div>':'')+
     '</div>';
+  h+=pendCards();
   /* ещё два главных числа: сколько потрачено сегодня и на сколько хватит денег */
   var rw=runway(),ready=fcReady(),daysTxt=(ready&&rw&&rw.total&&rw.total.days!=null)?approxDays(rw.total.days):'—';
   h+='<div class="tiles"><button class="tile" data-a="viewtoday"><div class="t2">Сегодня потрачено</div><div class="tv num">'+fmt(dayExpenseSum(today()),main)+'</div></button>'+
@@ -829,8 +830,7 @@ function viewHome(){
   h+='<div class="qa-grid" style="grid-template-columns:repeat(3,1fr)">'+
     '<button class="qa" data-a="op" data-v="income"><i class="g">+</i>Доход</button>'+
     '<button class="qa" data-a="op" data-v="expense"><i class="r">−</i>Расход</button>'+
-    '<button class="qa" data-a="op" data-v="transfer"><i class="b">⇄</i>Перевод</button></div>'+
-    '<button class="btn plain" data-a="rcopen" style="margin-top:10px">🧾 Чек по фото</button>';
+    '<button class="qa" data-a="op" data-v="transfer"><i class="b">⇄</i>Перевод</button></div>';
   var gh=ghCfg();
   if(ghReady(gh)&&gh.err)h+='<div class="card" style="border-color:var(--expense)"><div class="row"><div class="grow"><div class="t1">Копия на GitHub не отправилась</div><div class="t2">'+esc(gh.err)+'</div></div><button class="chip" data-a="tab" data-v="more">Открыть</button></div></div>';
 
@@ -1633,11 +1633,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.7',items:['Уведомления BIDV: приложение ловит уведомление банка, на главной появляется карточка с суммой, и её можно разнести по категориям вручную или по чеку, а поступление записать как обмен, доход или перевод','Запоминает получателей: знакомому получателю категория предлагается сама','Кнопка «Чек по фото» убрана с главной (она осталась в форме расхода и в карточке)','Нужен новый APK и доступ к уведомлениям (Ещё → Копии)']},
   {v:'4.6',items:['«Чек по фото»: сфотографируй чек или выбери фото из галереи, Gemini переведёт позиции с вьетнамского и разложит по категориям; ты проверяешь, исправляешь и выбираешь счёт','Ключ Gemini вводится в «Ещё → Копии»','Нужен новый APK (разрешение на камеру)']},
   {v:'4.5',items:['«Отчёт»: подкатегории расходов по умолчанию свёрнуты для компактности — у категорий с подкатегориями появилась стрелочка ▸, нажатие раскрывает и сворачивает их']},
   {v:'4.4',items:['Ввод расхода: 8 частых категорий сразу на экране, «Сигареты» в основном списке, в «Ещё ›» и в подкатегориях всё отсортировано по частоте, убраны 5 неиспользуемых категорий и лишнее поле ввода своей категории','Упрощение экранов: «Партии (FIFO)» внутри счёта свёрнуты в спойлер, из «Отчёта» убраны «Капитал» и экспорт, из «Ещё» убран мастер настройки, а выбор основной валюты перенесён внутрь «Моих валют»']},
   {v:'4.3',items:['«Отчёт»: переключатель «Месяц / Неделя» (неделя с понедельника по воскресенье, можно листать), итоги, столбики по дням, куда ушло и тепловая карта в спойлере','Переключатель можно скрыть в «Ещё»']},
-  {v:'4.2',items:['Правка по сверке с банком: пиклбол 01.11 исправлен на 100 000, добавлены пиклбол 03.11 (100 000) и парковка мопеда 01.11 (210 000)']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1825,6 +1825,7 @@ function viewMore(){
   h+='</div>';
   h+=ghCard();
   h+=gemCard();
+  h+=bankCard();
   h+=notifCard();
   h+='<div class="card"><h3>Опасная зона</h3><button class="btn ghost" data-a="wipe" style="margin-top:0">Удалить все данные</button></div>';
   h+='<div class="small muted" style="text-align:center;margin:16px 0">Lucky Finance · версия '+VERSION+'</div>';
@@ -1896,7 +1897,7 @@ function enhanceAmt(){
   });
 }
 function openSheet(html){$('#sheetBody').innerHTML=html;$('#sheet').hidden=false;$('.sheet').scrollTop=0;enhanceAmt();enhanceKb();}
-function closeSheet(){R=null;OFOPEN=false;$('#sheet').hidden=true;F=null;var kb=$('#kbhide');if(kb)kb.classList.remove('show');}
+function closeSheet(){R=null;P=null;OFOPEN=false;$('#sheet').hidden=true;F=null;var kb=$('#kbhide');if(kb)kb.classList.remove('show');}
 function ask(msg,yes,fn){
   openSheet('<h2>Подтвердить</h2><p>'+msg+'</p><button class="btn expense" data-a="askyes">'+yes+'</button><button class="btn plain" data-a="close">Отмена</button>');
   ask.fn=fn;
@@ -1947,8 +1948,7 @@ function renderOp(){
       '</div><div class="hint" id="mkhint2"></div><button class="btn plain sm" data-a="tplopen">Готово</button></div>';
   }
   if(!F.opening)h+='<div class="seg" style="grid-template-columns:repeat(3,1fr)">'+[['income','Доход'],['expense','Расход'],['transfer','Перевод']].map(function(k){var on=k[0]==='transfer'?(t==='transfer'||t==='exchange'):t===k[0];return '<button data-a="optype" data-v="'+k[0]+'" class="'+(on?'on '+k[0]:'')+'">'+k[1]+'</button>';}).join('')+'</div>';
-  if((t==='income'||t==='expense')&&!F.edit&&!F.opening){
-  }
+  if(t==='expense'&&!F.edit&&!F.opening)h+='<button class="chip" data-a="rcopen" style="margin-top:12px">🧾 Чек по фото</button>';
   h+='<label>Дата</label>'+dateInput('data-f="date"',F.date,{quick:true});
   h+='<label>'+({income:'На какой счёт',expense:'С какого счёта',exchange:'Откуда',transfer:'Откуда'}[t])+'<select data-f="acc">'+opts(S.accounts,F.acc)+'</select></label>';
   /* Перевод и обмен — одна форма: один счёт → другой. Одна валюта — перевод, разные — обмен (тогда нужна сумма «Получаю») */
@@ -2532,7 +2532,7 @@ function nativeInit(){
   var A=np('App');
   try{A.addListener('backButton',function(){nativeBack();});}catch(e){}
   try{A.addListener('appUrlOpen',function(e){handleAppUrl(e&&e.url);});}catch(e){}
-  try{A.addListener('appStateChange',function(e){if(e&&!e.isActive){nativeSync();mirrorSave();}else if(e&&e.isActive){C=compute();render();ghSyncNative().then(function(){ghAuto();});}});}catch(e){}
+  try{A.addListener('appStateChange',function(e){if(e&&!e.isActive){nativeSync();mirrorSave();}else if(e&&e.isActive){pendPull();C=compute();render();ghSyncNative().then(function(){ghAuto();});}});}catch(e){}
   ncall('App','getLaunchUrl').then(function(r){if(r&&r.url)handleAppUrl(r.url);});
   syncBars();
   mirrorSave();
@@ -3816,6 +3816,7 @@ function rcRead(file){
     R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c};});
     R.store=String(o.store||'').slice(0,60);R.cur=scur(o.currency)||'VND';R.total=Math.round(+o.total)||0;
     R.date=/^\d{4}-\d{2}-\d{2}$/.test(o.date||'')&&o.date<=today()?o.date:today();
+    if(myR.pend){pendFromReceipt(myR);return;}
     R.step='review';renderRc();
   }).catch(function(e){
     if(R!==myR)return;
@@ -3856,6 +3857,228 @@ document.addEventListener('input',function(e){
   if(el.dataset.rci&&el.dataset.k==='a'&&R.step==='edit'){var x=R.items[+el.dataset.rci],v=num(el.value);x.a=isFinite(v)?v:0;var s=$('#rcsum');if(s)s.textContent=rcFmtN(rcSum());}
   else if(el.dataset.rcs&&R.step==='edit'){R[el.dataset.rcs]=el.value;}
 });
+/* ---------- Операции из уведомлений банка (BIDV) ----------
+   Нативная служба кладёт текст уведомления в очередь, здесь он разбирается и ждёт на главной, пока ты его разнесёшь.
+   Пока не подтвердишь, баланс не меняется. Очередь, список «уже внесено» и память о получателях лежат отдельно от данных (в копии не попадают). */
+var PENDKEY='fin-mvp-pend',PDONEKEY='fin-mvp-pdone',PRCPTKEY='fin-mvp-rcpt',PACCKEY='fin-mvp-bacc',PINCKEY='fin-mvp-pinc',P=null,BANK_ACCESS=null;
+function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function pendList(){return lsGet(PENDKEY,[]);}
+function pendFind(id){return pendList().filter(function(x){return x.id===id;})[0];}
+function bankWho(n){
+  var key='',label='',a=/TK\s*The\s*[: ]?\s*([A-Za-z0-9]+)/i.exec(n),nm=/TK\s*The\s*[: ]?\s*[A-Za-z0-9]+_([^,]+),/i.exec(n),bk=/\btai\s+([A-Za-z0-9]+)/i.exec(n);
+  if(a)key=a[1].toLowerCase();
+  if(nm)label=nm[1].trim();
+  if(!label&&/Thanh toan QR/i.test(n))label='Оплата по QR';
+  if(!label&&bk)label='Перевод · '+bk[1];
+  if(!label)label=String(n).slice(0,40);
+  return {key:key,label:label.slice(0,60)};
+}
+function bankParse(raw){
+  var x=String(raw||'').replace(/\s+/g,' ');
+  var m=/Transaction time:\s*(\d{1,2}):(\d{2})\s+(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec(x),am=/Transaction amount:\s*([+-])\s*([\d.,]+)\s*([A-Za-z]{3})/.exec(x),code=/Transaction code:\s*(\S+)/.exec(x);
+  if(!m||!am||!code)return null;
+  var acc=/Accounts:\s*(\d+)/.exec(x),bal=/Ending balance:\s*([\d.,]+)/.exec(x),nt=/Transaction note:\s*(.*?)\s*Transaction code:/.exec(x),amt=+am[2].replace(/,/g,'');
+  if(!(amt>0))return null;
+  var w=bankWho(nt?nt[1]:''),pad=function(v){return ('0'+v).slice(-2);};
+  return {id:code[1],num:acc?acc[1]:'',amount:am[1]==='-'?-amt:amt,cur:am[3].toUpperCase(),bal:bal?+bal[1].replace(/,/g,''):null,key:w.key,label:w.label,date:m[5]+'-'+pad(m[4])+'-'+pad(m[3]),time:pad(m[1])+':'+m[2]};
+}
+function pendAdd(raw){
+  var it=bankParse(raw);if(!it)return false;
+  var done=lsGet(PDONEKEY,[]),list=pendList();
+  if(done.indexOf(it.id)>=0||list.some(function(x){return x.id===it.id;}))return false;
+  list.push(it);lsSet(PENDKEY,list);return true;
+}
+function pendDone(id){
+  lsSet(PENDKEY,pendList().filter(function(x){return x.id!==id;}));
+  var d=lsGet(PDONEKEY,[]);d.push(id);lsSet(PDONEKEY,d.slice(-400));
+}
+function pendRefresh(){if(nav.tab==='home'&&$('#sheet').hidden)render();}
+function pendPull(){
+  if(!IS_APP)return Promise.resolve();
+  return ncall('LuckyNative','getBankQueue').then(function(r){
+    if(!r)return;
+    BANK_ACCESS=!!r.access;
+    var q;try{q=JSON.parse(r.q||'[]');}catch(e){return;}
+    if(!q.length)return;
+    var add=0;q.forEach(function(o){if(pendAdd(o.x))add++;});
+    return ncall('LuckyNative','dropBankQueue',{n:q.length}).then(function(){if(add){hap('ok');pendRefresh();}});
+  });
+}
+function pendAcc(num,cur){
+  var m=lsGet(PACCKEY,{});if(num&&m[num]&&getAcc(m[num]))return m[num];
+  var c=S.accounts.filter(function(a){return a.cur===cur&&/bidv/i.test(a.name);})[0]||S.accounts.filter(function(a){return a.cur===cur;})[0];
+  if(c){if(num){m[num]=c.id;lsSet(PACCKEY,m);}return c.id;}
+  return '';
+}
+/* Запоминание получателей: последние 5 категорий на получателя, предлагается самая частая (при равенстве — свежая) */
+function pendSug(it){
+  var a=(lsGet(PRCPTKEY,{})[it.key])||[],n={},best='',bn=0;
+  if(!it.key||!a.length)return '';
+  a.forEach(function(c){n[c]=(n[c]||0)+1;if(n[c]>=bn){bn=n[c];best=c;}});
+  return catsFor('expense').indexOf(best)>=0?best:'';
+}
+function pendLearn(key,cat){if(!key)return;var m=lsGet(PRCPTKEY,{}),a=m[key]||[];a.push(cat);m[key]=a.slice(-5);lsSet(PRCPTKEY,m);}
+function pendCards(){
+  var list=pendList();if(!list.length)return '';
+  var show=nav.pendAll?list:list.slice(0,1),h=show.map(pendCard).join('');
+  if(list.length>1&&!nav.pendAll)h+='<button class="chip sm" data-a="pendall" style="margin-top:8px">Ещё '+(list.length-1)+' ждут разноса ›</button>';
+  return h;
+}
+function pendCard(it){
+  var A=getAcc(pendAcc(it.num,it.cur)),inc=it.amount>0,cur=A?A.cur:it.cur,sug=inc?'':pendSug(it);
+  var h='<div class="card" style="margin-top:12px;border:2px solid var(--'+(inc?'income':'fx')+')"><div class="row"><b style="font-size:22px">'+(inc?'+':'−')+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(A?A.name:'нет счёта '+it.cur)+' · '+esc(it.time)+'</span></div>'+
+    '<div class="small muted" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div>';
+  if(!A)h+='<div class="hint warn">Добавь счёт в '+esc(it.cur)+', чтобы внести операцию.</div>';
+  else if(inc){
+    var last=lsGet(PINCKEY,'ex'),bs=[['ex','Обмен','pendex'],['inc','Доход','pendinc'],['mv','Перевод','pendmv']].sort(function(a,b){return (b[0]===last)-(a[0]===last);});
+    h+='<div class="row" style="gap:8px;margin-top:10px">'+bs.map(function(b,i){return '<button class="btn'+(i?' plain':'')+'" data-a="'+b[2]+'" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1;padding:12px 6px">'+b[1]+'</button>';}).join('')+'</div>';
+  }else if(sug){
+    h+='<div style="margin-top:8px">'+catIcon(sug)+' '+esc(sug)+'</div><div class="row" style="gap:8px;margin-top:8px"><button class="btn" data-a="pendquick" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">✓ Записать</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Другая категория</button></div>';
+  }else{
+    h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Вручную</button><button class="btn plain" data-a="pendrcpt" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">📷 По чеку</button></div>';
+  }
+  return h+'<button class="chip sm" data-a="pdrop" data-id="'+esc(it.id)+'" style="margin-top:8px">Не вносить</button></div>';
+}
+/* --- разнос расхода по категориям --- */
+function pendTotals(){
+  var it=pendFind(P.id),tot=Math.abs(it.amount),s=0;
+  P.rows.forEach(function(r){var v=num(r.a);if(isFinite(v)&&v>0)s+=v;});
+  return {tot:tot,s:s,left:Math.round((tot-s)*100)/100};
+}
+function pendCur(it){var A=getAcc(pendAcc(it.num,it.cur));return A?A.cur:it.cur;}
+function pendStatus(){
+  var it=pendFind(P.id);if(!it)return '';
+  var t=pendTotals(),cur=pendCur(it),ok=P.rows.every(function(r){return r.c&&num(r.a)>0;}),h='';
+  if(t.left>0){
+    h+='<div class="row"><span class="muted">Осталось распределить</span><b class="warn" style="font-size:18px">'+fmt(t.left,cur)+'</b></div><div style="height:6px;background:var(--line);border-radius:3px;margin-top:8px"><div style="height:6px;border-radius:3px;background:var(--fx);width:'+Math.min(100,Math.round(t.s/t.tot*100))+'%"></div></div><button class="btn plain" data-a="pendrest" style="margin-top:12px">Остаток в «Другое»</button>';
+  }else if(t.left<0){
+    h+='<div class="row"><span class="muted">Лишних</span><b class="warn" style="font-size:18px">'+fmt(-t.left,cur)+'</b></div>';
+  }else{
+    h+='<div class="row" style="justify-content:flex-start;gap:8px"><span style="width:24px;height:24px;border-radius:50%;background:var(--income);color:#fff;display:inline-flex;align-items:center;justify-content:center">✓</span><span>Распределено '+fmt(t.s,cur)+' из '+fmt(t.tot,cur)+'</span></div>'+(ok?'<button class="btn income" data-a="pendok">Подтвердить</button>':'<div class="small muted" style="margin-top:8px">Выбери категорию в каждой строке.</div>');
+  }
+  return h;
+}
+function renderPend(){
+  var it=pendFind(P.id);if(!it){closeSheet();return;}
+  var cur=pendCur(it),cats=catsFor('expense');
+  var h='<h2>Разнести расход</h2><div class="row"><b style="font-size:22px">−'+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(it.label)+'</span></div>';
+  if(P.rc)h+='<div class="small muted" style="margin-top:6px">🧾 По чеку: '+fmt(P.rc,cur)+(Math.abs(P.rc-Math.abs(it.amount))>0.5?'. Не совпадает с переводом, поправь ниже или добавь вручную.':'')+'</div>';
+  P.rows.forEach(function(r,i){
+    h+='<div class="row" style="gap:8px;margin-top:10px"><select data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a)+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'</div>';
+  });
+  h+='<button class="btn plain" data-a="pendadd" style="margin-top:10px">+ Категория</button><div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">'+pendStatus()+'</div>';
+  openSheet(h);
+}
+function openPend(id,rc){
+  var it=pendFind(id);if(!it)return;
+  P={id:id,rows:[{c:'',a:String(Math.abs(it.amount))}],rc:rc||0};renderPend();
+}
+function pendFromReceipt(rr){
+  var g={},ord=[],sum=0;
+  rr.items.forEach(function(x){var a=+x.a||0;if(a<=0)return;if(!(x.c in g)){g[x.c]=0;ord.push(x.c);}g[x.c]+=a;sum+=a;});
+  var id=rr.pend,rows=ord.map(function(c){return {c:c,a:String(g[c])};});
+  P={id:id,rows:rows.length?rows:[{c:'',a:''}],rc:rr.total||sum};R=null;renderPend();
+}
+function pendWrite(it,groups){
+  var A=getAcc(pendAcc(it.num,it.cur));if(!A){toast('Нет счёта в '+it.cur);return;}
+  var rid=groups.length>1?uid():'';
+  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:String(it.label).slice(0,80),cat:g.c,bk:it.id};if(rid)t.rid=rid;S.tx.push(t);});
+  if(groups.length===1)pendLearn(it.key,groups[0].c);
+  S.settings.lastAcc=A.id;pendDone(it.id);closeSheet();commit();hap('ok');toast('Записано');
+}
+/* --- поступление: обмен, доход, перевод --- */
+function pendSources(it,kind){
+  var A=getAcc(pendAcc(it.num,it.cur));
+  return S.accounts.filter(function(a){return a.id!==A.id&&(kind==='ex'?a.cur!==A.cur:a.cur===A.cur);});
+}
+function pendMoveDefault(it,kind,list){
+  var A=getAcc(pendAcc(it.num,it.cur)),last=S.tx.filter(function(t){return t.to===A.id&&(kind==='ex'?t.type==='exchange':t.type==='transfer');}).sort(function(a,b){return (a.date<b.date)-(a.date>b.date)||(b.seq||0)-(a.seq||0);})[0];
+  return last&&list.some(function(a){return a.id===last.acc;})?last.acc:(list[0]?list[0].id:'');
+}
+function renderPendMove(){
+  var it=pendFind(P.id);if(!it){closeSheet();return;}
+  var A=getAcc(pendAcc(it.num,it.cur)),list=pendSources(it,P.kind),ex=P.kind==='ex';
+  var h='<h2>'+(ex?'Обмен':'Перевод')+'</h2><div class="row"><b style="font-size:22px;color:var(--income)">+'+fmt(it.amount,A.cur)+'</b><span class="small muted">'+esc(A.name)+'</span></div>';
+  if(!list.length)h+='<div class="hint warn">Нет другого счёта '+(ex?'в другой валюте':'в '+A.cur)+'. Добавь его в «Счета».</div>';
+  else{
+    if(!P.src||!list.some(function(a){return a.id===P.src;}))P.src=pendMoveDefault(it,P.kind,list);
+    h+='<div class="small muted" style="margin-top:10px">Откуда списалось</div><div class="row" style="gap:8px"><select data-pm="src" style="flex:1.4;margin-top:0">'+list.map(function(a){return '<option value="'+a.id+'"'+(a.id===P.src?' selected':'')+'>'+esc(a.name)+' · '+fmt(C.accs[a.id].bal,a.cur)+'</option>';}).join('')+'</select>'+
+      (ex?'<input inputmode="decimal" data-pm="g" value="'+esc(P.g||'')+'" placeholder="0" style="flex:1;margin-top:0;text-align:right" autocomplete="off">':'')+'</div>';
+    h+='<div class="small muted" id="pmrate" style="margin-top:8px"></div><button class="btn income" data-a="pmsave">'+(ex?'Записать обмен':'Записать перевод')+'</button>';
+  }
+  openSheet(h);pmRate();
+}
+function pmRate(){
+  var el=$('#pmrate');if(!el||!P||P.kind!=='ex')return;
+  var it=pendFind(P.id),A=it&&getAcc(pendAcc(it.num,it.cur)),B=getAcc(P.src),x=num(P.g);
+  el.textContent=(A&&B&&x>0)?'Курс: '+pairRate(B.cur,A.cur,x,it.amount):'';
+}
+function pendIncome(it,cat){
+  var A=getAcc(pendAcc(it.num,it.cur));if(!A)return;
+  S.tx.push({id:uid(),seq:S.seq++,date:it.date,type:'income',acc:A.id,amount:it.amount,cat:cat,note:String(it.label).slice(0,80),bk:it.id});
+  lsSet(PINCKEY,'inc');pendDone(it.id);closeSheet();commit();hap('ok');toast('Записано');
+}
+function bankCard(){
+  if(!IS_APP)return '';
+  var h='<div class="card"><h3>Уведомления банка (BIDV)</h3><div class="small muted">Когда банк присылает уведомление об операции, приложение показывает её на главной, и ты разносишь её по категориям. Читаются только уведомления BIDV с суммой, остальные приложение не трогает.</div>';
+  h+='<div class="hint'+(BANK_ACCESS===false?' warn':'')+'" style="margin-top:8px">'+(BANK_ACCESS===true?'Доступ к уведомлениям включён.':BANK_ACCESS===false?'Доступ к уведомлениям выключен.':'Состояние доступа проверяется…')+'</div>';
+  h+='<button class="btn" data-a="bankacc" style="margin-top:12px">Включить доступ к уведомлениям</button><button class="btn plain" data-a="bankset" style="margin-top:8px">Не включается? Настройки приложения</button>';
+  h+='<div class="small muted" style="margin-top:10px">Если Android не даёт включить доступ: в настройках приложения нажми ⋮ вверху справа → «Разрешить ограниченные настройки», потом вернись и включи доступ. Ещё в «Батарея» поставь для Lucky Finance «Без ограничений», чтобы Samsung не усыплял приложение.</div></div>';
+  return h;
+}
+H.pendall=function(){nav.pendAll=true;render();};
+H.pdrop=function(el){var id=el.dataset.id;ask('Не вносить эту операцию? Баланс не изменится.','Не вносить',function(){pendDone(id);closeSheet();render();toast('Пропущено');});};
+H.pendmanual=function(el){openPend(el.dataset.id);};
+H.pendquick=function(el){var it=pendFind(el.dataset.id);if(!it)return;var c=pendSug(it);if(!c){openPend(it.id);return;}pendWrite(it,[{c:c,a:Math.abs(it.amount)}]);};
+H.pendrcpt=function(el){
+  var it=pendFind(el.dataset.id);if(!it)return;
+  R={pend:it.id,step:gemKey()?'pick':'key',items:[],store:'',date:it.date,cur:'VND',total:0,err:''};renderRc();
+};
+H.pendadd=function(){var t=pendTotals();P.rows.push({c:'',a:t.left>0?String(t.left):''});renderPend();};
+H.pendrm=function(el){P.rows.splice(+el.dataset.i,1);if(!P.rows.length)P.rows.push({c:'',a:''});renderPend();};
+H.pendrest=function(){
+  var t=pendTotals();if(t.left<=0)return;
+  var r=P.rows.filter(function(x){return x.c==='Другое';})[0];
+  if(r)r.a=String(Math.round(((num(r.a)||0)+t.left)*100)/100);else P.rows.push({c:'Другое',a:String(t.left)});
+  renderPend();
+};
+H.pendok=function(){
+  var it=pendFind(P.id);if(!it)return;var t=pendTotals();
+  if(t.left!==0||!P.rows.every(function(r){return r.c&&num(r.a)>0;})){renderPend();return;}
+  var g={},ord=[];P.rows.forEach(function(r){if(!(r.c in g)){g[r.c]=0;ord.push(r.c);}g[r.c]+=num(r.a);});
+  pendWrite(it,ord.map(function(c){return {c:c,a:Math.round(g[c]*100)/100};}));
+};
+H.pendinc=function(el){
+  var it=pendFind(el.dataset.id);if(!it)return;P={id:it.id};
+  var cats=catsFor('income'),A=getAcc(pendAcc(it.num,it.cur));
+  openSheet('<h2>Доход</h2><div class="row"><b style="font-size:22px;color:var(--income)">+'+fmt(it.amount,A.cur)+'</b><span class="small muted">'+esc(A.name)+'</span></div><div class="small muted" style="margin-top:10px">Выбери категорию, и доход запишется.</div><div class="chips">'+cats.map(function(c){return '<button class="chip" data-a="pendinccat" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+'</div>');
+};
+H.pendinccat=function(el){var it=P&&pendFind(P.id);if(it)pendIncome(it,el.dataset.v);};
+H.pendex=function(el){P={id:el.dataset.id,kind:'ex'};renderPendMove();};
+H.pendmv=function(el){P={id:el.dataset.id,kind:'mv'};renderPendMove();};
+H.pmsave=function(){
+  var it=P&&pendFind(P.id);if(!it)return;
+  var A=getAcc(pendAcc(it.num,it.cur)),B=getAcc(P.src);if(!A||!B)return;
+  var t={id:uid(),seq:S.seq++,date:it.date,acc:B.id,to:A.id,toAmount:it.amount,bk:it.id};
+  if(P.kind==='ex'){var x=num(P.g);if(!(x>0)){toast('Введи, сколько списалось');return;}t.type='exchange';t.amount=x;t.note='';}
+  else{t.type='transfer';t.amount=it.amount;t.note='';}
+  S.tx.push(t);lsSet(PINCKEY,P.kind);pendDone(it.id);closeSheet();commit();hap('ok');toast('Записано');
+};
+H.bankacc=function(){ncall('LuckyNative','openNotifAccess');};
+H.bankset=function(){ncall('LuckyNative','openAppSettings');};
+document.addEventListener('input',function(e){
+  var el=e.target;if(!P||!el.dataset)return;
+  if(el.dataset.pr!==undefined&&el.dataset.pr!==''){var r=P.rows[+el.dataset.pr];if(r)r[el.dataset.k]=el.value;var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
+  else if(el.dataset.pm==='g'){P.g=el.value;pmRate();}
+});
+document.addEventListener('change',function(e){
+  var el=e.target;if(!P||!el.dataset)return;
+  if(el.dataset.pr!==undefined&&el.dataset.pr!==''&&el.dataset.k==='c'){var r=P.rows[+el.dataset.pr];if(r)r.c=el.value;var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
+  else if(el.dataset.pm==='src'){P.src=el.value;pmRate();}
+});
+if(!IS_APP)window.__pend=function(raw){if(pendAdd(raw))render();};
+if(IS_APP){setTimeout(pendPull,1500);setInterval(function(){if(!document.hidden)pendPull();},15000);}
 document.addEventListener('toggle',function(e){var k=e.target&&e.target.dataset&&e.target.dataset.sp;if(k){nav.sp=nav.sp||{};nav.sp[k]=e.target.open;}},true);
 document.addEventListener('click',function(e){
   var el=e.target.closest('[data-a]');if(!el)return;
