@@ -81,6 +81,9 @@ h3{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--muted)}
 .cbx{width:18px;height:18px;border:1.5px solid var(--muted);border-radius:5px;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:12px;margin-right:8px}
 .cbx.on{background:var(--gold);border-color:var(--gold);color:#16202B}
 .lg.dimmed{opacity:.45}
+.lgchk{background:none;border:0;padding:0;margin:0;display:inline-flex;align-items:center;cursor:pointer;color:inherit}
+.lgbod{background:none;border:0;padding:0;margin:0;display:flex;align-items:center;gap:6px;flex:1;min-width:0;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.larr{color:var(--muted);font-size:12px;margin-left:4px;flex:none}
 button.sub{display:flex;align-items:center}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -389,7 +392,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.4';
+var VERSION='4.6';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -826,7 +829,8 @@ function viewHome(){
   h+='<div class="qa-grid" style="grid-template-columns:repeat(3,1fr)">'+
     '<button class="qa" data-a="op" data-v="income"><i class="g">+</i>Доход</button>'+
     '<button class="qa" data-a="op" data-v="expense"><i class="r">−</i>Расход</button>'+
-    '<button class="qa" data-a="op" data-v="transfer"><i class="b">⇄</i>Перевод</button></div>';
+    '<button class="qa" data-a="op" data-v="transfer"><i class="b">⇄</i>Перевод</button></div>'+
+    '<button class="btn plain" data-a="rcopen" style="margin-top:10px">🧾 Чек по фото</button>';
   var gh=ghCfg();
   if(ghReady(gh)&&gh.err)h+='<div class="card" style="border-color:var(--expense)"><div class="row"><div class="grow"><div class="t1">Копия на GitHub не отправилась</div><div class="t2">'+esc(gh.err)+'</div></div><button class="chip" data-a="tab" data-v="more">Открыть</button></div></div>';
 
@@ -887,7 +891,6 @@ function viewAccounts(){
     h2+='</div>';
   }
   if(!S.accounts.length)return h2+'<div class="card empty"><b>Счетов нет</b>Добавь первый счёт или создай типовой набор.<button class="btn" data-a="preset">Создать типовые счета</button></div>';
-  h2+='<div class="small muted" style="margin:-6px 0 4px">Открой счёт и нажми «Указать, сколько сейчас на счёте», чтобы внести текущий остаток.</div>';
   h2+=curMixCard();
   Object.keys(TYPES).forEach(function(k){
     var list=S.accounts.filter(function(a){return a.type===k;});if(!list.length)return;
@@ -1356,11 +1359,23 @@ function reportCats(stAll,stF,ym){
   function box(v){return '<span class="cbx'+(v?' on':'')+'">'+(v?'✓':'')+'</span>';}
   shown.forEach(function(c){
     var cc=col[c[0]]||'var(--cother)',cs=inSel(c[0]),part=!cs&&sel.some(function(x){return x.indexOf(c[0]+' › ')===0;}),dim=on&&!cs&&!part;
-    h+='<button class="lg'+(dim?' dimmed':'')+'" data-a="rcat" data-v="'+esc(c[0])+'">'+box(cs||part)+'<span class="dot" style="background:'+cc+'"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+catIcon(c[0])+' '+esc(c[0])+' <span class="muted small">'+Math.round(c[1]/stAll.exp*100)+'%</span></span><span class="num">'+fmt(c[1],main)+'</span></button>';
-    var sb=stAll.subs[c[0]];if(sb){var rest=c[1];Object.keys(sb).forEach(function(k){rest-=sb[k];});
-      var srows=(SUBS[c[0]]||[]).filter(function(x){return sb[x.n];}).map(function(x){return {n:x.ic+' '+x.n,k:x.n,v:sb[x.n]};});
+    var sb=stAll.subs[c[0]],srows=[];
+    if(sb){var rest=c[1];Object.keys(sb).forEach(function(k){rest-=sb[k];});
+      srows=(SUBS[c[0]]||[]).filter(function(x){return sb[x.n];}).map(function(x){return {n:x.ic+' '+x.n,k:x.n,v:sb[x.n]};});
       if(rest>1e-6&&srows.length)srows.push({n:'без подкатегории',v:rest});
-      h+='<div style="--sc:'+cc+';padding-bottom:6px'+(dim?';opacity:.45':'')+'">'+srows.map(function(r){var on2=r.k&&inSel(c[0],r.k);return (r.k?'<button class="sub" data-a="rsub" data-v="'+esc(c[0])+'" data-s="'+esc(r.k)+'" style="width:100%;background:none;border:0;color:inherit;text-align:left;font:inherit">':'<div class="sub">')+(r.k?box(on2):'')+'<span class="sn">'+esc(r.n)+'</span><span class="sbar"><i style="width:'+Math.max(3,Math.round(r.v/c[1]*100))+'%"></i></span><span class="num">'+fmt(r.v,main)+'</span>'+(r.k?'</button>':'</div>');}).join('')+'</div>';}
+    }
+    if(srows.length){
+      var isOpen=(nav.rSubs&&nav.rSubs[c[0]]!==undefined)?!!nav.rSubs[c[0]]:!!part;
+      h+='<div class="lg'+(dim?' dimmed':'')+'">'+
+        '<button type="button" class="lgchk" data-a="rcat" data-v="'+esc(c[0])+'" aria-label="Выбрать категорию">'+box(cs||part)+'</button>'+
+        '<button type="button" class="lgbod" data-a="rtogsub" data-v="'+esc(c[0])+'"><span class="dot" style="background:'+cc+'"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+catIcon(c[0])+' '+esc(c[0])+' <span class="muted small">'+Math.round(c[1]/stAll.exp*100)+'%</span></span><span class="num">'+fmt(c[1],main)+'</span><span class="larr">'+(isOpen?'▾':'▸')+'</span></button>'+
+        '</div>';
+      if(isOpen){
+        h+='<div style="--sc:'+cc+';padding-bottom:6px'+(dim?';opacity:.45':'')+'">'+srows.map(function(r){var on2=r.k&&inSel(c[0],r.k);return (r.k?'<button class="sub" data-a="rsub" data-v="'+esc(c[0])+'" data-s="'+esc(r.k)+'" style="width:100%;background:none;border:0;color:inherit;text-align:left;font:inherit">':'<div class="sub">')+(r.k?box(on2):'')+'<span class="sn">'+esc(r.n)+'</span><span class="sbar"><i style="width:'+Math.max(3,Math.round(r.v/c[1]*100))+'%"></i></span><span class="num">'+fmt(r.v,main)+'</span>'+(r.k?'</button>':'</div>');}).join('')+'</div>';
+      }
+    }else{
+      h+='<button class="lg'+(dim?' dimmed':'')+'" data-a="rcat" data-v="'+esc(c[0])+'">'+box(cs||part)+'<span class="dot" style="background:'+cc+'"></span><span class="grow" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+catIcon(c[0])+' '+esc(c[0])+' <span class="muted small">'+Math.round(c[1]/stAll.exp*100)+'%</span></span><span class="num">'+fmt(c[1],main)+'</span></button>';
+    }
   });
   if(hid.length){var hs=0;hid.forEach(function(c){hs+=c[1];});
     h+='<button class="lg" data-a="catmore"><span class="dot" style="background:var(--cother)"></span><span class="grow">Ещё '+hid.length+' '+plural(hid.length,'категория','категории','категорий')+' <span class="muted small">'+Math.round(hs/stAll.exp*100)+'% · показать</span></span><span class="num">'+fmt(hs,main)+'</span></button>';}
@@ -1618,11 +1633,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.6',items:['«Чек по фото»: сфотографируй чек или выбери фото из галереи, Gemini переведёт позиции с вьетнамского и разложит по категориям; ты проверяешь, исправляешь и выбираешь счёт','Ключ Gemini вводится в «Ещё → Копии»','Нужен новый APK (разрешение на камеру)']},
+  {v:'4.5',items:['«Отчёт»: подкатегории расходов по умолчанию свёрнуты для компактности — у категорий с подкатегориями появилась стрелочка ▸, нажатие раскрывает и сворачивает их']},
   {v:'4.4',items:['Ввод расхода: 8 частых категорий сразу на экране, «Сигареты» в основном списке, в «Ещё ›» и в подкатегориях всё отсортировано по частоте, убраны 5 неиспользуемых категорий и лишнее поле ввода своей категории','Упрощение экранов: «Партии (FIFO)» внутри счёта свёрнуты в спойлер, из «Отчёта» убраны «Капитал» и экспорт, из «Ещё» убран мастер настройки, а выбор основной валюты перенесён внутрь «Моих валют»']},
   {v:'4.3',items:['«Отчёт»: переключатель «Месяц / Неделя» (неделя с понедельника по воскресенье, можно листать), итоги, столбики по дням, куда ушло и тепловая карта в спойлере','Переключатель можно скрыть в «Ещё»']},
   {v:'4.2',items:['Правка по сверке с банком: пиклбол 01.11 исправлен на 100 000, добавлены пиклбол 03.11 (100 000) и парковка мопеда 01.11 (210 000)']},
-  {v:'4.1',items:['«Отчёт»: расходы по категориям теперь вверху, у категорий и подкатегорий есть галочки — график, итоги и «Пульс месяца» считаются только по выбранным','«На сколько хватит денег» и «Прогноз на конец месяца» свёрнуты в спойлеры']},
-  {v:'4.0',items:['Главная стала проще: три главных числа (всего, потрачено сегодня, на сколько хватит), три кнопки, топ-3 категории','«Обмен» и «Перевод» объединены в «Перевод»: форма сама показывает, перевод это или обмен','Из «Ещё» убраны долги, инвестиции, шаблоны, сверка, финпомощник, постоянные платежи, лимиты, цитата дня и напоминания о копии (данные сохраняются)','«Ещё» сгруппировано, длинные пояснения свёрнуты']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1809,6 +1824,7 @@ function viewMore(){
     '<button class="btn" data-a="export">Сделать резервную копию</button><button class="btn plain" data-a="import" style="margin-top:8px">Восстановить из копии</button>';
   h+='</div>';
   h+=ghCard();
+  h+=gemCard();
   h+=notifCard();
   h+='<div class="card"><h3>Опасная зона</h3><button class="btn ghost" data-a="wipe" style="margin-top:0">Удалить все данные</button></div>';
   h+='<div class="small muted" style="text-align:center;margin:16px 0">Lucky Finance · версия '+VERSION+'</div>';
@@ -1880,7 +1896,7 @@ function enhanceAmt(){
   });
 }
 function openSheet(html){$('#sheetBody').innerHTML=html;$('#sheet').hidden=false;$('.sheet').scrollTop=0;enhanceAmt();enhanceKb();}
-function closeSheet(){OFOPEN=false;$('#sheet').hidden=true;F=null;var kb=$('#kbhide');if(kb)kb.classList.remove('show');}
+function closeSheet(){R=null;OFOPEN=false;$('#sheet').hidden=true;F=null;var kb=$('#kbhide');if(kb)kb.classList.remove('show');}
 function ask(msg,yes,fn){
   openSheet('<h2>Подтвердить</h2><p>'+msg+'</p><button class="btn expense" data-a="askyes">'+yes+'</button><button class="btn plain" data-a="close">Отмена</button>');
   ask.fn=fn;
@@ -1901,7 +1917,7 @@ function freqCats(type){
 }
 function openOp(type,t){
   if(!S.accounts.length){toast('Сначала добавь счёт');go('accounts');return;}
-  if(t){F={id:t.id,seq:t.seq,edit:true,opening:t.opening,rateMain:t.rateMain,type:t.type,date:t.date,acc:t.acc,to:t.to||'',amountS:inp(t.amount),toS:t.toAmount!=null&&t.type==='exchange'?inp(t.toAmount):'',cat:t.cat||'',sub:t.sub||'',oneoff:t.oneoff,note:t.note||'',isRec:t.rec};}
+  if(t){F={id:t.id,seq:t.seq,edit:true,opening:t.opening,rateMain:t.rateMain,type:t.type,date:t.date,acc:t.acc,to:t.to||'',amountS:inp(t.amount),toS:t.toAmount!=null&&t.type==='exchange'?inp(t.toAmount):'',cat:t.cat||'',sub:t.sub||'',oneoff:t.oneoff,note:t.note||'',isRec:t.rec,rid:t.rid||''};}
   else{
     var acc=getAcc(S.settings.lastAcc)?S.settings.lastAcc:S.accounts[0].id;
     F={type:type,date:today(),acc:acc,to:'',amountS:'',toS:'',cat:'',note:''};
@@ -1966,6 +1982,7 @@ function renderOp(){
   h+='<div class="hint" id="hint"></div>';
   h+='<button class="btn '+(t==='income'?'income':t==='expense'?'expense':'')+'" data-a="saveop">'+(F.edit?'Сохранить':'Добавить')+'</button>';
   if(F.edit&&!F.opening)h+='<button class="btn plain" data-a="repeat" style="margin-top:8px">Повторить сегодня</button>';
+  if(F.edit&&F.rid)h+='<button class="btn ghost" data-a="delrc">Удалить весь чек</button>';
   if(F.edit)h+='<button class="btn ghost" data-a="delop">Удалить операцию</button>';
   openSheet(h);updateHint();
 }
@@ -3479,6 +3496,7 @@ var H={
   sub:function(el){nav.tab='more';nav.acc=null;nav.sub=el.dataset.v;render();window.scrollTo(0,0);},
   catmore:function(){nav.catMore=!nav.catMore;render();},
   rcat:function(el){var c=el.dataset.v,a=rsel().slice(),i=a.indexOf(c);if(i>=0)a.splice(i,1);else{a=a.filter(function(x){return x.indexOf(c+' › ')!==0;});a.push(c);}nav.rsel=a;render();},
+  rtogsub:function(el){var c=el.dataset.v,o=nav.rSubs||(nav.rSubs={}),part=rsel().some(function(x){return x.indexOf(c+' › ')===0;});o[c]=!((o[c]!==undefined)?o[c]:part);render();},
   rsub:function(el){var c=el.dataset.v,k=ckey(c,el.dataset.s),a=rsel().slice(),i=a.indexOf(c);if(i>=0){a.splice(i,1);SUBS_OF_CAT(c).forEach(function(n){var kk=ckey(c,n);if(n!==el.dataset.s&&a.indexOf(kk)<0)a.push(kk);});}else{var j=a.indexOf(k);if(j>=0)a.splice(j,1);else a.push(k);}nav.rsel=a;render();},
   rmode:function(el){nav.rmode=el.dataset.v;render();},
   repweek:function(el){var cm=mondayOf(today()),n=addDays(nav.rweek||cm,7*(+el.dataset.v));if(n>cm)return;nav.rweek=n;render();},
@@ -3709,6 +3727,135 @@ var H={
   },
   wipe:function(){ask('Удалить все счета, операции и настройки? Это нельзя отменить — сначала сделай резервную копию.','Удалить всё',function(){undoable(function(){S=fresh();nav={tab:'home',acc:null,filter:'all',sub:null,rep:'',q:'',per:'all',facc:'',fcat:''};},'Всё удалено');});}
 };
+/* ---------- Чек по фото (Gemini) ----------
+   Ключ лежит отдельно в localStorage (как токен GitHub): в копии и сводки не попадает.
+   Фото уходит в Google Gemini, ответ — JSON с позициями. Всё проверяет пользователь до записи. */
+var GEMKEY='fin-mvp-gem',GEM_MODEL='gemini-2.5-flash',RCMAPKEY='fin-mvp-rcmap',R=null;
+function gemKey(){try{return (JSON.parse(localStorage.getItem(GEMKEY)||'{}')||{}).key||'';}catch(e){return '';}}
+function rcMap(){try{return JSON.parse(localStorage.getItem(RCMAPKEY)||'{}')||{};}catch(e){return {};}}
+function rcLearn(items){var m=rcMap();items.forEach(function(x){if(x.o)m[String(x.o).toLowerCase().slice(0,60)]=x.c;});try{localStorage.setItem(RCMAPKEY,JSON.stringify(m));}catch(e){}}
+function gemCard(){
+  var has=!!gemKey();
+  return '<div class="card"><h3>Чек по фото (Gemini)</h3><div class="small muted">Фото чека уходит в Google Gemini, он читает позиции и переводит. Ключ получи на aistudio.google.com («Get API key») и вставь сюда. Ключ хранится только в этом телефоне.</div>'+
+    '<label>Ключ Gemini<input id="gemkey" type="password" autocomplete="off" autocapitalize="none" placeholder="'+(has?'сохранён — вставь новый, чтобы заменить':'AIza…')+'"></label>'+
+    '<button class="btn" data-a="gemsave" style="margin-top:12px">Сохранить ключ</button>'+(has?'<button class="btn plain" data-a="gemoff" style="margin-top:8px">Забыть ключ</button>':'')+'</div>';
+}
+function rcOpen(){
+  if(!S.accounts.length){toast('Сначала добавь счёт');go('accounts');return;}
+  R={step:'pick',items:[],store:'',date:today(),cur:'VND',total:0,err:''};
+  if(!gemKey()){R.step='key';}
+  renderRc();
+}
+function rcCats(){return catsFor('expense');}
+function rcSum(){var s=0;R.items.forEach(function(x){s+=(+x.a)||0;});return s;}
+function rcFmtN(n){return nf(0).format(n);}
+function renderRc(){
+  var h='';
+  if(R.step==='key'){
+    h='<h2>Чек по фото</h2><div class="small muted">Сначала нужен ключ Gemini (бесплатный, из Google AI Studio). Он хранится только в этом телефоне.</div><label>Ключ Gemini<input id="gemkey" type="password" autocomplete="off" autocapitalize="none" placeholder="AIza…"></label><button class="btn" data-a="gemsave">Сохранить и продолжить</button><button class="btn plain" data-a="close">Отмена</button>';
+  }else if(R.step==='pick'){
+    h='<h2>Чек по фото</h2>'+(R.err?'<div class="hint warn" style="margin-bottom:10px">'+esc(R.err)+'</div>':'')+'<div class="small muted">Сфотографируй чек или выбери фото из галереи. Фото уйдёт в Google Gemini, ты проверишь результат до записи.</div>'+
+      '<input type="file" accept="image/*" capture="environment" id="rcf1" data-rcf="1" hidden><input type="file" accept="image/*" id="rcf2" data-rcf="1" hidden>'+
+      '<button class="btn" data-a="rcshot">📷 Сделать фото</button><button class="btn plain" data-a="rcgal">🖼 Из галереи</button><button class="btn plain" data-a="close">Отмена</button>';
+  }else if(R.step==='busy'){
+    h='<h2>Чек по фото</h2><div class="card" style="text-align:center"><div style="font-size:28px">⏳</div><div class="t1">Читаю чек…</div><div class="small muted">Обычно 5–20 секунд. Не закрывай окно.</div></div><button class="btn plain" data-a="rcabort">Отменить</button>';
+  }else if(R.step==='review'){
+    var groups=[],idx={};
+    R.items.forEach(function(x){if(!(x.c in idx)){idx[x.c]=groups.length;groups.push({c:x.c,s:0,l:[]});}var g=groups[idx[x.c]];g.s+=(+x.a)||0;g.l.push((x.n||x.o||'?')+' '+rcFmtN(x.a));});
+    var sum=rcSum(),diff=R.total?Math.round(R.total-sum):0;
+    h='<h2>Проверь чек</h2><div class="row"><b>'+esc(R.store||'Магазин не определён')+' · '+esc(R.date)+'</b><b>'+rcFmtN(R.total||sum)+' '+esc(R.cur)+'</b></div>';
+    groups.forEach(function(g){h+='<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px"><div class="row"><b>'+catIcon(g.c)+' '+esc(g.c)+'</b><b class="num">'+rcFmtN(g.s)+'</b></div><div class="small muted" style="line-height:1.6">'+g.l.map(esc).join(' · ')+'</div></div>';});
+    h+=diff?'<div class="hint warn" style="margin-top:12px">Позиции в сумме дают '+rcFmtN(sum)+', а итог чека '+rcFmtN(R.total)+' (разница '+rcFmtN(Math.abs(diff))+'). Нажми «Исправить».</div>':'<div class="hint" style="margin-top:12px">Сумма категорий совпадает с итогом чека.</div>';
+    h+='<div class="row" style="gap:8px;margin-top:6px"><button class="btn plain" data-a="rcedit" style="flex:1">Исправить</button><button class="btn" data-a="rcok" style="flex:1">Да, верно</button></div><button class="btn ghost" data-a="close">Отмена</button>';
+  }else if(R.step==='edit'){
+    var cats=rcCats();
+    h='<h2>Исправить чек</h2><label>Магазин<input data-rcs="store" value="'+esc(R.store)+'" autocomplete="off"></label><label>Дата'+dateInput('data-rcs="date"',R.date,{})+'</label>';
+    R.items.forEach(function(x,i){
+      var opts=cats.indexOf(x.c)<0?cats.concat([x.c]):cats;
+      h+='<div style="border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px"><div class="row"><div class="grow" style="min-width:0"><div class="t1">'+esc(x.n||x.o||'Позиция')+'</div>'+(x.o&&x.n&&x.o!==x.n?'<div class="small muted">'+esc(x.o)+'</div>':'')+'</div><button class="chip sm" data-a="rcdel" data-i="'+i+'">Удалить</button></div>'+
+        '<div class="row" style="gap:8px"><input inputmode="decimal" data-rci="'+i+'" data-k="a" value="'+esc(x.a)+'" style="flex:1" autocomplete="off"><select data-rci="'+i+'" data-k="c" style="flex:1.4">'+opts.map(function(c){return '<option'+(c===x.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select></div></div>';
+    });
+    h+='<button class="btn plain" data-a="rcadd">+ Добавить позицию</button><div class="row" style="margin-top:14px"><span class="muted">Итого по позициям</span><b id="rcsum">'+rcFmtN(rcSum())+'</b></div><div class="row"><span class="muted">Итого по чеку</span><b>'+rcFmtN(R.total||rcSum())+'</b></div><button class="btn" data-a="rcdone">Готово, выбрать счёт</button>';
+  }else if(R.step==='acc'){
+    var sum2=rcSum();
+    h='<h2>С какого счёта списать?</h2><div class="small muted">'+esc(R.store||'Чек')+' · '+rcFmtN(sum2)+' '+esc(R.cur)+'</div>';
+    var list=S.accounts.slice().sort(function(a,b){return (b.cur===R.cur)-(a.cur===R.cur);});
+    h+=list.map(function(a){var ok=a.cur===R.cur;return '<button class="item" data-a="rcacc" data-id="'+a.id+'" style="'+(ok?'':'opacity:.45')+'"><div class="grow"><div class="t1">'+esc(a.name)+'</div><div class="t2">'+(ok?fmt(C.accs[a.id].bal,a.cur):'валюта '+a.cur+', чек в '+esc(R.cur))+'</div></div><span class="muted">›</span></button>';}).join('');
+  }
+  openSheet(h);
+}
+function rcImage(file){
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file),im=new Image();
+    im.onload=function(){
+      var k=Math.min(1,1600/Math.max(im.width,im.height)),w=Math.round(im.width*k),hh=Math.round(im.height*k),c=document.createElement('canvas');
+      c.width=w;c.height=hh;c.getContext('2d').drawImage(im,0,0,w,hh);URL.revokeObjectURL(url);
+      res(c.toDataURL('image/jpeg',0.82).split(',')[1]);
+    };
+    im.onerror=function(){URL.revokeObjectURL(url);rej(new Error('Не удалось открыть фото'));};
+    im.src=url;
+  });
+}
+function rcRead(file){
+  R.step='busy';R.err='';renderRc();
+  var ctl=window.AbortController?new AbortController():null;R.ctl=ctl;var myR=R;
+  var cats=rcCats();
+  var prompt='Это фото кассового чека (скорее всего из Вьетнама, на вьетнамском). Прочитай его. Верни JSON. store — название магазина. date — дата чека в формате ГГГГ-ММ-ДД или пустая строка, если не видно. currency — код валюты (обычно VND). total — итог к оплате числом. items — все купленные позиции: o — название как на чеке, n — перевод на русский (коротко), a — итоговая сумма за позицию числом (количество уже учтено, скидка вычтена), c — категория строго из списка: '+cats.join(', ')+'. Если не уверен, ставь «Другое». Во вьетнамских ценах точка разделяет тысячи: 32.000 это 32000. Не придумывай позиции, которых нет на чеке.';
+  rcImage(file).then(function(b64){
+    var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
+    var to=setTimeout(function(){if(ctl)ctl.abort();},60000);
+    return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':gemKey()},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(to);
+      if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверь его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подожди минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
+      return r.json();});
+  }).then(function(d){
+    if(R!==myR)return;
+    var tx=d&&d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text,o;
+    try{o=JSON.parse(tx);}catch(e){throw new Error('Не получилось разобрать ответ. Попробуй сфотографировать чек ровнее.');}
+    var items=(o.items||[]).filter(function(x){return x&&isFinite(+x.a);}),map=rcMap();
+    if(!items.length)throw new Error('На фото не нашлось позиций. Сфотографируй чек целиком и поближе.');
+    R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c};});
+    R.store=String(o.store||'').slice(0,60);R.cur=scur(o.currency)||'VND';R.total=Math.round(+o.total)||0;
+    R.date=/^\d{4}-\d{2}-\d{2}$/.test(o.date||'')&&o.date<=today()?o.date:today();
+    R.step='review';renderRc();
+  }).catch(function(e){
+    if(R!==myR)return;
+    R.step='pick';R.err=(e&&e.name==='AbortError')?'Gemini не ответил за минуту. Проверь интернет и повтори.':(e&&e.message&&!/Failed to fetch|NetworkError/i.test(e.message)?e.message:'Нет связи с Gemini. Проверь интернет и повтори.');renderRc();
+  });
+}
+function rcSave(accId){
+  var A=getAcc(accId);if(!A)return;
+  var groups={},order=[];
+  R.items.forEach(function(x){var a=+x.a||0;if(!a)return;if(!(x.c in groups)){groups[x.c]={s:0,n:[]};order.push(x.c);}groups[x.c].s+=a;groups[x.c].n.push(x.n||x.o);});
+  var rid=uid(),made=0;
+  order.forEach(function(c){var g=groups[c];if(g.s<=0)return;
+    S.tx.push({id:uid(),seq:S.seq++,date:R.date,type:'expense',acc:accId,amount:g.s,note:('Чек · '+(R.store||'без названия')).slice(0,80),cat:c,rid:rid});made++;});
+  if(!made){toast('Нечего записывать');return;}
+  rcLearn(R.items);S.settings.lastAcc=accId;R=null;closeSheet();commit();hap('ok');toast('Чек записан: '+made+' '+plural(made,'расход','расхода','расходов'));
+}
+H.rcopen=rcOpen;
+H.gemsave=function(){var v=(($('#gemkey')||{}).value||'').trim();if(!v){toast('Вставь ключ');return;}try{localStorage.setItem(GEMKEY,JSON.stringify({key:v}));}catch(e){toast('Не удалось сохранить ключ');return;}
+  if(R&&R.step==='key'){R.step='pick';renderRc();toast('Ключ сохранён');}else{render();toast('Ключ сохранён');}};
+H.gemoff=function(){ask('Забыть ключ Gemini на этом телефоне?','Забыть',function(){try{localStorage.removeItem(GEMKEY);}catch(e){}render();toast('Ключ удалён');});};
+H.rcshot=function(){var i=$('#rcf1');if(i)i.click();};
+H.rcgal=function(){var i=$('#rcf2');if(i)i.click();};
+H.rcabort=function(){if(R&&R.ctl)R.ctl.abort();R=null;closeSheet();};
+H.rcedit=function(){R.step='edit';renderRc();};
+H.rcok=function(){R.step='acc';renderRc();};
+H.rcdone=function(){if(!R.items.some(function(x){return (+x.a)>0;})){toast('Нет позиций с суммой');return;}R.step='acc';renderRc();};
+H.rcdel=function(el){R.items.splice(+el.dataset.i,1);renderRc();};
+H.rcadd=function(){R.items.push({o:'',n:'Новая позиция',a:0,c:'Другое'});renderRc();};
+H.rcacc=function(el){var a=getAcc(el.dataset.id);if(!a)return;if(a.cur!==R.cur){toast('Валюта счёта '+a.cur+', а чек в '+R.cur);return;}rcSave(a.id);};
+H.delrc=function(){var rid=F.rid;ask('Удалить весь чек (все его расходы)? Остатки пересчитаются.','Удалить чек',function(){undoable(function(){S.tx=S.tx.filter(function(t){return t.rid!==rid;});},'Чек удалён');});};
+document.addEventListener('change',function(e){
+  var el=e.target;
+  if(el.dataset&&el.dataset.rcf&&R){var f=el.files&&el.files[0];if(f)rcRead(f);return;}
+  if(el.dataset&&el.dataset.rci&&R&&R.step==='edit'){var x=R.items[+el.dataset.rci];if(x&&el.dataset.k==='c')x.c=el.value;}
+});
+document.addEventListener('input',function(e){
+  var el=e.target;if(!R||!el.dataset)return;
+  if(el.dataset.rci&&el.dataset.k==='a'&&R.step==='edit'){var x=R.items[+el.dataset.rci],v=num(el.value);x.a=isFinite(v)?v:0;var s=$('#rcsum');if(s)s.textContent=rcFmtN(rcSum());}
+  else if(el.dataset.rcs&&R.step==='edit'){R[el.dataset.rcs]=el.value;}
+});
 document.addEventListener('toggle',function(e){var k=e.target&&e.target.dataset&&e.target.dataset.sp;if(k){nav.sp=nav.sp||{};nav.sp[k]=e.target.open;}},true);
 document.addEventListener('click',function(e){
   var el=e.target.closest('[data-a]');if(!el)return;
