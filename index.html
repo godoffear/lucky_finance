@@ -75,6 +75,8 @@ h3{font-size:14px;font-weight:600;margin:0 0 10px;color:var(--muted)}
 .spoil summary::before{content:'›';color:var(--muted);transition:transform .15s;margin-right:6px}
 .spoil[open] summary::before{transform:rotate(90deg)}
 .spoil summary span:first-child{flex:1}
+.stok,.stbad{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-weight:700;font-size:13px;flex:none;color:#fff}
+.stok{background:var(--income)} .stbad{background:var(--expense)}
 .spoil .sps{color:var(--muted);font-weight:500}
 .spoil[open] .sps{display:none}
 .spoil[open] summary{margin-bottom:10px}
@@ -392,7 +394,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.8';
+var VERSION='4.9';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1633,11 +1635,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.9',items:['Зелёная галочка или красный восклицательный знак у ключа Gemini, копии на GitHub, доступа к уведомлениям и SMS: видно, работает ли. Знак есть и на свёрнутых плашках в «Ещё»','Кнопка «Проверить ключ» для Gemini; у банка показывается время последнего сообщения']},
   {v:'4.8',items:['SMS Т-Банка: пополнения и переводы появляются на главной так же, как уведомления BIDV (нужно разрешить чтение SMS)','«Ещё» стал короче: курсы валют ушли в «Мои валюты», тема и все копии (на GitHub, на телефоне) свёрнуты в спойлеры, «Чек по фото» и «Уведомления банков» вместе в одном; виджет убран из настроек']},
   {v:'4.7',items:['Уведомления BIDV: приложение ловит уведомление банка, на главной появляется карточка с суммой, и её можно разнести по категориям вручную или по чеку, а поступление записать как обмен, доход или перевод','Запоминает получателей: знакомому получателю категория предлагается сама','Кнопка «Чек по фото» убрана с главной (она осталась в форме расхода и в карточке)','Нужен новый APK и доступ к уведомлениям (Ещё → Копии)']},
   {v:'4.6',items:['«Чек по фото»: сфотографируй чек или выбери фото из галереи, Gemini переведёт позиции с вьетнамского и разложит по категориям; ты проверяешь, исправляешь и выбираешь счёт','Ключ Gemini вводится в «Ещё → Копии»','Нужен новый APK (разрешение на камеру)']},
   {v:'4.5',items:['«Отчёт»: подкатегории расходов по умолчанию свёрнуты для компактности — у категорий с подкатегориями появилась стрелочка ▸, нажатие раскрывает и сворачивает их']},
-  {v:'4.4',items:['Ввод расхода: 8 частых категорий сразу на экране, «Сигареты» в основном списке, в «Ещё ›» и в подкатегориях всё отсортировано по частоте, убраны 5 неиспользуемых категорий и лишнее поле ввода своей категории','Упрощение экранов: «Партии (FIFO)» внутри счёта свёрнуты в спойлер, из «Отчёта» убраны «Капитал» и экспорт, из «Ещё» убран мастер настройки, а выбор основной валюты перенесён внутрь «Моих валют»']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1807,7 +1809,7 @@ function ratesCard(){
   h+='</div>';
   return h;
 }
-function spoilBox(k,title,inner){return '<details class="card spoil" data-sp="'+k+'"'+((nav.sp||{})[k]?' open':'')+'><summary><span>'+title+'</span></summary>'+inner+'</details>';}
+function spoilBox(k,title,inner,ok){return '<details class="card spoil" data-sp="'+k+'"'+((nav.sp||{})[k]?' open':'')+'><summary><span>'+title+'</span>'+(ok===undefined?'':stMark(ok))+'</summary>'+inner+'</details>';}
 function subBlock(html){return html.replace(/<div class="card"( style="[^"]*")?>/g,'<div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">');}
 function viewMore(){
   var sub={ai:viewAi,debts:viewDebts,exchange:viewExchange,savings:viewSavings,invest:viewInvest,curs:viewCurs,limits:viewLimits,rec:viewRec,tpl:viewTpl,recon:viewRecon,about:viewAbout}[nav.sub];
@@ -1833,8 +1835,10 @@ function viewMore(){
   cp+='</div>';
   cp+=ghCard();
   cp+=notifCard();
-  h+=spoilBox('copies','Копии и резервные копии',subBlock(cp));
-  h+=spoilBox('chk','Чек по фото и банк',subBlock(gemCard()+bankCard()));
+  var cOk=ghSt().ok&&(!IS_APP||!fbkState().off);
+  h+=spoilBox('copies','Копии и резервные копии',subBlock(cp),cOk);
+  var kOk=gemSt().ok&&(!IS_APP||(bankSt().ok&&bankSt().sms));
+  h+=spoilBox('chk','Чек по фото и банк',subBlock(gemCard()+bankCard()),kOk);
   h+='<div class="card"><h3>Опасная зона</h3><button class="btn ghost" data-a="wipe" style="margin-top:0">Удалить все данные</button></div>';
   h+='<div class="small muted" style="text-align:center;margin:16px 0">Lucky Finance · версия '+VERSION+'</div>';
   return h;
@@ -2606,7 +2610,7 @@ function ghSyncNative(){
   });
 }
 function ghCard(){
-  var g=ghCfg(),h='<div class="card"><h3>Копия на GitHub</h3><div class="small muted">Копия кладётся в твой <b>приватный</b> репозиторий. Не используй репозиторий с этим сайтом — он публичный, и данные увидят все.</div>';
+  var g=ghCfg(),gs=ghSt(),h='<div class="card"><h3>Копия на GitHub</h3>'+stLine(gs.ok,gs.t)+'<div class="small muted">Копия кладётся в твой <b>приватный</b> репозиторий. Не используй репозиторий с этим сайтом — он публичный, и данные увидят все.</div>';
   h+='<label>Репозиторий (владелец/название)<input id="ghrepo" autocapitalize="none" autocomplete="off" placeholder="godoffear/lucky_finance_backup" value="'+esc(g.repo||'')+'"></label>';
   h+='<label>Токен<input id="ghtok" type="password" autocomplete="off" placeholder="'+(g.token?'сохранён — введи новый, чтобы заменить':'github_pat_…')+'"></label>';
   h+='<button class="btn" data-a="ghsave" style="margin-top:12px">'+(ghReady(g)?'Сохранить':'Сохранить и проверить')+'</button>';
@@ -3743,11 +3747,42 @@ var GEMKEY='fin-mvp-gem',GEM_MODEL='gemini-2.5-flash',RCMAPKEY='fin-mvp-rcmap',R
 function gemKey(){try{return (JSON.parse(localStorage.getItem(GEMKEY)||'{}')||{}).key||'';}catch(e){return '';}}
 function rcMap(){try{return JSON.parse(localStorage.getItem(RCMAPKEY)||'{}')||{};}catch(e){return {};}}
 function rcLearn(items){var m=rcMap();items.forEach(function(x){if(x.o)m[String(x.o).toLowerCase().slice(0,60)]=x.c;});try{localStorage.setItem(RCMAPKEY,JSON.stringify(m));}catch(e){}}
+/* Статусы: зелёная галочка = работает, красный знак = не работает или не настроено */
+function stMark(ok){return '<span class="'+(ok?'stok':'stbad')+'" aria-label="'+(ok?'работает':'не работает')+'">'+(ok?'✓':'!')+'</span>';}
+function stLine(ok,text){return '<div class="row" style="justify-content:flex-start;gap:8px;margin:8px 0">'+stMark(ok)+'<span class="small">'+text+'</span></div>';}
+function gemSt(){
+  if(!gemKey())return {ok:false,t:'Ключ не введён'};
+  var r=lsGet('fin-mvp-gemok',null);
+  if(!r)return {ok:false,t:'Ключ не проверен. Нажми «Проверить ключ»'};
+  var d=new Date(r.at).toLocaleDateString('ru-RU');
+  return r.ok?{ok:true,t:'Ключ работает (проверен '+d+')'}:{ok:false,t:esc(r.msg||'Ключ не работает')};
+}
+function ghSt(){
+  var g=ghCfg();
+  if(!ghReady(g))return {ok:false,t:'Не настроено: нужен репозиторий и токен'};
+  if(g.err)return {ok:false,t:'Последняя выгрузка не удалась: '+esc(g.err)};
+  if(g.last)return {ok:true,t:'Работает. Последняя выгрузка: '+new Date(g.last).toLocaleString('ru-RU')};
+  return {ok:false,t:'Токен сохранён, но выгрузок ещё не было. Нажми «Выгрузить сейчас»'};
+}
+function bankSt(){
+  var l=lsGet('fin-mvp-lastbank',null),last=l?' Последнее сообщение: '+new Date(l.at).toLocaleString('ru-RU')+'.':' Сообщений пока не было.';
+  var a=BANK_ACCESS===true;
+  return {ok:a,t:(a?'Уведомления BIDV: доступ включён.':BANK_ACCESS===false?'Уведомления BIDV: доступ выключен.':'Уведомления BIDV: проверяется…')+last,sms:BANK_SMS===true,smsT:BANK_SMS===true?'SMS Т-Банка: чтение разрешено.':BANK_SMS===false?'SMS Т-Банка: чтение выключено.':'SMS Т-Банка: проверяется…'};
+}
+H.gemtest=function(){gemCheck();};
+function gemCheck(){
+  var k=gemKey();if(!k)return Promise.resolve();
+  toast('Проверяю ключ…');
+  return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL,{headers:{'x-goog-api-key':k}}).then(function(r){
+    lsSet('fin-mvp-gemok',{ok:r.ok,at:Date.now(),msg:r.ok?'':(r.status===400||r.status===403||r.status===401?'Ключ не принят Google. Проверь, что вставлен целиком.':'Gemini ответил ошибкой '+r.status)});
+  }).catch(function(){lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Нет связи с Gemini. Проверь интернет.'});}).then(function(){render();});
+}
 function gemCard(){
   var has=!!gemKey();
-  return '<div class="card"><h3>Чек по фото (Gemini)</h3><div class="small muted">Фото чека уходит в Google Gemini, он читает позиции и переводит. Ключ получи на aistudio.google.com («Get API key») и вставь сюда. Ключ хранится только в этом телефоне.</div>'+
+  var gs=gemSt();
+  return '<div class="card"><h3>Чек по фото (Gemini)</h3>'+stLine(gs.ok,gs.t)+'<div class="small muted">Фото чека уходит в Google Gemini, он читает позиции и переводит. Ключ получи на aistudio.google.com («Get API key») и вставь сюда. Ключ хранится только в этом телефоне.</div>'+
     '<label>Ключ Gemini<input id="gemkey" type="password" autocomplete="off" autocapitalize="none" placeholder="'+(has?'сохранён — вставь новый, чтобы заменить':'AIza…')+'"></label>'+
-    '<button class="btn" data-a="gemsave" style="margin-top:12px">Сохранить ключ</button>'+(has?'<button class="btn plain" data-a="gemoff" style="margin-top:8px">Забыть ключ</button>':'')+'</div>';
+    '<button class="btn" data-a="gemsave" style="margin-top:12px">Сохранить ключ</button>'+(has?'<button class="btn plain" data-a="gemtest" style="margin-top:8px">Проверить ключ</button><button class="btn plain" data-a="gemoff" style="margin-top:8px">Забыть ключ</button>':'')+'</div>';
 }
 function rcOpen(){
   if(!S.accounts.length){toast('Сначала добавь счёт');go('accounts');return;}
@@ -3814,7 +3849,7 @@ function rcRead(file){
     var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
     var to=setTimeout(function(){if(ctl)ctl.abort();},60000);
     return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':gemKey()},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(to);
-      if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверь его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подожди минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
+      if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}if(r.status===400&&/API key/i.test(m))lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Ключ не принят Google. Введи новый.'});throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверь его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подожди минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
       return r.json();});
   }).then(function(d){
     if(R!==myR)return;
@@ -3825,6 +3860,7 @@ function rcRead(file){
     R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c};});
     R.store=String(o.store||'').slice(0,60);R.cur=scur(o.currency)||'VND';R.total=Math.round(+o.total)||0;
     R.date=/^\d{4}-\d{2}-\d{2}$/.test(o.date||'')&&o.date<=today()?o.date:today();
+    lsSet('fin-mvp-gemok',{ok:true,at:Date.now()});
     if(myR.pend){pendFromReceipt(myR);return;}
     R.step='review';renderRc();
   }).catch(function(e){
@@ -3844,8 +3880,10 @@ function rcSave(accId){
 }
 H.rcopen=rcOpen;
 H.gemsave=function(){var v=(($('#gemkey')||{}).value||'').trim();if(!v){toast('Вставь ключ');return;}try{localStorage.setItem(GEMKEY,JSON.stringify({key:v}));}catch(e){toast('Не удалось сохранить ключ');return;}
-  if(R&&R.step==='key'){R.step='pick';renderRc();toast('Ключ сохранён');}else{render();toast('Ключ сохранён');}};
-H.gemoff=function(){ask('Забыть ключ Gemini на этом телефоне?','Забыть',function(){try{localStorage.removeItem(GEMKEY);}catch(e){}render();toast('Ключ удалён');});};
+  try{localStorage.removeItem('fin-mvp-gemok');}catch(e){}
+  if(R&&R.step==='key'){R.step='pick';renderRc();toast('Ключ сохранён');}else{render();toast('Ключ сохранён');}
+  gemCheck();};
+H.gemoff=function(){ask('Забыть ключ Gemini на этом телефоне?','Забыть',function(){try{localStorage.removeItem(GEMKEY);localStorage.removeItem('fin-mvp-gemok');}catch(e){}render();toast('Ключ удалён');});};
 H.rcshot=function(){var i=$('#rcf1');if(i)i.click();};
 H.rcgal=function(){var i=$('#rcf2');if(i)i.click();};
 H.rcabort=function(){if(R&&R.ctl)R.ctl.abort();R=null;closeSheet();};
@@ -3907,7 +3945,7 @@ function pendAdd(raw,t){
   var it=/Transaction amount/.test(String(raw))?bankParse(raw):tbParse(raw,t);if(!it)return false;
   var done=lsGet(PDONEKEY,[]),list=pendList();
   if(done.indexOf(it.id)>=0||list.some(function(x){return x.id===it.id;}))return false;
-  list.push(it);lsSet(PENDKEY,list);return true;
+  list.push(it);lsSet(PENDKEY,list);lsSet('fin-mvp-lastbank',{at:Date.now()});return true;
 }
 function pendDone(id){
   lsSet(PENDKEY,pendList().filter(function(x){return x.id!==id;}));
@@ -4049,8 +4087,8 @@ function pendIncome(it,cat){
 function bankCard(){
   if(!IS_APP)return '';
   var h='<div class="card"><h3>Уведомления и SMS банков</h3><div class="small muted">BIDV: уведомления, Т-Банк: SMS. Когда банк присылает сообщение об операции, приложение показывает её на главной, и ты разносишь её по категориям. Читаются только сообщения банков с суммой, остальные приложение не трогает.</div>';
-  h+='<div class="hint'+(BANK_ACCESS===false?' warn':'')+'" style="margin-top:8px">'+(BANK_ACCESS===true?'Доступ к уведомлениям включён.':BANK_ACCESS===false?'Доступ к уведомлениям выключен.':'Состояние доступа проверяется…')+'</div>';
-  h+='<div class="hint'+(BANK_SMS===false?' warn':'')+'" style="margin-top:8px">'+(BANK_SMS===true?'Чтение SMS Т-Банка разрешено.':BANK_SMS===false?'Чтение SMS выключено (нужно для Т-Банка).':'')+'</div>';
+  var bs=bankSt();
+  h+=stLine(bs.ok,bs.t)+stLine(bs.sms,bs.smsT);
   h+='<button class="btn" data-a="bankacc" style="margin-top:12px">Включить доступ к уведомлениям</button>'+(BANK_SMS===false?'<button class="btn plain" data-a="banksms" style="margin-top:8px">Разрешить чтение SMS (Т-Банк)</button>':'')+'<button class="btn plain" data-a="bankset" style="margin-top:8px">Не включается? Настройки приложения</button>';
   h+='<div class="small muted" style="margin-top:10px">Если Android не даёт включить доступ: в настройках приложения нажми ⋮ вверху справа → «Разрешить ограниченные настройки», потом вернись и включи доступ. Ещё в «Батарея» поставь для Lucky Finance «Без ограничений», чтобы Samsung не усыплял приложение.</div></div>';
   return h;
