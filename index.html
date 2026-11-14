@@ -359,33 +359,33 @@ var QUOTES=[
   ['Терпение и труд всё перетрут.','пословица'],
   ['Сначала заплати себе: отложи часть дохода в день зарплаты, а не в конце месяца.'],
   ['Мелкая ежедневная трата за год превращается в крупную покупку.'],
-  ['Запиши трату сразу — через час её уже не вспомнить.'],
-  ['Хочется купить? Подожди двое суток. Если желание осталось — покупай спокойно.'],
+  ['Запишите трату сразу — через час её уже не вспомнить.'],
+  ['Хочется купить? Подождите двое суток. Если желание осталось — покупай спокойно.'],
   ['Подушка безопасности — это три–шесть месяцев обычных трат.'],
   ['Лимит — не запрет, а ориентир. Перерасход сегодня — повод тратить осторожнее завтра.'],
   ['Меняй валюту по плану, а не в спешке.'],
   ['Лучший день, чтобы начать копить, был вчера. Второй лучший — сегодня.'],
-  ['Богатство — это не сколько ты зарабатываешь, а сколько у тебя остаётся.'],
+  ['Богатство — это не сколько вы зарабатываете, а сколько у вас остаётся.'],
   ['Каждая записанная трата — шаг к спокойствию.'],
   ['Сравнивай себя с собой в прошлом месяце, а не с другими.'],
-  ['Скидка выгодна, только если ты и так собирался это купить.'],
+  ['Скидка выгодна, только если вы и так собирались это купить.'],
   ['Цель без суммы и срока — просто мечта.'],
   ['Небольшая сумма каждую неделю надёжнее крупной раз в год.'],
-  ['Сверь наличные: разница — это траты, которых ты не заметил.'],
+  ['Сверьте наличные: разница — это траты, которых вы не заметили.'],
   ['Крупную покупку планируй заранее, а не решай на ходу.'],
-  ['Долг — это трата, которую ты делаешь за себя завтрашнего.'],
+  ['Долг — это трата, которую вы делаете за себя завтрашнего.'],
   ['Отдых — тоже статья расходов. Заложи его в план и трать без чувства вины.'],
   ['Хороший месяц — тот, после которого что-то осталось.'],
   ['Финансовое спокойствие начинается с привычки считать.'],
   ['Сегодня хороший день, чтобы не купить ничего лишнего.'],
-  ['Трать на то, что важно тебе, а не на то, что впечатлит других.'],
+  ['Тратьте на то, что важно вам, а не на то, что впечатлит других.'],
   ['Деньги — инструмент, а не цель.'],
   ['Платежи по расписанию не страшны: они уже в плане.'],
-  ['Чем раньше начнёшь откладывать, тем меньше придётся откладывать.'],
+  ['Чем раньше начнёте откладывать, тем меньше придётся откладывать.'],
   ['Пустая строчка в расходах — тоже результат.'],
   ['Удача любит тех, кто к ней готов.'],
   ['Не копи на всё сразу: одна цель за раз доходит быстрее.'],
-  ['Посмотри на «Пульс месяца»: самые дорогие дни расскажут о привычках больше, чем итог.']
+  ['Посмотрите на «Пульс месяца»: самые дорогие дни расскажут о привычках больше, чем итог.']
 ];
 /* Номер дня по местной дате; шаг 17 взаимно прост с длиной списка — каждый день новая, повтор через QUOTES.length дней */
 function quoteOfDay(){var d=Math.floor(new Date(today()+'T00:00:00Z').getTime()/864e5),n=QUOTES.length;return QUOTES[((d*17)%n+n)%n];}
@@ -394,14 +394,14 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.9';
+var VERSION='4.10';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
-  head:'Получаешь в одной валюте, тратишь в другой? Ты по адресу.',
+  head:'Получаете в одной валюте, тратите в другой? Вам сюда.',
   body:'Обычные трекеры пересчитывают всё по курсу из интернета, а деньги обменяны по другому курсу — вот цифры и не сходятся. Lucky Finance помнит, по какому курсу обменена каждая сумма, и показывает, во сколько на самом деле обошёлся кофе, аренда или билет.',
   items:['💱 Остаток в любой валюте: рубли, донги, доллары, крипта','⏳ Сколько хватит денег и сколько менять — без гаданий','🔁 Напоминает про аренду и подписки, а платёж вносится только по твоему нажатию','🍀 Без регистрации и бесплатно, данные остаются на твоём устройстве'],
-  foot:'Ничего не списывается и не откладывается само: все решения за тобой.'
+  foot:'Ничего не списывается и не откладывается само: все решения за вами.'
 };
 function aboutHtml(){
   return '<div style="font:600 17px/1.3 Unbounded,Onest,sans-serif;letter-spacing:-.01em">'+ABOUT.head+'</div><p>'+ABOUT.body+'</p><div class="small" style="line-height:1.9">'+ABOUT.items.join('<br>')+'</div><p class="small muted" style="margin-bottom:0">'+ABOUT.foot+'</p>';
@@ -711,7 +711,7 @@ function autoRate(cur){
 /* Курс без FIFO: заданный вручную → рыночный → ЦБ. Его же берёт compute() для денег без известного курса */
 function rateExt(cur){
   var main=S.settings.main;if(cur===main)return {r:1,src:''};
-  var m=S.settings.rates[cur];if(m>0)return {r:m,src:'заданный тобой вручную'};
+  var m=S.settings.rates[cur];if(m>0)return {r:m,src:'заданный вручную'};
   var au=autoRate(cur);
   if(au)return {r:au.r,src:au.mkt?'рыночный курс на '+dshort(S.mkt.date):'ЦБ РФ на '+dshort(S.auto.date)};
   return {r:null,src:''};
@@ -727,7 +727,7 @@ function fifoRate(cur){
 /* Курс для пересчёта в основную валюту: 1) по FIFO, 2) заданный вручную, 3) рыночный, 4) ЦБ */
 function rateInfo(cur){
   var main=S.settings.main;if(cur===main)return {r:1,src:''};
-  var f=fifoRate(cur);if(f)return {r:f,src:'по FIFO — средний курс твоих денег'};
+  var f=fifoRate(cur);if(f)return {r:f,src:'по FIFO — средний курс ваших денег'};
   return rateExt(cur);
 }
 function rateToMain(cur){return rateInfoC(cur).r;}
@@ -802,7 +802,7 @@ function opRow(t,ctx,short){
 function viewHome(){
   var main=S.settings.main;
   if(!S.accounts.length){
-    return '<h1>Lucky Finance</h1><div class="card empty"><b>Начни со счетов</b>Добавь, где лежат твои деньги: наличные, карты, крипта. Валюта счёта задаётся один раз.'+
+    return '<h1>Lucky Finance</h1><div class="card empty"><b>Начните со счетов</b>Добавьте, где лежат ваши деньги: наличные, карты, крипта. Валюта счёта задаётся один раз.'+
       '<button class="btn" data-a="wizard">Пройти настройку (2 минуты)</button><button class="btn plain" data-a="preset" style="margin-top:8px">Создать типовые счета</button><button class="btn plain" data-a="newacc" style="margin-top:8px">Добавить свой счёт</button></div>';
   }
   var total=0,missing=[];
@@ -822,7 +822,7 @@ function viewHome(){
   h+='<div class="hero'+(reveal?' open':'')+'" data-a="reveal"><div class="lbl">Всего на счетах</div><div class="big num">'+fmt(shown,scur)+'</div>'+
     '<div class="vc">'+vcs.map(function(c){return '<button data-a="viewcur" data-v="'+c+'" class="'+(c===scur?'on':'')+'">'+c+'</button>';}).join('')+'<button data-a="pick" class="pk">Счета: '+incl+' из '+S.accounts.length+'</button></div>'+
     (scur!==main?'<div class="miss">Курс: '+showRate(vc,vinfo.r)+' ('+vinfo.src+')</div>':'')+
-    (missing.length?'<div class="miss"><span class="warnc">Не учтены: '+missing.join(', ')+' — нет курса (задай в «Ещё → Курсы валют»)</span></div>':'')+
+    (missing.length?'<div class="miss"><span class="warnc">Не учтены: '+missing.join(', ')+' — нет курса (задайте в «Ещё → Курсы валют»)</span></div>':'')+
     '</div>';
   h+=pendCards();
   /* ещё два главных числа: сколько потрачено сегодня и на сколько хватит денег */
@@ -889,10 +889,10 @@ function viewAccounts(){
   var h2='<div class="row"><h1>Счета</h1><button class="chip" data-a="newacc">+ Счёт</button></div>';
   if(S.accounts.length>1){
     var inclA=S.accounts.filter(function(a){return !a.excl;}).length,mA=S.settings.main,totA=calcTotal();
-    h2+='<div class="card" style="margin-top:0;padding:12px 16px"><button class="item" data-a="pick" style="padding:0"><div class="grow"><div class="t1">Общая сумма: '+fmt(totA,mA)+'</div><div class="t2" style="white-space:normal;overflow:visible;text-overflow:clip">Учитывается '+inclA+' из '+S.accounts.length+' — нажми, чтобы выбрать</div></div><span class="muted">›</span></button>';
+    h2+='<div class="card" style="margin-top:0;padding:12px 16px"><button class="item" data-a="pick" style="padding:0"><div class="grow"><div class="t1">Общая сумма: '+fmt(totA,mA)+'</div><div class="t2" style="white-space:normal;overflow:visible;text-overflow:clip">Учитывается '+inclA+' из '+S.accounts.length+' — нажмите, чтобы выбрать</div></div><span class="muted">›</span></button>';
     h2+='</div>';
   }
-  if(!S.accounts.length)return h2+'<div class="card empty"><b>Счетов нет</b>Добавь первый счёт или создай типовой набор.<button class="btn" data-a="preset">Создать типовые счета</button></div>';
+  if(!S.accounts.length)return h2+'<div class="card empty"><b>Счетов нет</b>Добавьте первый счёт или создай типовой набор.<button class="btn" data-a="preset">Создать типовые счета</button></div>';
   h2+=curMixCard();
   Object.keys(TYPES).forEach(function(k){
     var list=S.accounts.filter(function(a){return a.type===k;});if(!list.length)return;
@@ -1000,7 +1000,7 @@ function opsGroupsHtml(list){
   return h;
 }
 function opsListHtml(list){
-  if(!list.length)return '<div class="card empty"><b>Ничего не найдено</b>Измени фильтры или добавь операцию — кнопки на главном экране.</div>';
+  if(!list.length)return '<div class="card empty"><b>Ничего не найдено</b>Измените фильтры или добавьте операцию — кнопки на главном экране.</div>';
   var cats=nav.opsView==='cats';
   return opsSummaryHtml(list)+'<div class="seg" style="margin:10px 0 0;grid-template-columns:1fr 1fr"><button data-a="opsview" data-v="days" class="'+(cats?'':'on')+'">По дням</button><button data-a="opsview" data-v="cats" class="'+(cats?'on':'')+'">По категориям</button></div>'+(cats?opsGroupsHtml(list):opsDaysHtml(list));
 }
@@ -1163,7 +1163,7 @@ function pulseCard(ym){
   for(i=1;i<=last;i++)vs.push(day[i]||0);vs.sort(function(a,b){return a-b;});
   /* редкий крупный платёж (аренда) не должен сжимать остальные дни: масштаб по 90-му перцентилю, выбросы упираются в верх со стрелкой */
   var mx=Math.max(avg*1.6,lim*1.25,vs[Math.floor((vs.length-1)*0.9)]*1.2,vs[vs.length-1]<=avg*3?vs[vs.length-1]:0);
-  var h='<div class="card"><h3>Пульс месяца</h3><div class="small muted" style="margin:-4px 0 0">Расходы по дням. Нажми на столбик — откроются операции дня. ▲ — день с крупной тратой выше шкалы.'+(anyOo?' <span style="color:var(--gold)">■</span> — разовая трата (не входит в среднее).':'')+'</div><div class="pulse">';
+  var h='<div class="card"><h3>Пульс месяца</h3><div class="small muted" style="margin:-4px 0 0">Расходы по дням. Нажмите на столбик — откроются операции дня. ▲ — день с крупной тратой выше шкалы.'+(anyOo?' <span style="color:var(--gold)">■</span> — разовая трата (не входит в среднее).':'')+'</div><div class="pulse">';
   for(i=1;i<=dim;i++){
     var v=day[i]||0,ds=ym+'-'+String(i).padStart(2,'0'),fut=i>last;
     var over=v>mx;
@@ -1208,7 +1208,7 @@ function gcUpdate(){
   if(F.mode==='date'){if(F.dateS){months=monthsTo(F.dateS);need=rem/months;}}
   else if(F.mode==='sum'){need=num(F.sumS);if(need>0)months=Math.ceil(rem/need);}
   else{var pc=num(F.pctS);if(pc>0&&inc>0){need=inc*pc/100;months=Math.ceil(rem/need);}}
-  if(F.mode==='pct'&&!(inc>0))h+='<div class="hint warn">Нет доходов за последние 3 месяца — посчитать долю не из чего. Попробуй «По сумме».</div>';
+  if(F.mode==='pct'&&!(inc>0))h+='<div class="hint warn">Нет доходов за последние 3 месяца — посчитать долю не из чего. Попробуйте «По сумме».</div>';
   if(need>0&&months>0){
     h+='<div class="card" style="background:var(--bg);border:0;text-align:center"><div class="small muted">'+(F.mode==='date'?'Нужно откладывать':'Цель будет достигнута')+'</div>'+
       '<div style="font:600 24px/1.3 Unbounded,Onest,sans-serif;margin:4px 0">'+(F.mode==='date'?fmt(need,main)+' / мес':'через '+months+' '+plural(months,'месяц','месяца','месяцев'))+'</div>'+
@@ -1217,7 +1217,7 @@ function gcUpdate(){
   }
   if(pace>0){
     var pm=Math.ceil(rem/pace);
-    h+='<div class="small" style="margin-top:4px">Сейчас ты откладываешь ~'+fmt(pace,main)+' в месяц → цель через '+pm+' '+plural(pm,'месяц','месяца','месяцев')+' (<b>'+inMonths(pm)+'</b>).'+(need>pace?' Чтобы успеть, добавь <b>'+fmt(need-pace,main)+'</b> в месяц.':need>0?' Этого хватает.':'')+'</div>';
+    h+='<div class="small" style="margin-top:4px">Сейчас вы откладываете ~'+fmt(pace,main)+' в месяц → цель через '+pm+' '+plural(pm,'месяц','месяца','месяцев')+' (<b>'+inMonths(pm)+'</b>).'+(need>pace?' Чтобы успеть, добавьте <b>'+fmt(need-pace,main)+'</b> в месяц.':need>0?' Этого хватает.':'')+'</div>';
   }else h+='<div class="small muted" style="margin-top:4px">За последние 3 месяца откладываний не было.</div>';
   if(inc>0){
     h+='<div class="card"><h3>Сценарии: % от дохода</h3><table style="width:100%;border-collapse:collapse;font-size:13px"><tr class="muted"><td style="padding:5px 0">Доля</td><td>в месяц</td><td style="text-align:right">цель через</td></tr>'+[5,10,15,20].map(function(p){
@@ -1240,7 +1240,7 @@ function gcUpdate(){
     var must=0,want=0;
     S.tx.forEach(function(t){if(t.type!=='expense'||t.opening||t.date<from)return;var v=txToMain(t);if(v==null)return;if(isMust(t))must+=v/3;else want+=v/3;});
     var sv=Math.max(0,pace),pm2=must/inc*100,pw=want/inc*100,ps=sv/inc*100;
-    h+='<div class="card"><h3>Правило 50/30/20 — как у тебя</h3><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;gap:2px;background:var(--bg)"><i style="flex:'+pm2+';background:var(--c1)"></i><i style="flex:'+pw+';background:var(--c2)"></i><i style="flex:'+ps+';background:var(--c3)"></i><i style="flex:'+Math.max(0,100-pm2-pw-ps)+'"></i></div>'+
+    h+='<div class="card"><h3>Правило 50/30/20 — как у вас</h3><div style="display:flex;height:12px;border-radius:6px;overflow:hidden;gap:2px;background:var(--bg)"><i style="flex:'+pm2+';background:var(--c1)"></i><i style="flex:'+pw+';background:var(--c2)"></i><i style="flex:'+ps+';background:var(--c3)"></i><i style="flex:'+Math.max(0,100-pm2-pw-ps)+'"></i></div>'+
       '<div class="small" style="margin-top:8px;line-height:1.9"><span class="dot" style="background:var(--c1)"></span>Обязательное — '+Math.round(pm2)+'% <span class="muted">(ориентир 50%)</span><br><span class="dot" style="background:var(--c2)"></span>Желания — '+Math.round(pw)+'% <span class="muted">(ориентир 30%)</span><br><span class="dot" style="background:var(--c3)"></span>Накопления — '+Math.round(ps)+'% <span class="muted">(ориентир 20%)</span></div>'+
       '<div class="hint">Доля от среднего дохода за 3 месяца. Обязательное — категории из «Обязательных трат» и постоянные платежи.</div></div>';
   }
@@ -1382,7 +1382,7 @@ function reportCats(stAll,stF,ym){
   if(hid.length){var hs=0;hid.forEach(function(c){hs+=c[1];});
     h+='<button class="lg" data-a="catmore"><span class="dot" style="background:var(--cother)"></span><span class="grow">Ещё '+hid.length+' '+plural(hid.length,'категория','категории','категорий')+' <span class="muted small">'+Math.round(hs/stAll.exp*100)+'% · показать</span></span><span class="num">'+fmt(hs,main)+'</span></button>';}
   else if(nav.catMore&&!on&&cats.length>5)h+='<button class="btn plain sm" data-a="catmore">Свернуть</button>';
-  h+='<div class="hint">Отметь категории галочками — отчёт ниже пересчитается только по ним.</div>';
+  h+='<div class="hint">Отметьте категории галочками — отчёт ниже пересчитается только по ним.</div>';
   if(on)h+='<button class="btn plain sm" data-a="rops">Показать операции</button>';
   return h+'</div>';
 }
@@ -1500,7 +1500,7 @@ function viewReport(){
   }finally{RFILT=null;}
 }
 
-/* ---------- Насколько выгодно ты меняешь: твой курс против рыночного на дату обмена ---------- */
+/* ---------- Насколько выгодно вы меняете: ваш курс против рыночного на дату обмена ---------- */
 var HKEY='fin-mvp-hist',HIST=(function(){try{return JSON.parse(localStorage.getItem(HKEY))||{};}catch(e){return {};}})();
 var HIST_FAIL={},HIST_BUSY=false,FXQ_N=20;
 function histTable(date){
@@ -1574,26 +1574,26 @@ function rateChartCard(){
     '<path d="'+line+'" fill="none" stroke="var(--c1)" stroke-width="2"/>'+
     pts.map(function(p){return '<circle cx="'+px(p.d).toFixed(1)+'" cy="'+py(p.v).toFixed(1)+'" r="4" fill="var(--c1)" stroke="var(--surface)" stroke-width="2"><title>Твой '+dshort(p.d)+': '+nfv.format(p.v)+'</title></circle>';}).join('')+'</svg>';
   var lp=pts[pts.length-1];
-  return '<div class="card"><h3>Твой курс и рынок</h3><div class="small muted" style="margin:-4px 0 0">Сколько '+Y+' за 1 '+X+', последние '+pts.length+' '+plural(pts.length,'обмен','обмена','обменов')+'. Чем выше точка, тем больше '+Y+' ты получил.</div>'+
+  return '<div class="card"><h3>Ваш курс и рынок</h3><div class="small muted" style="margin:-4px 0 0">Сколько '+Y+' за 1 '+X+', последние '+pts.length+' '+plural(pts.length,'обмен','обмена','обменов')+'. Чем выше точка, тем больше '+Y+' вы получили.</div>'+
     '<div class="row small muted" style="margin-top:8px"><span class="num">'+nfv.format(hi-pad)+'</span><span></span></div>'+svg+
     '<div class="row small muted"><span>'+dshort(pts[0].d)+'</span><span class="num">'+nfv.format(lo+pad)+'</span><span>'+dshort(lp.d)+'</span></div>'+
-    '<div class="row small" style="margin-top:8px;justify-content:flex-start;gap:16px"><span><span class="dot" style="background:var(--c1)"></span>твой курс · '+nfv.format(lp.v)+'</span>'+(mk.length?'<span><span class="dot" style="background:var(--surface);border:2px solid var(--c2)"></span>рынок'+(lp.m?' · '+nfv.format(lp.m):'')+'</span>':'')+'</div></div>';
+    '<div class="row small" style="margin-top:8px;justify-content:flex-start;gap:16px"><span><span class="dot" style="background:var(--c1)"></span>ваш курс · '+nfv.format(lp.v)+'</span>'+(mk.length?'<span><span class="dot" style="background:var(--surface);border:2px solid var(--c2)"></span>рынок'+(lp.m?' · '+nfv.format(lp.m):'')+'</span>':'')+'</div></div>';
 }
 function fxQualityCard(){
   if(!S.tx.some(function(t){return t.type==='exchange';}))return '';
   loadHist();
   var q=fxQuality(),main=S.settings.main,nfPct=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:1});
-  var h='<div class="card"><h3>Насколько выгодно ты меняешь</h3>';
+  var h='<div class="card"><h3>Насколько выгодно вы меняете</h3>';
   if(q.avg==null){
-    h+='<div class="small muted">'+(q.pending?'Загружаю рыночные курсы на даты твоих обменов…':'Не получилось загрузить рыночные курсы на даты обменов — нужен интернет. Попробую ещё раз при следующем открытии.')+'</div>';
+    h+='<div class="small muted">'+(q.pending?'Загружаю рыночные курсы на даты ваших обменов…':'Не получилось загрузить рыночные курсы на даты обменов — нужен интернет. Попробую ещё раз при следующем открытии.')+'</div>';
     return h+'</div>';
   }
   var worse=q.avg>0.05,better=q.avg<-0.05;
-  h+='<div class="t1" style="white-space:normal">'+(worse?'В среднем твой курс хуже рыночного на '+nfPct.format(q.avg)+'%':better?'В среднем твой курс лучше рыночного на '+nfPct.format(-q.avg)+'%':'Твой курс почти совпадает с рыночным')+'</div>';
+  h+='<div class="t1" style="white-space:normal">'+(worse?'В среднем ваш курс хуже рыночного на '+nfPct.format(q.avg)+'%':better?'В среднем ваш курс лучше рыночного на '+nfPct.format(-q.avg)+'%':'Ваш курс почти совпадает с рыночным')+'</div>';
   if(worse)h+='<div class="small muted" style="margin-top:4px">Это примерно '+fmt(q.loss,main)+' за '+q.rows.length+' '+plural(q.rows.length,'обмен','обмена','обменов')+' — столько оставил обменникам сверх рынка.</div>';
   h+=q.rows.slice(0,5).map(function(r){
     var bad=r.pct>0.05;
-    return '<div class="row" style="padding:7px 0;border-top:1px solid var(--line);margin-top:6px"><div class="grow"><div class="t1">'+r.a.cur+' → '+r.b.cur+' · '+dshort(r.t.date)+'</div><div class="t2">твой: '+pairRate(r.a.cur,r.b.cur,r.t.amount,r.t.toAmount)+'</div><div class="t2">рынок: '+pairRate(r.a.cur,r.b.cur,1,r.mkt)+'</div></div><span class="num small '+(bad?'neg':'pos')+'" style="font-weight:600">'+(r.pct>0?'−':'+')+nfPct.format(Math.abs(r.pct))+'%</span></div>';
+    return '<div class="row" style="padding:7px 0;border-top:1px solid var(--line);margin-top:6px"><div class="grow"><div class="t1">'+r.a.cur+' → '+r.b.cur+' · '+dshort(r.t.date)+'</div><div class="t2">ваш: '+pairRate(r.a.cur,r.b.cur,r.t.amount,r.t.toAmount)+'</div><div class="t2">рынок: '+pairRate(r.a.cur,r.b.cur,1,r.mkt)+'</div></div><span class="num small '+(bad?'neg':'pos')+'" style="font-weight:600">'+(r.pct>0?'−':'+')+nfPct.format(Math.abs(r.pct))+'%</span></div>';
   }).join('');
   h+='<div class="hint">Сравниваю с рыночным курсом на день обмена (последние '+FXQ_N+' обменов). Минус — обменник взял больше рынка.'+(q.pending?' Часть курсов ещё загружается.':'')+(q.fail?' Для '+q.fail+' '+plural(q.fail,'обмена','обменов','обменов')+' курса нет.':'')+'</div>';
   return h+'</div>';
@@ -1624,7 +1624,7 @@ function viewExchange(){
 
 function viewTpl(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Шаблоны трат</h1><div class="small muted">Шаблон появляется кнопкой в форме расхода: нажал — и счёт, категория и сумма уже заполнены. Создать шаблон можно значком ⚡ при вводе расхода.</div>';
-  if(!S.tpl.length)return h+'<div class="card empty"><b>Шаблонов пока нет</b>При вводе расхода нажми ⚡ — и трата сохранится как шаблон.</div>';
+  if(!S.tpl.length)return h+'<div class="card empty"><b>Шаблонов пока нет</b>При вводе расхода нажмите ⚡ — и трата сохранится как шаблон.</div>';
   h+='<div class="card" style="padding:4px 16px">';
   S.tpl.forEach(function(x){var a=getAcc(x.acc);h+='<button class="item" data-a="edittpl" data-id="'+x.id+'"><div class="ic">'+catIcon(x.cat)+'</div><div class="grow"><div class="t1">'+esc(x.name)+'</div><div class="t2">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div></div><div class="amt num">'+fmt(x.amount,a?a.cur:S.settings.main)+'</div></button>';});
   return h+'</div>';
@@ -1635,11 +1635,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.10',items:['Операции из банка: можно выбрать подкатегорию (например, «Фрукты и овощи»), приложение запоминает её для получателя','Если операций несколько, на главной одна строка «Нужно указать категорию · N», а внутри список с галочками: знакомые получатели отмечены, кнопка «Записать отмеченные» записывает только их','Тексты приложения приведены к единому обращению на «вы», убраны слова вроде «разнести»']},
   {v:'4.9',items:['Зелёная галочка или красный восклицательный знак у ключа Gemini, копии на GitHub, доступа к уведомлениям и SMS: видно, работает ли. Знак есть и на свёрнутых плашках в «Ещё»','Кнопка «Проверить ключ» для Gemini; у банка показывается время последнего сообщения']},
   {v:'4.8',items:['SMS Т-Банка: пополнения и переводы появляются на главной так же, как уведомления BIDV (нужно разрешить чтение SMS)','«Ещё» стал короче: курсы валют ушли в «Мои валюты», тема и все копии (на GitHub, на телефоне) свёрнуты в спойлеры, «Чек по фото» и «Уведомления банков» вместе в одном; виджет убран из настроек']},
-  {v:'4.7',items:['Уведомления BIDV: приложение ловит уведомление банка, на главной появляется карточка с суммой, и её можно разнести по категориям вручную или по чеку, а поступление записать как обмен, доход или перевод','Запоминает получателей: знакомому получателю категория предлагается сама','Кнопка «Чек по фото» убрана с главной (она осталась в форме расхода и в карточке)','Нужен новый APK и доступ к уведомлениям (Ещё → Копии)']},
-  {v:'4.6',items:['«Чек по фото»: сфотографируй чек или выбери фото из галереи, Gemini переведёт позиции с вьетнамского и разложит по категориям; ты проверяешь, исправляешь и выбираешь счёт','Ключ Gemini вводится в «Ещё → Копии»','Нужен новый APK (разрешение на камеру)']},
-  {v:'4.5',items:['«Отчёт»: подкатегории расходов по умолчанию свёрнуты для компактности — у категорий с подкатегориями появилась стрелочка ▸, нажатие раскрывает и сворачивает их']},
+  {v:'4.7',items:['Уведомления BIDV: приложение ловит уведомление банка, на главной появляется карточка с суммой, и для неё можно выбрать категории вручную или по чеку, а поступление записать как обмен, доход или перевод','Запоминает получателей: знакомому получателю категория предлагается сама','Кнопка «Чек по фото» убрана с главной (она осталась в форме расхода и в карточке)','Нужен новый APK и доступ к уведомлениям (Ещё → Копии)']},
+  {v:'4.6',items:['«Чек по фото»: сфотографируйте чек или выберите фото из галереи, Gemini переведёт позиции с вьетнамского и разложит по категориям; вы проверяете, исправляете и выбираете счёт','Ключ Gemini вводится в «Ещё → Копии»','Нужен новый APK (разрешение на камеру)']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -1650,7 +1650,7 @@ function viewAbout(){
 }
 function mustSection(){
   var main=S.settings.main,must=mustCats(),cats=catsFor('expense'),rw=runway();
-  var h='<div class="grp" style="margin-top:20px">Обязательные траты</div><div class="small muted" style="margin:6px 4px 0">Аренда, связь и другие ежемесячные траты не должны портить картину «сколько я трачу в день». Отметь категории обязательных трат: в дневную сумму они не входят.</div>';
+  var h='<div class="grp" style="margin-top:20px">Обязательные траты</div><div class="small muted" style="margin:6px 4px 0">Аренда, связь и другие ежемесячные траты не должны портить картину «сколько я трачу в день». Отметьте категории обязательных трат: в дневную сумму они не входят.</div>';
   var shownC=mustEdit?cats:cats.filter(function(c){return must.indexOf(c)>=0;});
   h+='<div class="card"><div class="row"><h3 style="margin:0">Обязательные категории</h3><button class="chip sm" data-a="mustedit">'+(mustEdit?'Готово':'Изменить')+'</button></div><div class="chips">'+(shownC.length?shownC.map(function(c){return '<button class="chip'+(must.indexOf(c)>=0?' on':'')+'"'+(mustEdit?' data-a="togmust" data-v="'+esc(c)+'"':' style="cursor:default"')+'>'+catIcon(c)+' '+esc(c)+'</button>';}).join(''):'<span class="small muted">Не выбраны</span>')+'</div><div class="hint">Траты, внесённые через «Внести» у постоянного платежа или значком 🔁, обязательными считаются всегда.</div></div>';
   h+='<div class="card"><h3>Как это учитывается сейчас</h3>';
@@ -1679,9 +1679,9 @@ function viewSavings(){
   });
   if(st.miss.length)h+='<div class="hint warn">Не учтены в сумме: '+st.miss.join(', ')+' — нет курса.</div>';
   h+='<div class="split"><button class="btn income sm" style="width:100%" data-a="save" data-v="save">Отложить</button><button class="btn plain sm" style="width:100%" data-a="save" data-v="unsave">Вернуть на счёт</button></div><button class="btn plain sm" style="width:100%;margin-top:8px" data-a="svadj">Указать сумму накоплений</button>';
-  h+='<div class="hint">Накопления не входят в общий баланс. Деньги попадают сюда только когда ты нажимаешь «Отложить» — приложение ничего не откладывает само.</div></div>';
+  h+='<div class="hint">Накопления не входят в общий баланс. Деньги попадают сюда только когда вы нажимаете «Отложить» — приложение ничего не откладывает само.</div></div>';
   if(g&&g.target>0){h+=goalCard(st,g,false);}
-  else h+='<div class="card empty"><b>Цели пока нет</b>Задай название и сумму — здесь появится шкала прогресса.<button class="btn plain sm" data-a="goal">Поставить цель</button></div>';
+  else h+='<div class="card empty"><b>Цели пока нет</b>Задайте название и сумму — здесь появится шкала прогресса.<button class="btn plain sm" data-a="goal">Поставить цель</button></div>';
   var ops=S.tx.filter(function(t){return t.type==='save'||t.type==='unsave'||t.type==='svadj';}).sort(cmp).reverse();
   if(ops.length)h+='<div class="card"><h3>История</h3>'+ops.map(function(t){return opRow(t);}).join('')+'</div>';
   return h;
@@ -1693,12 +1693,12 @@ function viewDebts(){
   var open=S.debts.filter(function(d){return debtLeft(d)>1e-9;}),closed=S.debts.filter(function(d){return debtLeft(d)<=1e-9;});
   open.forEach(function(d){var r=rateToMain(d.cur);if(r==null){miss=true;return;}if(d.dir==='lent')lent+=debtLeft(d)*r;else owe+=debtLeft(d)*r;});
   var h=backBar('Ещё','back2')+'<div class="row" style="margin-top:14px"><h1 style="margin:0">Долги и займы</h1><button class="ib plus" data-a="newdebt" aria-label="Добавить долг">+</button></div><div class="small muted" style="margin-top:8px">Записная книжка долгов: кто кому сколько должен и сколько уже вернули. Остатки счетов она не меняет — если деньги прошли через счёт, внеси перевод или расход отдельно.</div>';
-  h+='<div class="card"><div class="split"><div><div class="small muted">Тебе должны</div><div class="amt pos num" style="text-align:left;font-size:18px">'+fmt(lent,main)+'</div></div><div style="text-align:right"><div class="small muted">Ты должен</div><div class="amt neg num" style="font-size:18px">'+fmt(owe,main)+'</div></div></div>'+(miss?'<div class="hint warn">Для части валют нет курса — сумма неполная.</div>':'')+'</div>';
+  h+='<div class="card"><div class="split"><div><div class="small muted">Вам должны</div><div class="amt pos num" style="text-align:left;font-size:18px">'+fmt(lent,main)+'</div></div><div style="text-align:right"><div class="small muted">Вы должны</div><div class="amt neg num" style="font-size:18px">'+fmt(owe,main)+'</div></div></div>'+(miss?'<div class="hint warn">Для части валют нет курса — сумма неполная.</div>':'')+'</div>';
   function row(d){
     var left=debtLeft(d),late=d.due&&d.due<today()&&left>1e-9;
-    return '<button class="item" data-a="editdebt" data-id="'+d.id+'"><div class="ic">'+(d.dir==='lent'?'📥':'📤')+'</div><div class="grow"><div class="t1">'+esc(d.who)+'</div><div class="t2">'+(d.dir==='lent'?'должен тебе':'ты должен')+' · '+dshort(d.date)+(d.due?' · <span class="'+(late?'warn':'')+'">до '+dshort(d.due)+'</span>':'')+(d.note?' · '+esc(d.note):'')+'</div></div><div class="amt num '+(d.dir==='lent'?'pos':'neg')+'">'+fmt(left>1e-9?left:d.amount,d.cur)+(d.paid.length&&left>1e-9?'<small>из '+fmt(d.amount,d.cur)+'</small>':'')+'</div></button>';
+    return '<button class="item" data-a="editdebt" data-id="'+d.id+'"><div class="ic">'+(d.dir==='lent'?'📥':'📤')+'</div><div class="grow"><div class="t1">'+esc(d.who)+'</div><div class="t2">'+(d.dir==='lent'?'должен вам':'вы должны')+' · '+dshort(d.date)+(d.due?' · <span class="'+(late?'warn':'')+'">до '+dshort(d.due)+'</span>':'')+(d.note?' · '+esc(d.note):'')+'</div></div><div class="amt num '+(d.dir==='lent'?'pos':'neg')+'">'+fmt(left>1e-9?left:d.amount,d.cur)+(d.paid.length&&left>1e-9?'<small>из '+fmt(d.amount,d.cur)+'</small>':'')+'</div></button>';
   }
-  if(!S.debts.length)return h+'<div class="card empty"><b>Долгов нет</b>Нажми «+», чтобы записать, кто кому должен.</div>';
+  if(!S.debts.length)return h+'<div class="card empty"><b>Долгов нет</b>Нажмите «+», чтобы записать, кто кому должен.</div>';
   if(open.length)h+='<div class="card" style="padding:4px 16px">'+open.map(row).join('')+'</div>';
   if(closed.length)h+='<div class="grp">Закрытые</div><div class="card" style="margin-top:6px;padding:4px 16px;opacity:.7">'+closed.map(row).join('')+'</div>';
   return h;
@@ -1728,7 +1728,7 @@ function renderDebt(){
 }
 function saveDebt(){
   var who=(F.who||'').trim(),x=num(F.amountS);
-  if(!who){toast('Напиши, кто');return;}if(!(x>0)){toast('Введи сумму');return;}
+  if(!who){toast('Напишите, кто');return;}if(!(x>0)){toast('Введите сумму');return;}
   var d=F.id?S.debts.filter(function(o){return o.id===F.id;})[0]:null;
   var o={id:F.id||uid(),dir:F.dir,who:who,amount:x,cur:F.cur,date:F.date||today(),due:F.due||'',note:(F.note||'').trim(),paid:d?d.paid:[]};
   if(d)S.debts[S.debts.indexOf(d)]=o;else S.debts.push(o);
@@ -1737,7 +1737,7 @@ function saveDebt(){
 function debtHome(){
   var t=today(),due=S.debts.filter(function(d){return d.due&&d.due<=t&&debtLeft(d)>1e-9;});
   if(!due.length)return '';
-  return '<div class="card" data-a="sub" data-v="debts" style="cursor:pointer;border-color:var(--gold)"><h3 style="color:var(--ink)">Срок возврата долга</h3>'+due.slice(0,3).map(function(d){return '<div class="row small" style="padding:3px 0"><span>'+esc(d.who)+' · '+(d.dir==='lent'?'должен тебе':'ты должен')+'</span><span class="num" style="font-weight:600">'+fmt(debtLeft(d),d.cur)+'</span></div>';}).join('')+'</div>';
+  return '<div class="card" data-a="sub" data-v="debts" style="cursor:pointer;border-color:var(--gold)"><h3 style="color:var(--ink)">Срок возврата долга</h3>'+due.slice(0,3).map(function(d){return '<div class="row small" style="padding:3px 0"><span>'+esc(d.who)+' · '+(d.dir==='lent'?'должен вам':'вы должны')+'</span><span class="num" style="font-weight:600">'+fmt(debtLeft(d),d.cur)+'</span></div>';}).join('')+'</div>';
 }
 /* ---------- Финпомощник: сводка для Claude ---------- */
 /* Страница помощника живёт в claude.ai и отвечает за счёт аккаунта Claude того, кто её открыл */
@@ -1775,8 +1775,8 @@ function aiSummaryText(){
   return 'Сводка моих финансов из Lucky Finance. Отвечай по-русски, опирайся только на эти цифры и называй их; если данных не хватает — скажи.\n\n```json\n'+JSON.stringify(aiSummary())+'\n```\n\nМой вопрос: ';
 }
 function viewAi(){
-  var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Финпомощник</h1><div class="small muted">Спрашивай Claude о своих деньгах: траты, лимиты, цель, обмены. Ответы идут за счёт твоей подписки Claude, отдельный ключ не нужен.</div>';
-  h+='<div class="card"><h3>Как пользоваться</h3><div class="small" style="line-height:1.7">Скачай сводку и выбери её на странице помощника. Или скопируй сводку и вставь в обычный чат с Claude, дописав свой вопрос.</div>'+
+  var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Финпомощник</h1><div class="small muted">Спросите Claude о своих деньгах: траты, лимиты, цель, обмены. Ответы идут за счёт вашей подписки Claude, отдельный ключ не нужен.</div>';
+  h+='<div class="card"><h3>Как пользоваться</h3><div class="small" style="line-height:1.7">Скачайте сводку и выберите её на странице помощника. Или скопируйте сводку и вставьте в обычный чат с Claude, дописав свой вопрос.</div>'+
     '<a class="btn" href="'+HELPER_URL+'" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Открыть Финпомощник</a>'+
     '<div class="split"><button class="btn plain sm" style="width:100%" data-a="aidl">Скачать сводку</button><button class="btn plain sm" style="width:100%" data-a="aicopy">Скопировать сводку</button></div></div>';
   h+='<div class="card"><h3>Что попадает в сводку</h3><div class="small muted" style="line-height:1.7">Остатки по счетам, доходы и расходы по категориям за последние месяцы, постоянные платежи, лимиты, накопления и цель, итоги по #тегам и долгам, курсы. <b>Не попадают</b> отдельные операции и заметки к ним. Сводка — снимок на сегодня: чтобы помощник видел свежие цифры, скачай её заново.</div></div>';
@@ -1784,7 +1784,7 @@ function viewAi(){
 }
 function viewInvest(){
   var h=backBar('Ещё','back2')+'<div class="row" style="margin-top:14px"><h1 style="margin:0">Инвестиции</h1><button class="chip" data-a="newinv">+ Актив</button></div>';
-  if(!S.inv.length)return h+'<div class="card empty"><b>Активов пока нет</b>Добавь, где что лежит: биржа, крипта, депозит. Стоимость обновляешь сам, когда захочешь.</div>';
+  if(!S.inv.length)return h+'<div class="card empty"><b>Активов пока нет</b>Добавьте, где что лежит: биржа, крипта, депозит. Стоимость обновляете вы сами, когда захотите.</div>';
   h+='<div class="card" style="padding:4px 16px">';
   S.inv.forEach(function(x){
     var pl=x.now-x.invested,pp=x.invested>0?pl/x.invested*100:null;
@@ -1796,7 +1796,7 @@ function viewInvest(){
 
 function ratesCard(){
   var main=S.settings.main,h='';
-  h+='<div class="card"><h3>Курсы валют</h3><div class="small">Рыночные курсы: '+(S.mkt?dlong(S.mkt.date):'ещё не загружались.')+' Курсы ЦБ РФ (запасные): '+dlong(S.auto.date)+' Обновляются сами при открытии приложения.</div><details class="dt"><summary>Как выбирается курс</summary><div class="hint">1) по FIFO — средний курс, по которому ты реально получил деньги, что сейчас лежат в этой валюте; 2) заданный вручную; 3) рыночный из интернета; 4) ЦБ РФ.</div></details><div class="row small muted" style="margin-top:10px"><span>'+rateAgeText()+'</span><button class="chip" data-a="refresh">Обновить курсы</button></div>'+rateDiag();
+  h+='<div class="card"><h3>Курсы валют</h3><div class="small">Рыночные курсы: '+(S.mkt?dlong(S.mkt.date):'ещё не загружались.')+' Курсы ЦБ РФ (запасные): '+dlong(S.auto.date)+' Обновляются сами при открытии приложения.</div><details class="dt"><summary>Как выбирается курс</summary><div class="hint">1) по FIFO — средний курс, по которому вы реально получили деньги, что сейчас лежат в этой валюте; 2) заданный вручную; 3) рыночный из интернета; 4) ЦБ РФ.</div></details><div class="row small muted" style="margin-top:10px"><span>'+rateAgeText()+'</span><button class="chip" data-a="refresh">Обновить курсы</button></div>'+rateDiag();
   var foreign=[];S.accounts.forEach(function(a){if(a.cur!==main&&foreign.indexOf(a.cur)<0)foreign.push(a.cur);});
   if(foreign.length){
     h+='<div class="small muted" style="margin-top:14px">Задать курс вручную (необязательно) — используется, если по FIFO курса нет:</div>';
@@ -1818,7 +1818,7 @@ function viewMore(){
   function it(v,ic,t1,t2){return '<button class="item" data-a="sub" data-v="'+v+'"><div class="ic">'+ic+'</div><div class="grow"><div class="t1">'+t1+'</div><div class="t2">'+t2+'</div></div><span class="muted">›</span></button>';}
   var h='<h1>Ещё</h1>'+updateCard();
   h+='<div class="grp">Деньги</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
-    it('savings','🐷','Накопления и цель','Откладываешь только ты, вручную')+
+    it('savings','🐷','Накопления и цель','Откладываете только вы, вручную')+
     it('exchange','⇄','Обмен валюты','Средний курс, остатки, сколько обменяно')+'</div>';
   h+='<div class="grp">Настройки</div><div class="card" style="margin-top:6px;padding:4px 16px">'+
     it('curs','💱','Мои валюты','Основная: '+main+(S.settings.favs.length?' · в списках: '+S.settings.favs.join(', '):''))+
@@ -1869,13 +1869,13 @@ function filterCurs(q){
 }
 function openCurPicker(onPick,onBack,noFav){
   CP={pick:onPick,back:onBack,noFav:!!noFav};
-  openSheet('<h2>Выбери валюту</h2><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" autocomplete="off">'+curGroups('picker')+'<button class="btn plain" data-a="curback">Назад</button>');
+  openSheet('<h2>Выберите валюту</h2><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" autocomplete="off">'+curGroups('picker')+'<button class="btn plain" data-a="curback">Назад</button>');
 }
 function viewCurs(){
   var main=S.settings.main;
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">Мои валюты</h1>';
   h+='<div class="card"><h3>Основная валюта</h3><select data-set="main">'+curOptions(main)+'</select><div class="hint">В ней показываются итоги и считается курс по FIFO.</div></div>';
-  h+='<div class="small muted" style="margin-top:12px">Включи только те валюты, с которыми работаешь: именно они будут в списках выбора и в обновлении курсов. Валюты, уже используемые в счетах и активах, скрыть нельзя.</div><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" style="margin-top:10px" autocomplete="off">';
+  h+='<div class="small muted" style="margin-top:12px">Включите только те валюты, с которыми работаете: именно они будут в списках выбора и в обновлении курсов. Валюты, уже используемые в счетах и активах, скрыть нельзя.</div><input data-cq="1" placeholder="Поиск: USD, евро, bitcoin…" style="margin-top:10px" autocomplete="off">';
   h+=curGroups('screen');
   h+='<div class="card"><h3>Своя валюта</h3><input id="newcur" placeholder="Код, например DOT" maxlength="8" autocomplete="off" style="margin-top:0"><button class="btn plain sm" data-a="addcur">Добавить</button></div>';
   h+=ratesCard();
@@ -1910,7 +1910,7 @@ function enhanceAmt(){
   });
 }
 function openSheet(html){$('#sheetBody').innerHTML=html;$('#sheet').hidden=false;$('.sheet').scrollTop=0;enhanceAmt();enhanceKb();}
-function closeSheet(){R=null;P=null;OFOPEN=false;$('#sheet').hidden=true;F=null;var kb=$('#kbhide');if(kb)kb.classList.remove('show');}
+function closeSheet(){R=null;P=null;PL=null;OFOPEN=false;$('#sheet').hidden=true;F=null;var kb=$('#kbhide');if(kb)kb.classList.remove('show');}
 function ask(msg,yes,fn){
   openSheet('<h2>Подтвердить</h2><p>'+msg+'</p><button class="btn expense" data-a="askyes">'+yes+'</button><button class="btn plain" data-a="close">Отмена</button>');
   ask.fn=fn;
@@ -1930,7 +1930,7 @@ function freqCats(type){
   return catsFor(type).slice(0,type==='expense'?8:6);
 }
 function openOp(type,t){
-  if(!S.accounts.length){toast('Сначала добавь счёт');go('accounts');return;}
+  if(!S.accounts.length){toast('Сначала добавьте счёт');go('accounts');return;}
   if(t){F={id:t.id,seq:t.seq,edit:true,opening:t.opening,rateMain:t.rateMain,type:t.type,date:t.date,acc:t.acc,to:t.to||'',amountS:inp(t.amount),toS:t.toAmount!=null&&t.type==='exchange'?inp(t.toAmount):'',cat:t.cat||'',sub:t.sub||'',oneoff:t.oneoff,note:t.note||'',isRec:t.rec,rid:t.rid||''};}
   else{
     var acc=getAcc(S.settings.lastAcc)?S.settings.lastAcc:S.accounts[0].id;
@@ -1952,7 +1952,7 @@ function renderOp(){
       var tps=svp.concat(aup);
       if(tps.length){
         F.tpls=tps;
-        h+='<div class="small muted" style="margin-bottom:2px">Выбери шаблон или частую трату</div><div class="chips">'+tps.map(function(o,i){var ac=getAcc(o.acc);return '<button class="chip" data-a="tpl" data-i="'+i+'">'+(o.saved?'⚡ '+esc(o.name):catIcon(o.cat)+' '+esc(o.cat))+' · '+fmt(o.amount,ac.cur)+'</button>';}).join('')+'</div>';
+        h+='<div class="small muted" style="margin-bottom:2px">Выберите шаблон или частую трату</div><div class="chips">'+tps.map(function(o,i){var ac=getAcc(o.acc);return '<button class="chip" data-a="tpl" data-i="'+i+'">'+(o.saved?'⚡ '+esc(o.name):catIcon(o.cat)+' '+esc(o.cat))+' · '+fmt(o.amount,ac.cur)+'</button>';}).join('')+'</div>';
       }else h+='<div class="small muted">Пока нет сохранённых шаблонов.</div>';
     }
     h+='<div class="small muted" style="margin:12px 0 4px">Для этого расхода:</div><div class="chips">'+
@@ -1973,7 +1973,7 @@ function renderOp(){
       F.to=pref[0]?pref[0].id:(toList[0]?toList[0].id:'');
     }
     B=getAcc(F.to);diff=!!(B&&B.cur!==A.cur);
-    if(!toList.length)h+='<div class="hint warn" style="margin-top:14px">Нужен второй счёт. Добавь его в разделе «Счета».</div>';
+    if(!toList.length)h+='<div class="hint warn" style="margin-top:14px">Нужен второй счёт. Добавьте его в разделе «Счета».</div>';
     else{
       h+='<label>Куда<select data-f="to">'+opts(toList,F.to)+'</select></label>';
       if(B)h+='<div class="mvplate"><div>'+esc(A.name)+' <span class="muted">('+A.cur+')</span> → '+esc(B.name)+' <span class="muted">('+B.cur+')</span></div><div class="mvt'+(diff?' fx':'')+'">'+(diff?'Обмен валюты '+A.cur+' → '+B.cur:'Перевод между своими счетами')+'</div></div>';
@@ -2010,7 +2010,7 @@ function updateHint(){
   var el=$('#hint');if(!el||!F)return;
   var A=getAcc(F.acc);if(!A){el.innerHTML='';return;}
   var x=num(F.amountS),y=num(F.toS),main=S.settings.main,s='',bal=C.accs[A.id]?C.accs[A.id].bal:0;
-  if(F.type!=='income'&&!F.edit&&x>0&&x>bal+1e-9)s+='<span class="warn">Больше, чем на счёте ('+fmt(bal,A.cur)+'). Проверь сумму.</span> ';
+  if(F.type!=='income'&&!F.edit&&x>0&&x>bal+1e-9)s+='<span class="warn">Больше, чем на счёте ('+fmt(bal,A.cur)+'). Проверьте сумму.</span> ';
   if(F.type==='expense'&&!F.edit&&x>0&&A.cur!==main){
     var r=simulate(A.id,x);
     if(r)s+='По FIFO ≈ '+fmt(r.cost,main)+(r.est>1e-9?' (часть по ориентировочному курсу)':'')+(r.unknown>1e-9?' (+ '+fmt(r.unknown,A.cur)+' без курса)':'');
@@ -2019,7 +2019,7 @@ function updateHint(){
   el.innerHTML=s||('На счёте: '+fmt(bal,A.cur));
 }
 function saveOp(){
-  var x=num(F.amountS);if(!(x>0)){toast('Введи сумму больше нуля');return;}
+  var x=num(F.amountS);if(!(x>0)){toast('Введите сумму больше нуля');return;}
   var t={id:F.id||uid(),seq:F.seq||S.seq++,date:F.date||today(),type:F.type,acc:F.acc,amount:x,note:(F.note||'').trim()};
   if(F.recId||F.isRec||(F.mkRec&&F.type==='expense'&&!F.opening))t.rec=true;
   if(F.opening){t.opening=true;if(F.rateMain)t.rateMain=F.rateMain;}
@@ -2030,12 +2030,12 @@ function saveOp(){
     if(EMO[t.cat]==null&&S.settings.catIcons[t.cat]==null)S.settings.catIcons[t.cat]=F.icon||'🏷';
   }
   if(F.type==='transfer'||F.type==='exchange'){
-    if(!F.to){toast('Выбери счёт, куда идут деньги');return;}
+    if(!F.to){toast('Выберите счёт, куда идут деньги');return;}
     t.to=F.to;
     var SA=getAcc(F.acc),SB=getAcc(F.to);
-    if(!SA||!SB){toast('Выбери счёт, куда идут деньги');return;}
+    if(!SA||!SB){toast('Выберите счёт, куда идут деньги');return;}
     if(SA.cur===SB.cur){t.type='transfer';t.toAmount=x;}
-    else{var y=num(F.toS);if(!(y>0)){toast('Введи, сколько получаешь');return;}t.type='exchange';t.toAmount=y;}
+    else{var y=num(F.toS);if(!(y>0)){toast('Введите, сколько получаете');return;}t.type='exchange';t.toAmount=y;}
   }
   var i=S.tx.findIndex(function(o){return o.id===t.id;});
   if(i>=0)S.tx[i]=t;else S.tx.push(t);
@@ -2086,12 +2086,12 @@ function renderAcc(){
   openSheet(h);
 }
 function saveAcc(){
-  var name=(F.name||'').trim();if(!name){toast('Введи название счёта');return;}
+  var name=(F.name||'').trim();if(!name){toast('Введите название счёта');return;}
   if(F.id){
     var a=getAcc(F.id);a.name=name;a.type=F.atype;closeSheet();commit();toast('Сохранено');return;
   }
   var cur=F.cur==='__custom'?(F.customCur||'').trim().toUpperCase():F.cur;
-  if(!/^[A-Z0-9]{2,8}$/.test(cur)){toast('Введи код валюты латиницей');return;}
+  if(!/^[A-Z0-9]{2,8}$/.test(cur)){toast('Введите код валюты латиницей');return;}
   if(!CUR[cur]&&S.settings.custom.indexOf(cur)<0)S.settings.custom.push(cur);
   var acc={id:uid(),name:name,type:F.atype,cur:cur,rc:today()};S.accounts.push(acc);
   var b=num(F.bal);
@@ -2111,11 +2111,11 @@ function openBal(id){
 }
 function renderBal(){
   var a=getAcc(F.id),main=S.settings.main,cur=C.accs[a.id].bal;
-  var h='<h2>Сколько сейчас на счёте</h2><div class="small muted">Счёт «'+esc(a.name)+'». Сейчас в приложении: <b>'+fmt(cur,a.cur)+'</b>. Введи фактическую сумму — разницу приложение добавит само как «Корректировку». Она не считается ни доходом, ни расходом.</div>';
+  var h='<h2>Сколько сейчас на счёте</h2><div class="small muted">Счёт «'+esc(a.name)+'». Сейчас в приложении: <b>'+fmt(cur,a.cur)+'</b>. Введите фактическую сумму — разницу приложение добавит само как «Корректировку». Она не считается ни доходом, ни расходом.</div>';
   h+='<label>Фактический остаток<div class="amtwrap"><input inputmode="decimal" data-f="balS" value="'+esc(F.balS)+'" placeholder="0" autocomplete="off"><span>'+a.cur+'</span></div></label>';
   if(a.cur!==main){
     var weak=WEAK.indexOf(a.cur)>=0,ref=rateInfoC(a.cur);
-    h+='<label>Курс этих денег (необязательно)<div class="small muted" style="margin-top:2px">'+(weak?'1 '+main+' = … '+a.cur:'1 '+a.cur+' = … '+main)+'. Если не знаешь — оставь пустым: будет использован ориентировочный курс'+(ref.r?', сейчас '+showRate(a.cur,ref.r)+' ('+ref.src+')':'. Сейчас курса нет — задай его в «Ещё → Курсы валют»')+'.</div><input inputmode="decimal" data-f="rate" value="'+esc(F.rate)+'" placeholder="Например, '+(weak?'305':'80')+'" autocomplete="off"></label>';
+    h+='<label>Курс этих денег (необязательно)<div class="small muted" style="margin-top:2px">'+(weak?'1 '+main+' = … '+a.cur:'1 '+a.cur+' = … '+main)+'. Если не знаете, оставьте пустым: будет использован ориентировочный курс'+(ref.r?', сейчас '+showRate(a.cur,ref.r)+' ('+ref.src+')':'. Сейчас курса нет — задайте его в «Ещё → Курсы валют»')+'.</div><input inputmode="decimal" data-f="rate" value="'+esc(F.rate)+'" placeholder="Например, '+(weak?'305':'80')+'" autocomplete="off"></label>';
   }
   h+='<div class="hint" id="bhint"></div><button class="btn" data-a="savebal">Сохранить остаток</button><button class="btn plain" data-a="close">Отмена</button>';
   openSheet(h);balUpdate();
@@ -2128,7 +2128,7 @@ function balUpdate(){
 }
 function saveBal(){
   var a=getAcc(F.id),b=num(F.balS);
-  if(!(b>=0)){toast('Введи сумму (0 или больше)');return;}
+  if(!(b>=0)){toast('Введите сумму (0 или больше)');return;}
   var d=b-C.accs[a.id].bal;
   a.rc=today();delete a.snz;
   if(Math.abs(d)<1e-9){closeSheet();commit();return;}
@@ -2149,7 +2149,7 @@ function renderCalc(list){
   var h='<h2>Быстрый конвертер</h2><div class="small muted">Считает по FIFO выбранного счёта. Ничего не записывает.</div>';
   h+='<label>Счёт<select data-f="acc">'+list.map(function(a){return '<option value="'+a.id+'"'+(a.id===F.acc?' selected':'')+'>'+esc(a.name)+' · '+a.cur+'</option>';}).join('')+'</select></label>';
   h+='<label>Цена в магазине<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" placeholder="0" autocomplete="off"><span>'+A.cur+'</span></div></label>';
-  h+='<div class="card" style="background:var(--bg);border:0;text-align:center"><div class="small muted">Для тебя это</div><div id="calcOut" style="font:600 26px/1.3 Unbounded,Onest,sans-serif;margin-top:4px">—</div><div class="hint" id="calcSub"></div></div>';
+  h+='<div class="card" style="background:var(--bg);border:0;text-align:center"><div class="small muted">Для вас это</div><div id="calcOut" style="font:600 26px/1.3 Unbounded,Onest,sans-serif;margin-top:4px">—</div><div class="hint" id="calcSub"></div></div>';
   h+='<button class="btn plain" data-a="close">Закрыть</button>';
   openSheet(h);calcUpdate();
   var inp=$('#sheetBody input');if(inp)inp.focus();
@@ -2371,7 +2371,7 @@ function pushWidget(){
     var t=today(),spent=0;
     S.tx.forEach(function(x){if(x.type==='expense'&&!x.opening&&x.date===t){var v=txToMain(x);if(v!=null)spent+=v;}});
     ncall('LuckyNative','updateWidget',{
-      title:S.accounts.length?(hide?'••••••':fmt(mainTotal()/k,cur)):'Добавь счета',
+      title:S.accounts.length?(hide?'••••••':fmt(mainTotal()/k,cur)):'Добавьте счета',
       line1:S.accounts.length?(hide?'':'Сегодня −'+fmt(spent/k,cur)):'',
       line2:line2
     });
@@ -2444,7 +2444,7 @@ function updCheck(silent){
     UPD.msg='';
     try{localStorage.setItem('fin-mvp-updchk',String(Date.now()));}catch(e){}
     if(silent&&UPD.state==='new')toast('Доступна версия '+j.version+' — «Ещё», сверху');
-  }).catch(function(){UPD.state='err';UPD.msg='Нет связи с GitHub. Проверь интернет и попробуй ещё раз.';}).then(function(){UPD.busy=false;if(nav.tab==='more'&&!nav.sub)render();});
+  }).catch(function(){UPD.state='err';UPD.msg='Нет связи с GitHub. Проверьте интернет и попробуйте ещё раз.';}).then(function(){UPD.busy=false;if(nav.tab==='more'&&!nav.sub)render();});
 }
 function bytesToB64(buf){var u=new Uint8Array(buf),s='',n=0x8000;for(var i=0;i<u.length;i+=n)s+=String.fromCharCode.apply(null,u.subarray(i,i+n));return btoa(s);}
 function sha256Hex(buf){
@@ -2484,7 +2484,7 @@ function updApk(){
   var info=UPD.info,a=info&&info.apk;if(UPD.busy||!a)return;
   UPD.busy=true;
   function status(m){UPD.msg=m;if(nav.tab==='more'&&!nav.sub)render();}
-  function fail(e){UPD.busy=false;UPD.msg='Не удалось скачать APK: '+(e&&e.message?e.message:'ошибка')+'. Попробуй ещё раз.';if(nav.tab==='more'&&!nav.sub)render();}
+  function fail(e){UPD.busy=false;UPD.msg='Не удалось скачать APK: '+(e&&e.message?e.message:'ошибка')+'. Попробуйте ещё раз.';if(nav.tab==='more'&&!nav.sub)render();}
   status('Скачиваю APK…');
   fetch(updBase()+a.p+'?v='+encodeURIComponent(a.build||info.version),{cache:'no-store'}).then(function(r){
     if(!r.ok)throw new Error('http '+r.status);
@@ -2509,7 +2509,7 @@ function updApk(){
   }).then(function(r){
     UPD.busy=false;
     if(r===null)throw new Error('установка не поддерживается этой сборкой');
-    UPD.msg=r.needPermission?'Включи «Разрешить установку из этого источника» для Lucky Finance, вернись назад и нажми кнопку ещё раз.':'Подтверди установку в окне Android — приложение обновится и откроется само.';
+    UPD.msg=r.needPermission?'Включите «Разрешить установку из этого источника» для Lucky Finance, вернитесь назад и нажмите кнопку ещё раз.':'Подтвердите установку в окне Android — приложение обновится и откроется само.';
     if(nav.tab==='more'&&!nav.sub)render();
   }).catch(fail);
 }
@@ -2525,7 +2525,7 @@ function updateCard(){
   if(!IS_APP)return '';
   var h='<div class="card"><h3>Обновление приложения</h3><div class="small muted">Версия '+esc(VERSION)+(UPD.apk?' · сборка '+UPD.apk:'')+'</div>';
   if(UPD.msg)h+='<div class="hint" style="margin-top:8px">'+esc(UPD.msg)+'</div>';
-  if(UPD.state==='latest')h+='<div class="hint" style="margin-top:8px">У тебя последняя версия.</div>';
+  if(UPD.state==='latest')h+='<div class="hint" style="margin-top:8px">У вас последняя версия.</div>';
   if(UPD.state==='new'&&UPD.info){
     h+='<div style="margin-top:10px"><b>Доступна версия '+esc(UPD.info.version)+'</b></div>';
     if(UPD.info.notes&&UPD.info.notes.length)h+='<div class="small" style="line-height:1.7;margin-top:4px">'+UPD.info.notes.map(function(x){return '• '+esc(x);}).join('<br>')+'</div>';
@@ -2569,10 +2569,10 @@ function ghCfg(){var g={};try{g=JSON.parse(localStorage.getItem(GKEY)||'{}')||{}
 function ghSet(g){try{localStorage.setItem(GKEY,JSON.stringify(g));}catch(e){}}
 function ghReady(g){return !!(g.repo&&g.token&&/^[\w.-]+\/[\w.-]+$/.test(g.repo));}
 function ghHash(){var l=S.settings.lastBackup;S.settings.lastBackup=0;var j=JSON.stringify(S);S.settings.lastBackup=l;var h=5381;for(var i=0;i<j.length;i++)h=((h<<5)+h+j.charCodeAt(i))|0;return j.length+':'+h;}
-function ghErr(st){return st===401?'токен не принят — проверь или создай новый':st===403?'у токена нет права записи в репозиторий (Contents: Read and write)':st===404?'репозиторий не найден или у токена нет к нему доступа':st===422?'файл с таким именем уже есть — подожди минуту':st===0?'нет интернета':'ошибка GitHub '+st;}
+function ghErr(st){return st===401?'токен не принят — проверьте или создай новый':st===403?'у токена нет права записи в репозиторий (Contents: Read and write)':st===404?'репозиторий не найден или у токена нет к нему доступа':st===422?'файл с таким именем уже есть — подождите минуту':st===0?'нет интернета':'ошибка GitHub '+st;}
 function ghUpload(silent){
   var g=ghCfg();
-  if(!ghReady(g)){if(!silent)toast('Сначала укажи репозиторий и токен');return Promise.resolve(false);}
+  if(!ghReady(g)){if(!silent)toast('Сначала укажите репозиторий и токен');return Promise.resolve(false);}
   if(GH_BUSY)return Promise.resolve(false);
   GH_BUSY=true;
   var text=backupJson(),hash=ghHash(),name=bkName();
@@ -2610,9 +2610,9 @@ function ghSyncNative(){
   });
 }
 function ghCard(){
-  var g=ghCfg(),gs=ghSt(),h='<div class="card"><h3>Копия на GitHub</h3>'+stLine(gs.ok,gs.t)+'<div class="small muted">Копия кладётся в твой <b>приватный</b> репозиторий. Не используй репозиторий с этим сайтом — он публичный, и данные увидят все.</div>';
+  var g=ghCfg(),gs=ghSt(),h='<div class="card"><h3>Копия на GitHub</h3>'+stLine(gs.ok,gs.t)+'<div class="small muted">Копия кладётся в ваш <b>приватный</b> репозиторий. Не используй репозиторий с этим сайтом — он публичный, и данные увидят все.</div>';
   h+='<label>Репозиторий (владелец/название)<input id="ghrepo" autocapitalize="none" autocomplete="off" placeholder="godoffear/lucky_finance_backup" value="'+esc(g.repo||'')+'"></label>';
-  h+='<label>Токен<input id="ghtok" type="password" autocomplete="off" placeholder="'+(g.token?'сохранён — введи новый, чтобы заменить':'github_pat_…')+'"></label>';
+  h+='<label>Токен<input id="ghtok" type="password" autocomplete="off" placeholder="'+(g.token?'сохранён — введите новый, чтобы заменить':'github_pat_…')+'"></label>';
   h+='<button class="btn" data-a="ghsave" style="margin-top:12px">'+(ghReady(g)?'Сохранить':'Сохранить и проверить')+'</button>';
   if(ghReady(g)){
     h+='<button class="btn plain" data-a="ghnow" style="margin-top:8px">Выгрузить сейчас</button>';
@@ -2625,17 +2625,17 @@ function ghCard(){
 }
 function openExport(){
   var can=typeof navigator.share==='function';
-  openSheet('<h2>Резервная копия</h2><div class="small muted">Сохрани файл или отправь его себе (Telegram, заметки, почта). Чтобы восстановить, выбери этот файл в «Восстановить из копии».</div>'+
+  openSheet('<h2>Резервная копия</h2><div class="small muted">Сохраните файл или отправь его себе (Telegram, заметки, почта). Чтобы восстановить, выберите этот файл в «Восстановить из копии».</div>'+
     '<button class="btn" data-a="dlbk">Скачать файл</button>'+(can?'<button class="btn plain" data-a="sharebk" style="margin-top:8px">Отправить копию…</button>':'')+
-    '<label>Или скопируй текст<textarea id="bk" readonly>'+esc(backupJson())+'</textarea></label><button class="btn plain" data-a="copybk" style="margin-top:8px">Скопировать текст</button><button class="btn plain" data-a="close" style="margin-top:8px">Закрыть</button>');
+    '<label>Или скопируйте текст<textarea id="bk" readonly>'+esc(backupJson())+'</textarea></label><button class="btn plain" data-a="copybk" style="margin-top:8px">Скопировать текст</button><button class="btn plain" data-a="close" style="margin-top:8px">Закрыть</button>');
 }
 function openImport(){
-  openSheet('<h2>Восстановить из копии</h2><div class="small muted">Выбери файл копии или вставь текст. Текущие данные будут заменены.</div><label>Файл копии<input type="file" id="bkfile" accept=".json,application/json,text/plain"></label><label>Или текст<textarea id="bk" placeholder="Вставь сюда"></textarea></label><button class="btn" data-a="doimport">Восстановить</button><button class="btn plain" data-a="close" style="margin-top:8px">Отмена</button>');
+  openSheet('<h2>Восстановить из копии</h2><div class="small muted">Выберите файл копии или вставьте текст. Текущие данные будут заменены.</div><label>Файл копии<input type="file" id="bkfile" accept=".json,application/json,text/plain"></label><label>Или текст<textarea id="bk" placeholder="Вставьте сюда"></textarea></label><button class="btn" data-a="doimport">Восстановить</button><button class="btn plain" data-a="close" style="margin-top:8px">Отмена</button>');
 }
 function readBkFile(el){
   var f=el.files&&el.files[0];if(!f)return;
   var rd=new FileReader();
-  rd.onload=function(){var ta=$('#bk');if(ta)ta.value=String(rd.result||'');toast('Файл прочитан — нажми «Восстановить»');};
+  rd.onload=function(){var ta=$('#bk');if(ta)ta.value=String(rd.result||'');toast('Файл прочитан — нажмите «Восстановить»');};
   rd.onerror=function(){toast('Не удалось прочитать файл');};
   rd.readAsText(f);
 }
@@ -2725,7 +2725,7 @@ function limitDonutCard(st,ym){
   return '<div class="card"><h3>Лимит месяца</h3><div class="row" style="gap:14px;align-items:center;margin-top:4px">'+svg+'<div class="grow small" style="min-width:0">'+lg+'</div></div>'+
     '<div class="hint">Пустая часть кольца — сколько ещё можно потратить. Справа — сколько процентов лимита категории уже потрачено'+(over?'. Лимит месяца превышен — кольцо обведено красным':'')+'.</div></div>';
 }
-/* А: цветная полоска лимита с чертой «где по темпу месяца ты должен быть сегодня» */
+/* А: цветная полоска лимита с чертой «где по темпу месяца вы должны быть сегодня» */
 function limBarA(spent,limit,color,mark){
   var p=limit>0?spent/limit*100:0,over=p>=100;
   return '<div style="position:relative;height:8px;border-radius:4px;background:var(--bg);margin:6px 0 2px"><b style="display:block;height:100%;border-radius:4px;width:'+Math.min(100,Math.max(2,p))+'%;background:'+(over?'var(--expense)':color)+'"></b>'+(mark!=null?'<i style="position:absolute;top:-3px;left:'+mark+'%;width:2px;height:14px;background:var(--ink);opacity:.5;border-radius:1px"></i>':'')+'</div>';
@@ -2748,7 +2748,7 @@ function viewLimits(){
   var ks=Object.keys(l.cats);
   if(!ks.length)h+='<div class="small muted" style="margin-top:8px">Например, не больше 15 000 000 ₫ в месяц на «Продукты».</div>';
   ks.forEach(function(c,i){var v=st.cats[c]||0,ov=v-l.cats[c];h+='<button class="item" data-a="editlim" data-v="'+esc(c)+'" style="display:block"><div class="row"><span>'+catIcon(c)+' '+esc(c)+'</span><span class="num small"'+(ov>0?' style="color:var(--expense)"':'')+'>'+fmt(v,main)+' из '+fmt(l.cats[c],main)+(ov>0?' · +'+fmt(ov,main):'')+'</span></div>'+limBarA(v,l.cats[c],i<5?SERIES[i]:'var(--cother)',mark)+'</button>';});
-  if(ks.length||l.total>0)h+='<div class="hint">Черта на полоске — где по темпу месяца ты должен быть сегодня. Полоска правее черты — тратишь быстрее, чем нужно.</div>';
+  if(ks.length||l.total>0)h+='<div class="hint">Черта на полоске — где по темпу месяца вы должны быть сегодня. Полоска правее черты — тратите быстрее, чем нужно.</div>';
   return h+'</div>';
 }
 function openCatLim(cat){
@@ -2764,7 +2764,7 @@ function renderCatLim(){
   openSheet('<h2>'+(F.edit?'Изменить лимит':'Лимит на категорию')+'</h2><label>Категория<select data-f="cat">'+opts.map(function(c){return '<option value="'+esc(c)+'"'+(F.cat===c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select></label><label>Лимит на месяц<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" placeholder="0" autocomplete="off"><span>'+main+'</span></div></label><button class="btn" data-a="savecl">Сохранить</button>'+(F.edit?'<button class="btn ghost" data-a="delcl">Удалить лимит</button>':''));
 }
 function saveCatLim(){
-  var x=num(F.amountS);if(!(x>0)){toast('Введи сумму больше нуля');return;}
+  var x=num(F.amountS);if(!(x>0)){toast('Введите сумму больше нуля');return;}
   var l=S.settings.limit||(S.settings.limit={total:0,cats:{}});l.cats[F.cat]=x;
   closeSheet();commit();toast('Лимит сохранён');
 }
@@ -2804,8 +2804,8 @@ function recHome(){
 }
 function viewRec(){
   var main=S.settings.main;
-  var h=backBar('Ещё','back2')+'<div class="row" style="margin-top:14px"><h1 style="margin:0">Постоянные платежи</h1><button class="ib plus" data-a="newrec" aria-label="Добавить платёж">+</button></div><div class="small muted" style="margin-top:8px">Приложение ничего не списывает само. В нужный день при открытии оно только напомнит, а ты подтвердишь.</div><div class="chips" style="margin:12px 0 0"><button class="chip" data-a="recfromtx">Добавить из внесённых расходов</button></div>'+recSummary();
-    if(!S.rec.length)h+='<div class="card empty"><b>Платежей пока нет</b>Добавь аренду, интернет, подписки — и не забудешь внести.</div>';
+  var h=backBar('Ещё','back2')+'<div class="row" style="margin-top:14px"><h1 style="margin:0">Постоянные платежи</h1><button class="ib plus" data-a="newrec" aria-label="Добавить платёж">+</button></div><div class="small muted" style="margin-top:8px">Приложение ничего не списывает само. В нужный день при открытии оно только напомнит, а вы подтвердите.</div><div class="chips" style="margin:12px 0 0"><button class="chip" data-a="recfromtx">Добавить из внесённых расходов</button></div>'+recSummary();
+    if(!S.rec.length)h+='<div class="card empty"><b>Платежей пока нет</b>Добавьте аренду, интернет, подписки — и не забудете внести.</div>';
   else{
     h+='<div class="card" style="padding:4px 16px">';
     S.rec.forEach(function(r){
@@ -2818,7 +2818,7 @@ function viewRec(){
   return h;
 }
 function openRec(id){
-  if(!S.accounts.length){toast('Сначала добавь счёт');return;}
+  if(!S.accounts.length){toast('Сначала добавьте счёт');return;}
   var r=id?S.rec.filter(function(x){return x.id===id;})[0]:null;
   F={rf:true,id:id||'',name:r?r.name:'',amountS:r?inp(r.amount):'',acc:r?r.acc:(getAcc(S.settings.lastAcc)?S.settings.lastAcc:S.accounts[0].id),cat:r?r.cat:'Аренда жилья',dayS:r?String(r.day):'1'};
   renderRec();
@@ -2837,8 +2837,8 @@ function renderRec(){
 }
 function saveRec(){
   var name=(F.name||'').trim(),x=num(F.amountS),d=Math.round(num(F.dayS));
-  if(!name){toast('Введи название');return;}
-  if(!(x>0)){toast('Введи сумму');return;}
+  if(!name){toast('Введите название');return;}
+  if(!(x>0)){toast('Введите сумму');return;}
   if(!(d>=1&&d<=31)){toast('Число месяца: от 1 до 31');return;}
   var o={id:F.id||uid(),name:name,amount:x,acc:F.acc,cat:F.cat||'Другое',day:d,done:{}};
   var i=S.rec.findIndex(function(r){return r.id===o.id;});
@@ -2849,7 +2849,7 @@ function saveRec(){
 
 /* Накопления */
 function openSave(kind,t){
-  if(!S.accounts.length){toast('Сначала добавь счёт');return;}
+  if(!S.accounts.length){toast('Сначала добавьте счёт');return;}
   var acc=getAcc(S.settings.lastAcc)?S.settings.lastAcc:S.accounts[0].id;
   F=t?{sv:true,edit:true,kind:t.type,id:t.id,seq:t.seq,date:t.date,acc:t.acc,amountS:inp(t.amount)}:{sv:true,kind:kind,date:today(),acc:acc,amountS:''};
   renderSave();
@@ -2876,7 +2876,7 @@ function svUpdate(){
   el.innerHTML=s;
 }
 function saveSv(){
-  var x=num(F.amountS);if(!(x>0)){toast('Введи сумму больше нуля');return;}
+  var x=num(F.amountS);if(!(x>0)){toast('Введите сумму больше нуля');return;}
   var A=getAcc(F.acc);
   if(F.kind==='unsave'&&!F.edit){var sv=C.sav[A.cur]?C.sav[A.cur].bal:0;if(x>sv+1e-9){toast('В накоплениях столько нет');return;}}
   var t={id:F.id||uid(),seq:F.seq||S.seq++,date:F.date||today(),type:F.kind,acc:F.acc,amount:x,note:''};
@@ -2901,7 +2901,7 @@ function renderGoal(){
   openSheet(h);
 }
 function saveGoal(){
-  var t=num(F.targetS);if(!(t>0)){toast('Введи сумму цели');return;}
+  var t=num(F.targetS);if(!(t>0)){toast('Введите сумму цели');return;}
   S.settings.goal={name:(F.name||'').trim()||'Цель',target:t};
   closeSheet();commit();toast('Цель сохранена');
 }
@@ -2933,7 +2933,7 @@ function svaUpdate(){
 }
 function saveSvAdj(){
   var cur=F.cur,curBal=C.sav[cur]?C.sav[cur].bal:0,b=num(F.totalS);
-  if(!(b>=0)){toast('Введи сумму (0 или больше)');return;}
+  if(!(b>=0)){toast('Введите сумму (0 или больше)');return;}
   var d=b-curBal;
   if(Math.abs(d)<1e-9){closeSheet();return;}
   var t={id:uid(),seq:S.seq++,date:today(),type:'svadj',cur:cur,amount:d,note:'Корректировка накоплений'};
@@ -2961,9 +2961,9 @@ function renderInv(){
   openSheet(h);
 }
 function saveInv(){
-  var what=(F.what||'').trim();if(!what){toast('Напиши, во что вложено');return;}
+  var what=(F.what||'').trim();if(!what){toast('Напишите, во что вложено');return;}
   var a=num(F.invS),b=num(F.nowS);
-  if(!(a>=0)||!(b>=0)){toast('Введи суммы (0 или больше)');return;}
+  if(!(a>=0)||!(b>=0)){toast('Введите суммы (0 или больше)');return;}
   var o={id:F.id||uid(),where:(F.where||'').trim(),what:what,cur:F.cur,invested:a,now:b,upd:today()};
   var i=S.inv.findIndex(function(x){return x.id===o.id;});
   if(i>=0)S.inv[i]=o;else S.inv.push(o);
@@ -3051,7 +3051,7 @@ function renderFcPick(){
 function fcReady(){var rw=runway();return rw.per.length>0&&rw.since>=FC_DAYS;}
 function fcWaitText(){
   var rw=runway(),left=FC_DAYS-(rw.since||0);
-  return 'Прогноз появится, когда накопится '+FC_DAYS+' дней операций — так средняя трата в день будет честной. '+(rw.since?'Осталось '+left+' '+plural(left,'день','дня','дней')+'.':'Начни вносить расходы.');
+  return 'Прогноз появится, когда накопится '+FC_DAYS+' дней операций — так средняя трата в день будет честной. '+(rw.since?'Осталось '+left+' '+plural(left,'день','дня','дней')+'.':'Начните вносить расходы.');
 }
 function spoil(k,title,sum,html){
   if(!html)return '';
@@ -3096,14 +3096,14 @@ function reconDue(){
 }
 function reconHome(){
   var due=reconDue();if(!due.length)return '';
-  return '<div class="card" style="border-color:var(--gold)"><h3 style="color:var(--ink)">Сверка остатков</h3><div class="small muted" style="margin:-4px 0 6px">Проверь, сходятся ли реальные деньги с тем, что в приложении.</div>'+due.slice(0,3).map(function(a){
+  return '<div class="card" style="border-color:var(--gold)"><h3 style="color:var(--ink)">Сверка остатков</h3><div class="small muted" style="margin:-4px 0 6px">Проверьте, сходятся ли реальные деньги с тем, что в приложении.</div>'+due.slice(0,3).map(function(a){
     return '<div class="row" style="padding:6px 0"><div class="grow"><div class="t1">'+esc(a.name)+'</div><div class="t2">в приложении '+fmt(C.accs[a.id].bal,a.cur)+' · последняя сверка '+dshort(a.rc)+'</div></div><button class="chip" data-a="rcopen" data-id="'+a.id+'">Сверить</button><button class="chip" data-a="rcsnz" data-id="'+a.id+'" style="margin-left:6px">Позже</button></div>';
   }).join('')+(due.length>3?'<div class="small muted">И ещё '+(due.length-3)+' — в «Ещё → Сверка остатков»</div>':'')+'</div>';
 }
 function openRecon(id){var a=getAcc(id);if(!a)return;F={rc:true,id:id,balS:''};renderRecon();}
 function renderRecon(){
   var a=getAcc(F.id),cur=C.accs[a.id].bal;
-  openSheet('<h2>Сверка: '+esc(a.name)+'</h2><div class="small muted">В приложении сейчас <b>'+fmt(cur,a.cur)+'</b>. Пересчитай реальные деньги и введи, сколько на самом деле. Разницу я запишу как «Корректировку» — это не доход и не расход.</div>'+
+  openSheet('<h2>Сверка: '+esc(a.name)+'</h2><div class="small muted">В приложении сейчас <b>'+fmt(cur,a.cur)+'</b>. Пересчитай реальные деньги и введите, сколько на самом деле. Разницу я запишу как «Корректировку» — это не доход и не расход.</div>'+
     '<label>Сколько на самом деле<div class="amtwrap"><input inputmode="decimal" data-f="balS" value="'+esc(F.balS)+'" placeholder="'+inp(cur)+'" autocomplete="off"><span>'+a.cur+'</span></div></label><div class="hint" id="rchint"></div>'+
     '<button class="btn" data-a="rcsave">Записать разницу</button><button class="btn plain" data-a="rcok" style="margin-top:8px">Всё сходится</button><button class="btn plain" data-a="close" style="margin-top:8px">Отмена</button>');
   rcUpdate();
@@ -3116,7 +3116,7 @@ function rcUpdate(){
 }
 function saveRecon(){
   var a=getAcc(F.id),b=num(F.balS);
-  if(!(b>=0)){toast('Введи сумму или нажми «Всё сходится»');return;}
+  if(!(b>=0)){toast('Введите сумму или нажмите «Всё сходится»');return;}
   var d=b-C.accs[a.id].bal;a.rc=today();delete a.snz;
   if(Math.abs(d)>=1e-9)S.tx.push({id:uid(),seq:S.seq++,date:today(),type:d>0?'income':'expense',acc:a.id,amount:Math.abs(d),cat:'Корректировка',note:'Сверка остатка',opening:true});
   closeSheet();commit();toast(Math.abs(d)<1e-9?'Всё сходится':'Разница записана');
@@ -3275,7 +3275,7 @@ function openRecFromTx(){
   var c=recCandidates();
   if(!c.length){openSheet('<h2>Из внесённых расходов</h2><p class="muted">Пока нечего предложить: подходящие расходы за последние 90 дней уже в постоянных платежах или помечены как платежи.</p><button class="btn plain" data-a="close">Понятно</button>');return;}
   F={rfx:true,cands:c};
-  var h='<h2>Из внесённых расходов</h2><div class="small muted">Выбери расход, который повторяется каждый месяц. Я создам постоянный платёж и учту, что за прошлые месяцы он уже оплачен.</div><div style="margin-top:8px">';
+  var h='<h2>Из внесённых расходов</h2><div class="small muted">Выберите расход, который повторяется каждый месяц. Я создам постоянный платёж и учту, что за прошлые месяцы он уже оплачен.</div><div style="margin-top:8px">';
   c.forEach(function(o,i){var a=getAcc(o.acc);h+='<button class="item" data-a="rfxpick" data-i="'+i+'"><div class="ic">'+catIcon(o.cat)+'</div><div class="grow"><div class="t1">'+esc(o.note||o.cat)+'</div><div class="t2">'+esc(o.cat)+' · '+esc(a.name)+' · '+dshort(o.last)+(o.n>1?' · '+o.n+' '+plural(o.n,'раз','раза','раз'):'')+'</div></div><div class="amt num">'+fmt(o.amount,a.cur)+'</div></button>';});
   openSheet(h+'</div><button class="btn plain" data-a="close">Закрыть</button>');
 }
@@ -3298,13 +3298,13 @@ function renderPlan(){
   var main=S.settings.main,curs=[];
   S.accounts.forEach(function(a){if(a.cur!==main&&curs.indexOf(a.cur)<0)curs.push(a.cur);});
   var weak=WEAK.indexOf(F.cur)>=0;
-  var h='<h2>Сколько менять?</h2><div class="small muted">Считаю по твоим обычным тратам и текущему остатку. Ничего не записывает, пока сам не нажмёшь «Записать обмен».</div>';
+  var h='<h2>Сколько менять?</h2><div class="small muted">Считаю по вашим обычным тратам и текущему остатку. Ничего не записывает, пока сами не нажмёте «Записать обмен».</div>';
   h+='<label>Валюта<select data-f="cur">'+curs.map(function(c){return '<option'+(F.cur===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select></label>';
   h+='<label>На сколько дней хватит<div class="amtwrap"><input inputmode="numeric" data-f="daysS" value="'+esc(F.daysS)+'" autocomplete="off"><span>дн.</span></div></label>';
-  h+='<label>Траты в день без постоянных платежей'+(F.dailyS?' (по твоим расходам)':' — введи вручную')+'<div class="amtwrap"><input inputmode="decimal" data-f="dailyS" value="'+esc(F.dailyS)+'" placeholder="0" autocomplete="off"><span>'+F.cur+'</span></div></label>';
+  h+='<label>Траты в день без постоянных платежей'+(F.dailyS?' (по вашим расходам)':' — введите вручную')+'<div class="amtwrap"><input inputmode="decimal" data-f="dailyS" value="'+esc(F.dailyS)+'" placeholder="0" autocomplete="off"><span>'+F.cur+'</span></div></label>';
   h+='<label>Запас на непредвиденное<div class="amtwrap"><input inputmode="decimal" data-f="bufS" value="'+esc(F.bufS)+'" autocomplete="off"><span>%</span></div></label>';
   if(S.rec.some(function(r){var a=getAcc(r.acc);return a&&a.cur===F.cur;}))h+='<div class="chips"><button class="chip'+(F.recOn!==false?' on':'')+'" data-a="plrec">Учесть постоянные платежи</button></div>';
-  h+='<label>Курс обмена: '+(weak?'1 '+main+' = … '+F.cur:'1 '+F.cur+' = … '+main)+'<input inputmode="decimal" data-f="rateS" value="'+esc(F.rateS)+'" autocomplete="off"></label><div class="hint">'+(F.rsrc?'Подставлен курс: '+F.rsrc+'. ':'')+'Впиши курс, по которому реально меняешь — обменник обычно отличается от ЦБ.</div>';
+  h+='<label>Курс обмена: '+(weak?'1 '+main+' = … '+F.cur:'1 '+F.cur+' = … '+main)+'<input inputmode="decimal" data-f="rateS" value="'+esc(F.rateS)+'" autocomplete="off"></label><div class="hint">'+(F.rsrc?'Подставлен курс: '+F.rsrc+'. ':'')+'Впишите курс, по которому вы реально меняете — обменник обычно отличается от ЦБ.</div>';
   h+='<div class="card" style="background:var(--bg);border:0;text-align:center"><div id="planOut" style="font:600 24px/1.3 Unbounded,Onest,sans-serif">—</div><div class="hint" id="planSub"></div></div>';
   h+='<button class="btn" data-a="planex" id="planBtn" hidden>Записать обмен</button><button class="btn plain" data-a="close">Закрыть</button>';
   openSheet(h);planUpdate();
@@ -3313,7 +3313,7 @@ function planUpdate(){
   var out=$('#planOut'),sub=$('#planSub'),btn=$('#planBtn');if(!out)return;
   var main=S.settings.main,cur=F.cur,days=num(F.daysS),daily=num(F.dailyS),buf=num(F.bufS),n=numR(F.rateS);
   if(!(buf>=0))buf=0;F.need=0;btn.hidden=true;sub.className='hint';
-  if(!(days>0&&daily>0&&n>0)){out.textContent='—';sub.textContent='Заполни дни, траты в день и курс.';return;}
+  if(!(days>0&&daily>0&&n>0)){out.textContent='—';sub.textContent='Заполните дни, траты в день и курс.';return;}
   var r=WEAK.indexOf(cur)>=0?1/n:n,bal=curBalance(cur);
   var recSum=(F.recOn!==false)?recUpcoming(cur,days):0;
   var need=days*daily*(1+buf/100)+recSum-bal;
@@ -3371,16 +3371,16 @@ function renderWizard(){
   }
   h+='<div class="small muted">Настройка · шаг '+(W.step+1)+' из '+n+'</div><div class="pbar" style="margin:8px 0 14px"><b style="width:'+Math.round((W.step+1)/n*100)+'%"></b></div>';
   if(st==='main'){
-    h+='<h2>Основная валюта</h2><div class="small muted">В ней показываются итоги и отчёты. Обычно это валюта, в которой ты получаешь доход.</div><div class="chips">'+
+    h+='<h2>Основная валюта</h2><div class="small muted">В ней показываются итоги и отчёты. Обычно это валюта, в которой вы получаете доход.</div><div class="chips">'+
       uniq(['RUB','USD','EUR','VND','KZT','THB',main]).map(function(c){return '<button class="chip'+(main===c?' on':'')+'" data-a="wmain" data-v="'+c+'">'+c+'</button>';}).join('')+
       '<button class="chip" data-a="wmore" data-v="main">Другая…</button></div>'+btns;
   }else if(st==='favs'){
-    h+='<h2>Твои валюты</h2><div class="small muted">Только выбранные валюты будут в списках выбора. Остальные всегда можно найти через «Ещё валюты…».</div><div class="chips">'+
+    h+='<h2>Ваши валюты</h2><div class="small muted">Только выбранные валюты будут в списках выбора. Остальные всегда можно найти через «Ещё валюты…».</div><div class="chips">'+
       uniq(['RUB','VND','USD','EUR','USDT','BTC','ETH','THB','GBP','CNY'].concat(W.favs,[main])).map(function(c){return '<button class="chip'+(W.favs.indexOf(c)>=0?' on':'')+'" data-a="wtog" data-v="'+c+'">'+c+'</button>';}).join('')+
       '<button class="chip" data-a="wmore" data-v="fav">Ещё валюты…</button></div>'+btns;
   }else if(st==='accs'){
     if(!W.accs)wizAccsInit();
-    h+='<h2>Твои счета</h2><div class="small muted">Отметь, где лежат деньги. Название можно поменять; валюта счёта задаётся один раз.</div>';
+    h+='<h2>Ваши счета</h2><div class="small muted">Отметьте, где лежат деньги. Название можно поменять; валюта счёта задаётся один раз.</div>';
     W.accs.forEach(function(a,i){
       h+='<div class="card" style="padding:12px 14px;margin-top:10px"><div class="row"><input data-w="name" data-i="'+i+'" value="'+esc(a.name)+'" placeholder="Название счёта" style="margin:0" autocomplete="off"><button data-a="wacc" data-i="'+i+'" class="sw'+(a.on?' on':'')+'" aria-label="Включить счёт" style="border:0;padding:0;margin-left:10px"></button></div><select data-w="cur" data-i="'+i+'" style="margin-top:8px">'+wizCurOptions(a.cur)+'</select></div>';
     });
@@ -3396,7 +3396,7 @@ function renderWizard(){
     if(!any)h+='<div class="hint">Счета не выбраны — этот шаг можно пропустить.</div>';
     h+=btns;
   }else if(st==='goal'){
-    h+='<h2>Цель (по желанию)</h2><div class="small muted">Название и сумма накоплений. Откладывать будешь только ты, вручную.</div><label>Название<input data-w="gname" value="'+esc(W.gname)+'" placeholder="Например, Отпуск" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-w="gS" value="'+esc(W.gS)+'" placeholder="0" autocomplete="off"><span>'+main+'</span></div></label>'+btns;
+    h+='<h2>Цель (по желанию)</h2><div class="small muted">Название и сумма накоплений. Откладывать будете только вы, вручную.</div><label>Название<input data-w="gname" value="'+esc(W.gname)+'" placeholder="Например, Отпуск" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-w="gS" value="'+esc(W.gS)+'" placeholder="0" autocomplete="off"><span>'+main+'</span></div></label>'+btns;
   }
   openSheet(h);
 }
@@ -3404,7 +3404,7 @@ function wizNext(){
   var st=W.steps[W.step];
   if(st==='accs'){
     var on=W.accs.filter(function(a){return a.on;});
-    if(!on.length&&!S.accounts.length){toast('Отметь хотя бы один счёт');return;}
+    if(!on.length&&!S.accounts.length){toast('Отметьте хотя бы один счёт');return;}
     if(on.some(function(a){return !(a.name||'').trim();})){toast('Дай название каждому отмеченному счёту');return;}
   }
   if(W.step<W.steps.length-1){W.step++;renderWizard();}
@@ -3479,7 +3479,7 @@ function rateDiag(){
   if(RATE_DIAG.cbr)parts.push('ЦБ: '+esc(RATE_DIAG.cbr));
   if(RATE_DIAG.mkt)parts.push('Валюты и крипта: '+esc(RATE_DIAG.mkt));
   if(!parts.length)return '';
-  return '<div class="hint warn" style="margin-top:8px">Последний раз не получилось: '+parts.join('; ')+'. Если видишь «Failed to fetch» — скорее всего сайт не разрешает запросы из браузера (CORS) или заблокирован в твоей сети; пришли этот текст мне.</div>';
+  return '<div class="hint warn" style="margin-top:8px">Последний раз не получилось: '+parts.join('; ')+'. Если видите «Failed to fetch» — скорее всего сайт не разрешает запросы из браузера (CORS) или заблокирован в вашей сети; пришлите этот текст разработчику.</div>';
 }
 function askPersist(){
   try{
@@ -3572,11 +3572,11 @@ var H={
     if(!CUR[c]&&S.settings.custom.indexOf(c)<0)S.settings.custom.push(c);
     addFav(c);save();render();toast('Валюта добавлена');
   },
-  dlbk:function(){deliverFile(bkName(),backupJson(),'application/json').then(function(ok){if(ok){markBackup();toast('Файл сохранён');}else toast('Не удалось сохранить файл — скопируй текст');});},
+  dlbk:function(){deliverFile(bkName(),backupJson(),'application/json').then(function(ok){if(ok){markBackup();toast('Файл сохранён');}else toast('Не удалось сохранить файл — скопируйте текст');});},
   sharebk:function(){
     var text=backupJson(),file=null;try{file=new File([text],bkName(),{type:'application/json'});}catch(e){}
     var data=(file&&navigator.canShare&&navigator.canShare({files:[file]}))?{files:[file],title:'Резервная копия Lucky Finance'}:{text:text,title:'Резервная копия Lucky Finance'};
-    navigator.share(data).then(function(){markBackup();toast('Копия отправлена');}).catch(function(e){if(!e||e.name!=='AbortError')toast('Не получилось отправить — попробуй «Скачать файл»');});
+    navigator.share(data).then(function(){markBackup();toast('Копия отправлена');}).catch(function(e){if(!e||e.name!=='AbortError')toast('Не получилось отправить — попробуйте «Скачать файл»');});
   },
   opsreset:function(){nav.q='';nav.per='all';nav.facc='';nav.fcats=[];nav.filter='all';ofRefresh();},
   csv:function(){deliverFile('lucky-finance-operations-'+today()+'.csv',csvOps(opsFiltered()),'text/csv;charset=utf-8').then(function(ok){toast(ok?'Файл сохранён':'Не удалось сохранить файл');});},
@@ -3613,7 +3613,7 @@ var H={
   edittpl:function(el){openTplEdit(el.dataset.id);},
   savetpl:function(){
     var x=S.tpl.filter(function(t){return t.id===F.id;})[0],n=(F.name||'').trim(),a=num(F.amountS);
-    if(!x)return;if(!n){toast('Введи название');return;}if(!(a>0)){toast('Введи сумму');return;}
+    if(!x)return;if(!n){toast('Введите название');return;}if(!(a>0)){toast('Введите сумму');return;}
     x.name=n;x.amount=a;closeSheet();commit();toast('Сохранено');
   },
   deltpl:function(){var id=F.id;ask('Удалить этот шаблон? Уже внесённые расходы останутся.','Удалить',function(){undoable(function(){S.tpl=S.tpl.filter(function(t){return t.id!==id;});},'Шаблон удалён');});},
@@ -3640,7 +3640,7 @@ var H={
   rcdays:function(el){reconCfg().days=+el.dataset.v;save();render();},
   rcacc:function(el){var a=getAcc(el.dataset.id);if(!a)return;var r=reconCfg();r.accs[a.id]=!reconOn(a);save();render();},
   expinc:openExpInc,
-  saveei:function(){var v=num(F.amountS);if(!(v>0)){toast('Введи сумму или нажми «Убрать»');return;}S.settings.expInc={ym:today().slice(0,7),amount:v};closeSheet();commit();toast('Сохранено');},
+  saveei:function(){var v=num(F.amountS);if(!(v>0)){toast('Введите сумму или нажмите «Убрать»');return;}S.settings.expInc={ym:today().slice(0,7),amount:v};closeSheet();commit();toast('Сохранено');},
   clearei:function(){S.settings.expInc=null;closeSheet();commit();toast('Убрано');},
   catall:function(){openCatPicker(F.type);},
   catpick:function(el){F.cat=el.dataset.v;F.sub='';F.showIcon=false;renderOp();},
@@ -3664,7 +3664,7 @@ var H={
   ghsave:function(){
     var g=ghCfg(),repo=($('#ghrepo').value||'').trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/$/,''),tok=($('#ghtok').value||'').trim();
     if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){toast('Репозиторий пишется как владелец/название');return;}
-    if(tok)g.token=tok;if(!g.token){toast('Вставь токен');return;}
+    if(tok)g.token=tok;if(!g.token){toast('Вставьте токен');return;}
     g.repo=repo;g.err='';ghSet(g);ghPushJob();toast('Проверяю…');ghUpload(false).then(function(){render();});
   },
   ghnow:function(){toast('Выгружаю…');ghUpload(false);},
@@ -3689,7 +3689,7 @@ var H={
   reppdf:function(el){exportMonthPdf(el.dataset.ym);},
   notiftog:function(){
     if(notifOn()){S.settings.notif=false;save();render();nativeSync();toast('Уведомления выключены');}
-    else{notifPerm(true).then(function(ok){S.settings.notif=true;save();render();nativeSync();toast(ok?'Уведомления включены':'Разреши уведомления в настройках телефона');});}
+    else{notifPerm(true).then(function(ok){S.settings.notif=true;save();render();nativeSync();toast(ok?'Уведомления включены':'Разрешите уведомления в настройках телефона');});}
   },
   fbktog:function(){var o=fbkState();o.off=!o.off;fbkSet(o);render();},
   fbknow:function(){toast('Сохраняю…');fileBackup(true).then(function(ok){render();toast(ok?'Копия сохранена в «'+fbkPlace(fbkState().dir)+'»':'Не удалось сохранить файл');});},
@@ -3704,16 +3704,16 @@ var H={
   editdebt:function(el){openDebt(el.dataset.id);},
   debtdir:function(el){F.dir=el.dataset.v;renderDebt();},
   savedebt:saveDebt,
-  debtpay:function(){var d=S.debts.filter(function(o){return o.id===F.id;})[0];if(!d)return;var left=debtLeft(d),x=F.payS?num(F.payS):left;if(!(x>0)){toast('Введи сумму');return;}d.paid.push({date:today(),amount:Math.min(x,left)});commit();toast(x>=left-1e-9?'Долг закрыт':'Возврат записан');renderDebt();},
+  debtpay:function(){var d=S.debts.filter(function(o){return o.id===F.id;})[0];if(!d)return;var left=debtLeft(d),x=F.payS?num(F.payS):left;if(!(x>0)){toast('Введите сумму');return;}d.paid.push({date:today(),amount:Math.min(x,left)});commit();toast(x>=left-1e-9?'Долг закрыт':'Возврат записан');renderDebt();},
   deldebt:function(){var id=F.id;ask('Удалить запись о долге?','Удалить',function(){undoable(function(){S.debts=S.debts.filter(function(d){return d.id!==id;});},'Долг удалён');});},
   goalcalc:openGoalCalc,
   gcdate:function(el){F.dateS=el.dataset.v;renderGoalCalc();},
   gcmode:function(el){F.mode=el.dataset.v;renderGoalCalc();},
-  aidl:function(){deliverFile('lucky-finance-summary-'+today()+'.json',JSON.stringify(aiSummary(),null,1),'application/json').then(function(ok){toast(ok?'Сводка сохранена — выбери её на странице помощника':'Не удалось сохранить файл — скопируй сводку');});},
+  aidl:function(){deliverFile('lucky-finance-summary-'+today()+'.json',JSON.stringify(aiSummary(),null,1),'application/json').then(function(ok){toast(ok?'Сводка сохранена — выберите её на странице помощника':'Не удалось сохранить файл — скопируйте сводку');});},
   aicopy:function(){
     var txt=aiSummaryText();
-    function fallback(){openSheet('<h2>Сводка для Claude</h2><div class="small muted">Выдели текст и скопируй вручную, затем вставь в чат с Claude и допиши вопрос.</div><textarea id="aitxt" readonly>'+esc(txt)+'</textarea><button class="btn plain" data-a="close" style="margin-top:8px">Закрыть</button>');var ta=$('#aitxt');if(ta){ta.focus();ta.select();}}
-    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast('Скопировано — вставь в чат с Claude и допиши вопрос');},fallback);else fallback();
+    function fallback(){openSheet('<h2>Сводка для Claude</h2><div class="small muted">Выделите текст и скопируйте вручную, затем вставьте в чат с Claude и допишите вопрос.</div><textarea id="aitxt" readonly>'+esc(txt)+'</textarea><button class="btn plain" data-a="close" style="margin-top:8px">Закрыть</button>');var ta=$('#aitxt');if(ta){ta.focus();ta.select();}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(function(){toast('Скопировано — вставьте в чат с Claude и допишите вопрос');},fallback);else fallback();
   },
   dpopen:function(el){var box=document.getElementById(el.dataset.id+'c');if(box&&!box.hidden){box.hidden=true;return;}dpRender(el.dataset.id);},
   dpnav:function(el){var box=document.getElementById(el.dataset.id+'c');dpRender(el.dataset.id,shiftMonth(box.dataset.ym,+el.dataset.v));},
@@ -3729,8 +3729,8 @@ var H={
     S.settings.lastBackup=Date.now();save();
     var ta=$('#bk');ta.select();ta.setSelectionRange(0,ta.value.length);
     var ok=false;try{ok=document.execCommand('copy');}catch(e){}
-    if(!ok&&navigator.clipboard){navigator.clipboard.writeText(ta.value).then(function(){toast('Скопировано');},function(){toast('Выдели текст и скопируй вручную');});}
-    else toast(ok?'Скопировано':'Выдели текст и скопируй вручную');
+    if(!ok&&navigator.clipboard){navigator.clipboard.writeText(ta.value).then(function(){toast('Скопировано');},function(){toast('Выделите текст и скопируйте вручную');});}
+    else toast(ok?'Скопировано':'Выделите текст и скопируйте вручную');
   },
   doimport:function(){
     var raw=$('#bk').value.trim(),o;
@@ -3753,7 +3753,7 @@ function stLine(ok,text){return '<div class="row" style="justify-content:flex-st
 function gemSt(){
   if(!gemKey())return {ok:false,t:'Ключ не введён'};
   var r=lsGet('fin-mvp-gemok',null);
-  if(!r)return {ok:false,t:'Ключ не проверен. Нажми «Проверить ключ»'};
+  if(!r)return {ok:false,t:'Ключ не проверен. Нажмите «Проверить ключ»'};
   var d=new Date(r.at).toLocaleDateString('ru-RU');
   return r.ok?{ok:true,t:'Ключ работает (проверен '+d+')'}:{ok:false,t:esc(r.msg||'Ключ не работает')};
 }
@@ -3762,7 +3762,7 @@ function ghSt(){
   if(!ghReady(g))return {ok:false,t:'Не настроено: нужен репозиторий и токен'};
   if(g.err)return {ok:false,t:'Последняя выгрузка не удалась: '+esc(g.err)};
   if(g.last)return {ok:true,t:'Работает. Последняя выгрузка: '+new Date(g.last).toLocaleString('ru-RU')};
-  return {ok:false,t:'Токен сохранён, но выгрузок ещё не было. Нажми «Выгрузить сейчас»'};
+  return {ok:false,t:'Токен сохранён, но выгрузок ещё не было. Нажмите «Выгрузить сейчас»'};
 }
 function bankSt(){
   var l=lsGet('fin-mvp-lastbank',null),last=l?' Последнее сообщение: '+new Date(l.at).toLocaleString('ru-RU')+'.':' Сообщений пока не было.';
@@ -3774,18 +3774,18 @@ function gemCheck(){
   var k=gemKey();if(!k)return Promise.resolve();
   toast('Проверяю ключ…');
   return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL,{headers:{'x-goog-api-key':k}}).then(function(r){
-    lsSet('fin-mvp-gemok',{ok:r.ok,at:Date.now(),msg:r.ok?'':(r.status===400||r.status===403||r.status===401?'Ключ не принят Google. Проверь, что вставлен целиком.':'Gemini ответил ошибкой '+r.status)});
-  }).catch(function(){lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Нет связи с Gemini. Проверь интернет.'});}).then(function(){render();});
+    lsSet('fin-mvp-gemok',{ok:r.ok,at:Date.now(),msg:r.ok?'':(r.status===400||r.status===403||r.status===401?'Ключ не принят Google. Проверьте, что вставлен целиком.':'Gemini ответил ошибкой '+r.status)});
+  }).catch(function(){lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Нет связи с Gemini. Проверьте интернет.'});}).then(function(){render();});
 }
 function gemCard(){
   var has=!!gemKey();
   var gs=gemSt();
-  return '<div class="card"><h3>Чек по фото (Gemini)</h3>'+stLine(gs.ok,gs.t)+'<div class="small muted">Фото чека уходит в Google Gemini, он читает позиции и переводит. Ключ получи на aistudio.google.com («Get API key») и вставь сюда. Ключ хранится только в этом телефоне.</div>'+
-    '<label>Ключ Gemini<input id="gemkey" type="password" autocomplete="off" autocapitalize="none" placeholder="'+(has?'сохранён — вставь новый, чтобы заменить':'AIza…')+'"></label>'+
+  return '<div class="card"><h3>Чек по фото (Gemini)</h3>'+stLine(gs.ok,gs.t)+'<div class="small muted">Фото чека уходит в Google Gemini, он читает позиции и переводит. Ключ получи на aistudio.google.com («Get API key») и вставьте сюда. Ключ хранится только в этом телефоне.</div>'+
+    '<label>Ключ Gemini<input id="gemkey" type="password" autocomplete="off" autocapitalize="none" placeholder="'+(has?'сохранён — вставьте новый, чтобы заменить':'AIza…')+'"></label>'+
     '<button class="btn" data-a="gemsave" style="margin-top:12px">Сохранить ключ</button>'+(has?'<button class="btn plain" data-a="gemtest" style="margin-top:8px">Проверить ключ</button><button class="btn plain" data-a="gemoff" style="margin-top:8px">Забыть ключ</button>':'')+'</div>';
 }
 function rcOpen(){
-  if(!S.accounts.length){toast('Сначала добавь счёт');go('accounts');return;}
+  if(!S.accounts.length){toast('Сначала добавьте счёт');go('accounts');return;}
   R={step:'pick',items:[],store:'',date:today(),cur:'VND',total:0,err:''};
   if(!gemKey()){R.step='key';}
   renderRc();
@@ -3798,7 +3798,7 @@ function renderRc(){
   if(R.step==='key'){
     h='<h2>Чек по фото</h2><div class="small muted">Сначала нужен ключ Gemini (бесплатный, из Google AI Studio). Он хранится только в этом телефоне.</div><label>Ключ Gemini<input id="gemkey" type="password" autocomplete="off" autocapitalize="none" placeholder="AIza…"></label><button class="btn" data-a="gemsave">Сохранить и продолжить</button><button class="btn plain" data-a="close">Отмена</button>';
   }else if(R.step==='pick'){
-    h='<h2>Чек по фото</h2>'+(R.err?'<div class="hint warn" style="margin-bottom:10px">'+esc(R.err)+'</div>':'')+'<div class="small muted">Сфотографируй чек или выбери фото из галереи. Фото уйдёт в Google Gemini, ты проверишь результат до записи.</div>'+
+    h='<h2>Чек по фото</h2>'+(R.err?'<div class="hint warn" style="margin-bottom:10px">'+esc(R.err)+'</div>':'')+'<div class="small muted">Сфотографируйте чек или выберите фото из галереи. Фото уйдёт в Google Gemini, вы проверите результат до записи.</div>'+
       '<input type="file" accept="image/*" capture="environment" id="rcf1" data-rcf="1" hidden><input type="file" accept="image/*" id="rcf2" data-rcf="1" hidden>'+
       '<button class="btn" data-a="rcshot">📷 Сделать фото</button><button class="btn plain" data-a="rcgal">🖼 Из галереи</button><button class="btn plain" data-a="close">Отмена</button>';
   }else if(R.step==='busy'){
@@ -3807,9 +3807,9 @@ function renderRc(){
     var groups=[],idx={};
     R.items.forEach(function(x){if(!(x.c in idx)){idx[x.c]=groups.length;groups.push({c:x.c,s:0,l:[]});}var g=groups[idx[x.c]];g.s+=(+x.a)||0;g.l.push((x.n||x.o||'?')+' '+rcFmtN(x.a));});
     var sum=rcSum(),diff=R.total?Math.round(R.total-sum):0;
-    h='<h2>Проверь чек</h2><div class="row"><b>'+esc(R.store||'Магазин не определён')+' · '+esc(R.date)+'</b><b>'+rcFmtN(R.total||sum)+' '+esc(R.cur)+'</b></div>';
+    h='<h2>Проверьте чек</h2><div class="row"><b>'+esc(R.store||'Магазин не определён')+' · '+esc(R.date)+'</b><b>'+rcFmtN(R.total||sum)+' '+esc(R.cur)+'</b></div>';
     groups.forEach(function(g){h+='<div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px"><div class="row"><b>'+catIcon(g.c)+' '+esc(g.c)+'</b><b class="num">'+rcFmtN(g.s)+'</b></div><div class="small muted" style="line-height:1.6">'+g.l.map(esc).join(' · ')+'</div></div>';});
-    h+=diff?'<div class="hint warn" style="margin-top:12px">Позиции в сумме дают '+rcFmtN(sum)+', а итог чека '+rcFmtN(R.total)+' (разница '+rcFmtN(Math.abs(diff))+'). Нажми «Исправить».</div>':'<div class="hint" style="margin-top:12px">Сумма категорий совпадает с итогом чека.</div>';
+    h+=diff?'<div class="hint warn" style="margin-top:12px">Позиции в сумме дают '+rcFmtN(sum)+', а итог чека '+rcFmtN(R.total)+' (разница '+rcFmtN(Math.abs(diff))+'). Нажмите «Исправить».</div>':'<div class="hint" style="margin-top:12px">Сумма категорий совпадает с итогом чека.</div>';
     h+='<div class="row" style="gap:8px;margin-top:6px"><button class="btn plain" data-a="rcedit" style="flex:1">Исправить</button><button class="btn" data-a="rcok" style="flex:1">Да, верно</button></div><button class="btn ghost" data-a="close">Отмена</button>';
   }else if(R.step==='edit'){
     var cats=rcCats();
@@ -3849,14 +3849,14 @@ function rcRead(file){
     var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
     var to=setTimeout(function(){if(ctl)ctl.abort();},60000);
     return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':gemKey()},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(to);
-      if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}if(r.status===400&&/API key/i.test(m))lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Ключ не принят Google. Введи новый.'});throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверь его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подожди минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
+      if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}if(r.status===400&&/API key/i.test(m))lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Ключ не принят Google. Введите новый.'});throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверьте его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подождите минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
       return r.json();});
   }).then(function(d){
     if(R!==myR)return;
     var tx=d&&d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]&&d.candidates[0].content.parts[0].text,o;
-    try{o=JSON.parse(tx);}catch(e){throw new Error('Не получилось разобрать ответ. Попробуй сфотографировать чек ровнее.');}
+    try{o=JSON.parse(tx);}catch(e){throw new Error('Не получилось разобрать ответ. Попробуйте сфотографировать чек ровнее.');}
     var items=(o.items||[]).filter(function(x){return x&&isFinite(+x.a);}),map=rcMap();
-    if(!items.length)throw new Error('На фото не нашлось позиций. Сфотографируй чек целиком и поближе.');
+    if(!items.length)throw new Error('На фото не нашлось позиций. Сфотографируйте чек целиком и поближе.');
     R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c};});
     R.store=String(o.store||'').slice(0,60);R.cur=scur(o.currency)||'VND';R.total=Math.round(+o.total)||0;
     R.date=/^\d{4}-\d{2}-\d{2}$/.test(o.date||'')&&o.date<=today()?o.date:today();
@@ -3865,7 +3865,7 @@ function rcRead(file){
     R.step='review';renderRc();
   }).catch(function(e){
     if(R!==myR)return;
-    R.step='pick';R.err=(e&&e.name==='AbortError')?'Gemini не ответил за минуту. Проверь интернет и повтори.':(e&&e.message&&!/Failed to fetch|NetworkError/i.test(e.message)?e.message:'Нет связи с Gemini. Проверь интернет и повтори.');renderRc();
+    R.step='pick';R.err=(e&&e.name==='AbortError')?'Gemini не ответил за минуту. Проверьте интернет и повтори.':(e&&e.message&&!/Failed to fetch|NetworkError/i.test(e.message)?e.message:'Нет связи с Gemini. Проверьте интернет и повтори.');renderRc();
   });
 }
 function rcSave(accId){
@@ -3879,7 +3879,7 @@ function rcSave(accId){
   rcLearn(R.items);S.settings.lastAcc=accId;R=null;closeSheet();commit();hap('ok');toast('Чек записан: '+made+' '+plural(made,'расход','расхода','расходов'));
 }
 H.rcopen=rcOpen;
-H.gemsave=function(){var v=(($('#gemkey')||{}).value||'').trim();if(!v){toast('Вставь ключ');return;}try{localStorage.setItem(GEMKEY,JSON.stringify({key:v}));}catch(e){toast('Не удалось сохранить ключ');return;}
+H.gemsave=function(){var v=(($('#gemkey')||{}).value||'').trim();if(!v){toast('Вставьте ключ');return;}try{localStorage.setItem(GEMKEY,JSON.stringify({key:v}));}catch(e){toast('Не удалось сохранить ключ');return;}
   try{localStorage.removeItem('fin-mvp-gemok');}catch(e){}
   if(R&&R.step==='key'){R.step='pick';renderRc();toast('Ключ сохранён');}else{render();toast('Ключ сохранён');}
   gemCheck();};
@@ -3905,9 +3905,9 @@ document.addEventListener('input',function(e){
   else if(el.dataset.rcs&&R.step==='edit'){R[el.dataset.rcs]=el.value;}
 });
 /* ---------- Операции из уведомлений банка (BIDV) ----------
-   Нативная служба кладёт текст уведомления в очередь, здесь он разбирается и ждёт на главной, пока ты его разнесёшь.
-   Пока не подтвердишь, баланс не меняется. Очередь, список «уже внесено» и память о получателях лежат отдельно от данных (в копии не попадают). */
-var PENDKEY='fin-mvp-pend',PDONEKEY='fin-mvp-pdone',PRCPTKEY='fin-mvp-rcpt',PACCKEY='fin-mvp-bacc',PINCKEY='fin-mvp-pinc',P=null,BANK_ACCESS=null,BANK_SMS=null;
+   Нативная служба кладёт текст уведомления в очередь, здесь он разбирается и ждёт на главной, пока вы не выберете категорию.
+   Пока вы не подтвердите, баланс не меняется. Очередь, список «уже внесено» и память о получателях лежат отдельно от данных (в копии не попадают). */
+var PENDKEY='fin-mvp-pend',PDONEKEY='fin-mvp-pdone',PRCPTKEY='fin-mvp-rcpt',PACCKEY='fin-mvp-bacc',PINCKEY='fin-mvp-pinc',PRSUBKEY='fin-mvp-rsub',PL=null,P=null,BANK_ACCESS=null,BANK_SMS=null;
 function lsGet(k,d){try{var v=JSON.parse(localStorage.getItem(k)||'null');return v==null?d:v;}catch(e){return d;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function pendList(){return lsGet(PENDKEY,[]);}
@@ -3976,31 +3976,47 @@ function pendSug(it){
   a.forEach(function(c){n[c]=(n[c]||0)+1;if(n[c]>=bn){bn=n[c];best=c;}});
   return catsFor('expense').indexOf(best)>=0?best:'';
 }
-function pendLearn(key,cat){if(!key)return;var m=lsGet(PRCPTKEY,{}),a=m[key]||[];a.push(cat);m[key]=a.slice(-5);lsSet(PRCPTKEY,m);}
+function pendSubSug(key,cat){
+  var a=((lsGet(PRSUBKEY,{})[key]||{})[cat])||[],n={},best='',bn=0;
+  a.forEach(function(c){n[c]=(n[c]||0)+1;if(n[c]>=bn){bn=n[c];best=c;}});
+  return best&&subInfo(cat,best)?best:'';
+}
+function pendLearn(key,cat,sub){
+  if(!key)return;var m=lsGet(PRCPTKEY,{}),a=m[key]||[];a.push(cat);m[key]=a.slice(-5);lsSet(PRCPTKEY,m);
+  var q=lsGet(PRSUBKEY,{}),o=q[key]||{},b=o[cat]||[];b.push(sub||'');o[cat]=b.slice(-5);q[key]=o;lsSet(PRSUBKEY,q);
+}
+/* Выбранная подкатегория в карточке: сначала выбор пользователя, затем запомненная для получателя */
+var PSUB={};
+function pendSubOf(it,cat){var v=PSUB[it.id];if(v&&v.c===cat)return v.s;return pendSubSug(it.key,cat);}
 function pendCards(){
   var list=pendList();if(!list.length)return '';
-  var show=nav.pendAll?list:list.slice(0,1),h=show.map(pendCard).join('');
-  if(list.length>1&&!nav.pendAll)h+='<button class="chip sm" data-a="pendall" style="margin-top:8px">Ещё '+(list.length-1)+' ждут разноса ›</button>';
-  return h;
+  if(list.length===1)return pendCard(list[0]);
+  var n=list.length;
+  return '<button class="card" data-a="pendall" style="margin-top:12px;width:100%;text-align:left;border:2px solid var(--fx)"><div class="row"><b>Нужно указать категорию</b><b style="font-size:20px">'+n+' ›</b></div><div class="small muted" style="margin-top:2px">'+n+' '+plural(n,'операция','операции','операций')+' из банка. Откройте список, чтобы записать их.</div></button>';
 }
-function pendCard(it){
+function pendSubChips(it,cat){
+  if(!SUBS[cat])return '';
+  var cur=pendSubOf(it,cat);
+  return '<div class="chips" style="margin-top:6px">'+subsFor(cat).map(function(x){return '<button class="chip sm'+(cur===x.n?' on':'')+'" data-a="pendsub" data-id="'+esc(it.id)+'" data-c="'+esc(cat)+'" data-v="'+esc(x.n)+'">'+x.ic+' '+esc(x.n)+'</button>';}).join('')+'</div>';
+}
+function pendCard(it,inList){
   var A=getAcc(pendAcc(it.num,it.cur)),inc=it.amount>0,cur=A?A.cur:it.cur,sug=inc?'':pendSug(it);
   var h='<div class="card" style="margin-top:12px;border:2px solid var(--'+(inc?'income':'fx')+')"><div class="row"><b style="font-size:22px">'+(inc?'+':'−')+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(A?A.name:'нет счёта '+it.cur)+' · '+esc(it.time)+'</span></div>'+
     '<div class="small muted" style="margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div>';
-  if(!A)h+='<div class="hint warn">Добавь счёт в '+esc(it.cur)+', чтобы внести операцию.</div>';
+  if(!A)h+='<div class="hint warn">Добавьте счёт в '+esc(it.cur)+', чтобы записать операцию.</div>';
   else if(inc){
     var last=lsGet(PINCKEY,'ex'),bs=[['ex','Обмен','pendex'],['inc','Доход','pendinc'],['mv','Перевод','pendmv']].sort(function(a,b){return (b[0]===last)-(a[0]===last);});
     h+='<div class="row" style="gap:8px;margin-top:10px">'+bs.map(function(b,i){return '<button class="btn'+(i?' plain':'')+'" data-a="'+b[2]+'" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1;padding:12px 6px">'+b[1]+'</button>';}).join('')+'</div>';
   }else if(it.kind==='Перевод'){
     h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-a="pendexo" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Обмен</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Расход</button></div>';
   }else if(sug){
-    h+='<div style="margin-top:8px">'+catIcon(sug)+' '+esc(sug)+'</div><div class="row" style="gap:8px;margin-top:8px"><button class="btn" data-a="pendquick" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">✓ Записать</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Другая категория</button></div>';
+    h+='<div style="margin-top:8px">'+catIcon(sug)+' '+esc(sug)+'</div>'+pendSubChips(it,sug)+'<div class="row" style="gap:8px;margin-top:8px"><button class="btn" data-a="pendquick" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">✓ Записать</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Другая категория</button></div>';
   }else{
-    h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Вручную</button><button class="btn plain" data-a="pendrcpt" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">📷 По чеку</button></div>';
+    h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Выбрать вручную</button><button class="btn plain" data-a="pendrcpt" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">📷 По чеку</button></div>';
   }
-  return h+'<button class="chip sm" data-a="pdrop" data-id="'+esc(it.id)+'" style="margin-top:8px">Не вносить</button></div>';
+  return h+'<button class="chip sm" data-a="pdrop" data-id="'+esc(it.id)+'" style="margin-top:8px">Пропустить</button></div>';
 }
-/* --- разнос расхода по категориям --- */
+/* --- выбор категорий расхода --- */
 function pendTotals(){
   var it=pendFind(P.id),tot=Math.abs(it.amount),s=0;
   P.rows.forEach(function(r){var v=num(r.a);if(isFinite(v)&&v>0)s+=v;});
@@ -4015,24 +4031,25 @@ function pendStatus(){
   }else if(t.left<0){
     h+='<div class="row"><span class="muted">Лишних</span><b class="warn" style="font-size:18px">'+fmt(-t.left,cur)+'</b></div>';
   }else{
-    h+='<div class="row" style="justify-content:flex-start;gap:8px"><span style="width:24px;height:24px;border-radius:50%;background:var(--income);color:#fff;display:inline-flex;align-items:center;justify-content:center">✓</span><span>Распределено '+fmt(t.s,cur)+' из '+fmt(t.tot,cur)+'</span></div>'+(ok?'<button class="btn income" data-a="pendok">Подтвердить</button>':'<div class="small muted" style="margin-top:8px">Выбери категорию в каждой строке.</div>');
+    h+='<div class="row" style="justify-content:flex-start;gap:8px"><span style="width:24px;height:24px;border-radius:50%;background:var(--income);color:#fff;display:inline-flex;align-items:center;justify-content:center">✓</span><span>Распределено '+fmt(t.s,cur)+' из '+fmt(t.tot,cur)+'</span></div>'+(ok?'<button class="btn income" data-a="pendok">Подтвердить</button>':'<div class="small muted" style="margin-top:8px">Выберите категорию в каждой строке.</div>');
   }
   return h;
 }
 function renderPend(){
   var it=pendFind(P.id);if(!it){closeSheet();return;}
   var cur=pendCur(it),cats=catsFor('expense');
-  var h='<h2>Разнести расход</h2><div class="row"><b style="font-size:22px">−'+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(it.label)+'</span></div>';
-  if(P.rc)h+='<div class="small muted" style="margin-top:6px">🧾 По чеку: '+fmt(P.rc,cur)+(Math.abs(P.rc-Math.abs(it.amount))>0.5?'. Не совпадает с переводом, поправь ниже или добавь вручную.':'')+'</div>';
+  var h='<h2>Категория расхода</h2><div class="row"><b style="font-size:22px">−'+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(it.label)+'</span></div>';
+  if(P.rc)h+='<div class="small muted" style="margin-top:6px">🧾 По чеку: '+fmt(P.rc,cur)+(Math.abs(P.rc-Math.abs(it.amount))>0.5?'. Не совпадает с переводом, поправьте ниже или добавьте вручную.':'')+'</div>';
   P.rows.forEach(function(r,i){
     h+='<div class="row" style="gap:8px;margin-top:10px"><select data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a)+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'</div>';
+    if(SUBS[r.c])h+='<select data-pr="'+i+'" data-k="s" style="margin-top:6px"><option value="">Подкатегория (необязательно)</option>'+subsFor(r.c).map(function(x){return '<option'+(x.n===r.s?' selected':'')+'>'+esc(x.n)+'</option>';}).join('')+'</select>';
   });
   h+='<button class="btn plain" data-a="pendadd" style="margin-top:10px">+ Категория</button><div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">'+pendStatus()+'</div>';
   openSheet(h);
 }
 function openPend(id,rc){
   var it=pendFind(id);if(!it)return;
-  P={id:id,rows:[{c:'',a:String(Math.abs(it.amount))}],rc:rc||0};renderPend();
+  P={id:id,rows:[{c:'',s:'',a:String(Math.abs(it.amount))}],rc:rc||0};renderPend();
 }
 function pendFromReceipt(rr){
   var g={},ord=[],sum=0;
@@ -4040,12 +4057,14 @@ function pendFromReceipt(rr){
   var id=rr.pend,rows=ord.map(function(c){return {c:c,a:String(g[c])};});
   P={id:id,rows:rows.length?rows:[{c:'',a:''}],rc:rr.total||sum};R=null;renderPend();
 }
-function pendWrite(it,groups){
-  var A=getAcc(pendAcc(it.num,it.cur));if(!A){toast('Нет счёта в '+it.cur);return;}
+function pendWrite(it,groups,keep){
+  var A=getAcc(pendAcc(it.num,it.cur));if(!A){toast('Нет счёта в '+it.cur);return false;}
   var rid=groups.length>1?uid():'';
-  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:String(it.label).slice(0,80),cat:g.c,bk:it.id};if(rid)t.rid=rid;S.tx.push(t);});
-  if(groups.length===1)pendLearn(it.key,groups[0].c);
-  S.settings.lastAcc=A.id;pendDone(it.id);closeSheet();commit();hap('ok');toast('Записано');
+  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:String(it.label).slice(0,80),cat:g.c,bk:it.id};if(g.s)t.sub=g.s;if(rid)t.rid=rid;S.tx.push(t);});
+  if(groups.length===1)pendLearn(it.key,groups[0].c,groups[0].s);
+  S.settings.lastAcc=A.id;pendDone(it.id);delete PSUB[it.id];
+  if(keep)return true;
+  closeSheet();commit();hap('ok');toast('Записано');return true;
 }
 /* --- поступление: обмен, доход, перевод --- */
 function pendSources(it,kind){
@@ -4060,7 +4079,7 @@ function renderPendMove(){
   var it=pendFind(P.id);if(!it){closeSheet();return;}
   var A=getAcc(pendAcc(it.num,it.cur)),out=P.kind==='out',list=out?S.accounts.filter(function(a){return a.id!==A.id&&a.cur!==A.cur;}):pendSources(it,P.kind),ex=P.kind==='ex'||out;
   var h='<h2>'+(ex?'Обмен':'Перевод')+'</h2><div class="row"><b style="font-size:22px;color:'+(out?'inherit':'var(--income)')+'">'+(out?'−':'+')+fmt(Math.abs(it.amount),A.cur)+'</b><span class="small muted">'+esc(A.name)+'</span></div>';
-  if(!list.length)h+='<div class="hint warn">Нет другого счёта '+(ex?'в другой валюте':'в '+A.cur)+'. Добавь его в «Счета».</div>';
+  if(!list.length)h+='<div class="hint warn">Нет другого счёта '+(ex?'в другой валюте':'в '+A.cur)+'. Добавьте его в «Счета».</div>';
   else{
     if(!P.src||!list.some(function(a){return a.id===P.src;}))P.src=out?pendOutDefault(A,list):pendMoveDefault(it,P.kind,list);
     h+='<div class="small muted" style="margin-top:10px">'+(out?'Куда пришло и сколько':'Откуда списалось')+'</div><div class="row" style="gap:8px"><select data-pm="src" style="flex:1.4;margin-top:0">'+list.map(function(a){return '<option value="'+a.id+'"'+(a.id===P.src?' selected':'')+'>'+esc(a.name)+' · '+fmt(C.accs[a.id].bal,a.cur)+'</option>';}).join('')+'</select>'+
@@ -4086,17 +4105,52 @@ function pendIncome(it,cat){
 }
 function bankCard(){
   if(!IS_APP)return '';
-  var h='<div class="card"><h3>Уведомления и SMS банков</h3><div class="small muted">BIDV: уведомления, Т-Банк: SMS. Когда банк присылает сообщение об операции, приложение показывает её на главной, и ты разносишь её по категориям. Читаются только сообщения банков с суммой, остальные приложение не трогает.</div>';
+  var h='<div class="card"><h3>Уведомления и SMS банков</h3><div class="small muted">BIDV: уведомления, Т-Банк: SMS. Когда банк присылает сообщение об операции, приложение показывает её на главной, и вы выбираете категорию. Читаются только сообщения банков с суммой, остальные приложение не трогает.</div>';
   var bs=bankSt();
   h+=stLine(bs.ok,bs.t)+stLine(bs.sms,bs.smsT);
   h+='<button class="btn" data-a="bankacc" style="margin-top:12px">Включить доступ к уведомлениям</button>'+(BANK_SMS===false?'<button class="btn plain" data-a="banksms" style="margin-top:8px">Разрешить чтение SMS (Т-Банк)</button>':'')+'<button class="btn plain" data-a="bankset" style="margin-top:8px">Не включается? Настройки приложения</button>';
-  h+='<div class="small muted" style="margin-top:10px">Если Android не даёт включить доступ: в настройках приложения нажми ⋮ вверху справа → «Разрешить ограниченные настройки», потом вернись и включи доступ. Ещё в «Батарея» поставь для Lucky Finance «Без ограничений», чтобы Samsung не усыплял приложение.</div></div>';
+  h+='<div class="small muted" style="margin-top:10px">Если Android не даёт включить доступ: в настройках приложения нажмите ⋮ вверху справа → «Разрешить ограниченные настройки», потом вернитесь и включите доступ. Ещё в «Батарея» поставь для Lucky Finance «Без ограничений», чтобы Samsung не усыплял приложение.</div></div>';
   return h;
 }
-H.pendall=function(){nav.pendAll=true;render();};
-H.pdrop=function(el){var id=el.dataset.id;ask('Не вносить эту операцию? Баланс не изменится.','Не вносить',function(){pendDone(id);closeSheet();render();toast('Пропущено');});};
+function pendKnown(it){return it.amount<0&&it.kind!=='Перевод'&&getAcc(pendAcc(it.num,it.cur))&&pendSug(it);}
+function renderPendList(){
+  var list=pendList();if(!list.length){closeSheet();render();return;}
+  PL=PL||{off:{}};
+  var kn=list.filter(pendKnown),un=list.filter(function(x){return !pendKnown(x);}),on=kn.filter(function(x){return !PL.off[x.id];});
+  var h='<h2>Операции из банка</h2><div class="small muted">'+list.length+' '+plural(list.length,'операция ждёт','операции ждут','операций ждут')+' категории.</div>';
+  if(kn.length){
+    h+='<div class="small muted" style="margin-top:14px">Знакомые получатели. Проверьте категории и снимите галочку, если категория не подходит.</div>';
+    kn.forEach(function(it){
+      var c=pendSug(it),A=getAcc(pendAcc(it.num,it.cur)),k=!PL.off[it.id];
+      h+='<div class="card" style="margin-top:8px"><div class="row" style="gap:10px;align-items:flex-start"><button class="chip'+(k?' on':'')+'" data-a="pendtick" data-id="'+esc(it.id)+'" aria-label="Отметить" style="min-width:36px">'+(k?'✓':'')+'</button><div style="flex:1;min-width:0"><div class="row"><b>−'+fmt(Math.abs(it.amount),A.cur)+'</b><span class="small muted">'+esc(it.time)+'</span></div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div><div style="margin-top:4px">'+catIcon(c)+' '+esc(c)+'</div>'+pendSubChips(it,c)+'</div></div></div>';
+    });
+    h+='<button class="btn income" data-a="pendbulk"'+(on.length?'':' disabled')+' style="margin-top:12px">Записать отмеченные ('+on.length+')</button>';
+  }
+  if(un.length){
+    h+='<div class="small muted" style="margin-top:18px">Остальные. Для каждой выберите действие.</div>'+un.map(function(it){return pendCard(it,true);}).join('');
+  }
+  h+='<button class="btn plain" data-a="close" style="margin-top:12px">Закрыть</button>';
+  openSheet(h);
+}
+H.pendall=function(){PL={off:{}};renderPendList();};
+H.pendtick=function(el){if(!PL)return;PL.off[el.dataset.id]=!PL.off[el.dataset.id];renderPendList();};
+H.pendsub=function(el){
+  var it=pendFind(el.dataset.id);if(!it)return;
+  var c=el.dataset.c,cur=pendSubOf(it,c);PSUB[it.id]={c:c,s:cur===el.dataset.v?'':el.dataset.v};
+  if(PL)renderPendList();else render();
+};
+H.pendbulk=function(){
+  if(!PL)return;var n=0;
+  pendList().filter(pendKnown).forEach(function(it){
+    if(PL.off[it.id])return;var c=pendSug(it);
+    if(pendWrite(it,[{c:c,a:Math.abs(it.amount),s:pendSubOf(it,c)}],true))n++;
+  });
+  commit();hap('ok');toast('Записано: '+n);
+  if(pendList().length)renderPendList();else{closeSheet();render();}
+};
+H.pdrop=function(el){var id=el.dataset.id;ask('Пропустить эту операцию? Баланс не изменится.','Пропустить',function(){pendDone(id);closeSheet();render();toast('Пропущено');});};
 H.pendmanual=function(el){openPend(el.dataset.id);};
-H.pendquick=function(el){var it=pendFind(el.dataset.id);if(!it)return;var c=pendSug(it);if(!c){openPend(it.id);return;}pendWrite(it,[{c:c,a:Math.abs(it.amount)}]);};
+H.pendquick=function(el){var it=pendFind(el.dataset.id);if(!it)return;var c=pendSug(it);if(!c){openPend(it.id);return;}pendWrite(it,[{c:c,a:Math.abs(it.amount),s:pendSubOf(it,c)}]);};
 H.pendrcpt=function(el){
   var it=pendFind(el.dataset.id);if(!it)return;
   R={pend:it.id,step:gemKey()?'pick':'key',items:[],store:'',date:it.date,cur:'VND',total:0,err:''};renderRc();
@@ -4112,13 +4166,13 @@ H.pendrest=function(){
 H.pendok=function(){
   var it=pendFind(P.id);if(!it)return;var t=pendTotals();
   if(t.left!==0||!P.rows.every(function(r){return r.c&&num(r.a)>0;})){renderPend();return;}
-  var g={},ord=[];P.rows.forEach(function(r){if(!(r.c in g)){g[r.c]=0;ord.push(r.c);}g[r.c]+=num(r.a);});
-  pendWrite(it,ord.map(function(c){return {c:c,a:Math.round(g[c]*100)/100};}));
+  var g={},ord=[];P.rows.forEach(function(r){var k=r.c+'|'+(r.s||'');if(!(k in g)){g[k]=0;ord.push(k);}g[k]+=num(r.a);});
+  pendWrite(it,ord.map(function(k){var q=k.split('|');return {c:q[0],s:q[1],a:Math.round(g[k]*100)/100};}));
 };
 H.pendinc=function(el){
   var it=pendFind(el.dataset.id);if(!it)return;P={id:it.id};
   var cats=catsFor('income'),A=getAcc(pendAcc(it.num,it.cur));
-  openSheet('<h2>Доход</h2><div class="row"><b style="font-size:22px;color:var(--income)">+'+fmt(it.amount,A.cur)+'</b><span class="small muted">'+esc(A.name)+'</span></div><div class="small muted" style="margin-top:10px">Выбери категорию, и доход запишется.</div><div class="chips">'+cats.map(function(c){return '<button class="chip" data-a="pendinccat" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+'</div>');
+  openSheet('<h2>Доход</h2><div class="row"><b style="font-size:22px;color:var(--income)">+'+fmt(it.amount,A.cur)+'</b><span class="small muted">'+esc(A.name)+'</span></div><div class="small muted" style="margin-top:10px">Выберите категорию, и доход запишется.</div><div class="chips">'+cats.map(function(c){return '<button class="chip" data-a="pendinccat" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+'</div>');
 };
 H.pendinccat=function(el){var it=P&&pendFind(P.id);if(it)pendIncome(it,el.dataset.v);};
 H.pendex=function(el){P={id:el.dataset.id,kind:'ex'};renderPendMove();};
@@ -4128,12 +4182,12 @@ H.pmsave=function(){
   var it=P&&pendFind(P.id);if(!it)return;
   var A=getAcc(pendAcc(it.num,it.cur)),B=getAcc(P.src);if(!A||!B)return;
   if(P.kind==='out'){
-    var y=num(P.g);if(!(y>0)){toast('Введи, сколько пришло');return;}
+    var y=num(P.g);if(!(y>0)){toast('Введите, сколько пришло');return;}
     S.tx.push({id:uid(),seq:S.seq++,date:it.date,type:'exchange',acc:A.id,amount:Math.abs(it.amount),to:B.id,toAmount:y,note:'',bk:it.id});
     pendDone(it.id);closeSheet();commit();hap('ok');toast('Записано');return;
   }
   var t={id:uid(),seq:S.seq++,date:it.date,acc:B.id,to:A.id,toAmount:it.amount,bk:it.id};
-  if(P.kind==='ex'){var x=num(P.g);if(!(x>0)){toast('Введи, сколько списалось');return;}t.type='exchange';t.amount=x;t.note='';}
+  if(P.kind==='ex'){var x=num(P.g);if(!(x>0)){toast('Введите, сколько списалось');return;}t.type='exchange';t.amount=x;t.note='';}
   else{t.type='transfer';t.amount=it.amount;t.note='';}
   S.tx.push(t);lsSet(PINCKEY,P.kind);pendDone(it.id);closeSheet();commit();hap('ok');toast('Записано');
 };
@@ -4147,7 +4201,7 @@ document.addEventListener('input',function(e){
 });
 document.addEventListener('change',function(e){
   var el=e.target;if(!P||!el.dataset)return;
-  if(el.dataset.pr!==undefined&&el.dataset.pr!==''&&el.dataset.k==='c'){var r=P.rows[+el.dataset.pr];if(r)r.c=el.value;var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
+  if(el.dataset.pr!==undefined&&el.dataset.pr!==''&&el.dataset.k==='c'){var r=P.rows[+el.dataset.pr];if(r){r.c=el.value;r.s='';var it0=pendFind(P.id);if(it0&&el.value)r.s=pendSubSug(it0.key,el.value);renderPend();return;}var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
   else if(el.dataset.pm==='src'){P.src=el.value;pmRate();}
 });
 if(!IS_APP)window.__pend=function(raw,t){if(pendAdd(raw,t))render();};
