@@ -156,6 +156,10 @@ details.dt summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:8
 .chip{padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-size:14px}
 .chip.sm{padding:6px 10px;font-size:13px;flex:none}
 .chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip.pc.on{background:var(--fx-soft);border-color:var(--fx);color:var(--fx)}
+.pf{border:1.5px solid var(--muted);background:var(--surface);box-shadow:inset 0 0 0 100px var(--fx-soft)}
+.pen{width:40px;height:40px;flex:none;padding:0;margin:0;border-radius:12px;border:1.5px solid var(--muted);background:var(--bg);color:var(--ink);font-size:17px;display:grid;place-items:center}
+.pen.has{border-color:var(--fx);background:var(--fx-soft);color:var(--fx)}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 0}
 .seg button{padding:10px 0;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:500}
 .seg button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
@@ -394,7 +398,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.10';
+var VERSION='4.11';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1635,11 +1639,11 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.11',items:['Заметка к банковской операции: маленький карандаш ✎ в карточке на главной, в списке с галочками и в окне выбора категории; заметка дописывается к названию получателя','Окно выбора категории: поля стали заметнее, выбранная подкатегория выделена цветом']},
   {v:'4.10',items:['Операции из банка: можно выбрать подкатегорию (например, «Фрукты и овощи»), приложение запоминает её для получателя','Если операций несколько, на главной одна строка «Нужно указать категорию · N», а внутри список с галочками: знакомые получатели отмечены, кнопка «Записать отмеченные» записывает только их','Тексты приложения приведены к единому обращению на «вы», убраны слова вроде «разнести»']},
   {v:'4.9',items:['Зелёная галочка или красный восклицательный знак у ключа Gemini, копии на GitHub, доступа к уведомлениям и SMS: видно, работает ли. Знак есть и на свёрнутых плашках в «Ещё»','Кнопка «Проверить ключ» для Gemini; у банка показывается время последнего сообщения']},
   {v:'4.8',items:['SMS Т-Банка: пополнения и переводы появляются на главной так же, как уведомления BIDV (нужно разрешить чтение SMS)','«Ещё» стал короче: курсы валют ушли в «Мои валюты», тема и все копии (на GitHub, на телефоне) свёрнуты в спойлеры, «Чек по фото» и «Уведомления банков» вместе в одном; виджет убран из настроек']},
   {v:'4.7',items:['Уведомления BIDV: приложение ловит уведомление банка, на главной появляется карточка с суммой, и для неё можно выбрать категории вручную или по чеку, а поступление записать как обмен, доход или перевод','Запоминает получателей: знакомому получателю категория предлагается сама','Кнопка «Чек по фото» убрана с главной (она осталась в форме расхода и в карточке)','Нужен новый APK и доступ к уведомлениям (Ещё → Копии)']},
-  {v:'4.6',items:['«Чек по фото»: сфотографируйте чек или выберите фото из галереи, Gemini переведёт позиции с вьетнамского и разложит по категориям; вы проверяете, исправляете и выбираете счёт','Ключ Gemini вводится в «Ещё → Копии»','Нужен новый APK (разрешение на камеру)']},
 ];
 function viewAbout(){
   var h=backBar('Ещё','back2')+'<h1 style="margin-top:14px">О приложении</h1>'+aboutHtml();
@@ -3986,7 +3990,8 @@ function pendLearn(key,cat,sub){
   var q=lsGet(PRSUBKEY,{}),o=q[key]||{},b=o[cat]||[];b.push(sub||'');o[cat]=b.slice(-5);q[key]=o;lsSet(PRSUBKEY,q);
 }
 /* Выбранная подкатегория в карточке: сначала выбор пользователя, затем запомненная для получателя */
-var PSUB={};
+var PSUB={},PNOTE={},PN=null;
+function penBtn(id){return '<button class="pen'+(PNOTE[id]?' has':'')+'" data-a="pendnote" data-id="'+esc(id)+'" aria-label="Заметка">✎</button>';}
 function pendSubOf(it,cat){var v=PSUB[it.id];if(v&&v.c===cat)return v.s;return pendSubSug(it.key,cat);}
 function pendCards(){
   var list=pendList();if(!list.length)return '';
@@ -3997,7 +4002,7 @@ function pendCards(){
 function pendSubChips(it,cat){
   if(!SUBS[cat])return '';
   var cur=pendSubOf(it,cat);
-  return '<div class="chips" style="margin-top:6px">'+subsFor(cat).map(function(x){return '<button class="chip sm'+(cur===x.n?' on':'')+'" data-a="pendsub" data-id="'+esc(it.id)+'" data-c="'+esc(cat)+'" data-v="'+esc(x.n)+'">'+x.ic+' '+esc(x.n)+'</button>';}).join('')+'</div>';
+  return '<div class="chips" style="margin-top:6px">'+subsFor(cat).map(function(x){return '<button class="chip sm pc'+(cur===x.n?' on':'')+'" data-a="pendsub" data-id="'+esc(it.id)+'" data-c="'+esc(cat)+'" data-v="'+esc(x.n)+'">'+x.ic+' '+esc(x.n)+'</button>';}).join('')+'</div>';
 }
 function pendCard(it,inList){
   var A=getAcc(pendAcc(it.num,it.cur)),inc=it.amount>0,cur=A?A.cur:it.cur,sug=inc?'':pendSug(it);
@@ -4010,7 +4015,7 @@ function pendCard(it,inList){
   }else if(it.kind==='Перевод'){
     h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-a="pendexo" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Обмен</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Расход</button></div>';
   }else if(sug){
-    h+='<div style="margin-top:8px">'+catIcon(sug)+' '+esc(sug)+'</div>'+pendSubChips(it,sug)+'<div class="row" style="gap:8px;margin-top:8px"><button class="btn" data-a="pendquick" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">✓ Записать</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Другая категория</button></div>';
+    h+='<div style="margin-top:8px">'+catIcon(sug)+' '+esc(sug)+'</div>'+pendSubChips(it,sug)+'<div class="row" style="gap:8px;margin-top:8px"><button class="btn" data-a="pendquick" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">✓ Записать</button><button class="btn plain" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Другая категория</button>'+penBtn(it.id)+'</div>';
   }else{
     h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn" data-a="pendmanual" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">Выбрать вручную</button><button class="btn plain" data-a="pendrcpt" data-id="'+esc(it.id)+'" style="margin-top:0;flex:1">📷 По чеку</button></div>';
   }
@@ -4041,28 +4046,28 @@ function renderPend(){
   var h='<h2>Категория расхода</h2><div class="row"><b style="font-size:22px">−'+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(it.label)+'</span></div>';
   if(P.rc)h+='<div class="small muted" style="margin-top:6px">🧾 По чеку: '+fmt(P.rc,cur)+(Math.abs(P.rc-Math.abs(it.amount))>0.5?'. Не совпадает с переводом, поправьте ниже или добавьте вручную.':'')+'</div>';
   P.rows.forEach(function(r,i){
-    h+='<div class="row" style="gap:8px;margin-top:10px"><select data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a)+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'</div>';
-    if(SUBS[r.c])h+='<select data-pr="'+i+'" data-k="s" style="margin-top:6px"><option value="">Подкатегория (необязательно)</option>'+subsFor(r.c).map(function(x){return '<option'+(x.n===r.s?' selected':'')+'>'+esc(x.n)+'</option>';}).join('')+'</select>';
+    h+='<div class="row" style="gap:8px;margin-top:10px"><select class="pf" data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input class="pf" inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a)+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'</div>';
+    if(SUBS[r.c])h+='<select class="pf" data-pr="'+i+'" data-k="s" style="margin-top:6px"><option value="">Подкатегория (необязательно)</option>'+subsFor(r.c).map(function(x){return '<option'+(x.n===r.s?' selected':'')+'>'+esc(x.n)+'</option>';}).join('')+'</select>';
   });
-  h+='<button class="btn plain" data-a="pendadd" style="margin-top:10px">+ Категория</button><div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">'+pendStatus()+'</div>';
+  h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn plain" data-a="pendadd" style="margin-top:0;flex:1">+ Категория</button><button class="pen'+(P.note?' has':'')+'" data-a="pendnoteo" aria-label="Заметка">✎</button></div>'+(P.noteOpen||P.note?'<input class="pf" data-pn="1" placeholder="Заметка" value="'+esc(P.note||'')+'" maxlength="60" autocomplete="off">':'')+'<div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">'+pendStatus()+'</div>';
   openSheet(h);
 }
 function openPend(id,rc){
   var it=pendFind(id);if(!it)return;
-  P={id:id,rows:[{c:'',s:'',a:String(Math.abs(it.amount))}],rc:rc||0};renderPend();
+  P={id:id,rows:[{c:'',s:'',a:String(Math.abs(it.amount))}],rc:rc||0,note:PNOTE[id]||''};renderPend();
 }
 function pendFromReceipt(rr){
   var g={},ord=[],sum=0;
   rr.items.forEach(function(x){var a=+x.a||0;if(a<=0)return;if(!(x.c in g)){g[x.c]=0;ord.push(x.c);}g[x.c]+=a;sum+=a;});
   var id=rr.pend,rows=ord.map(function(c){return {c:c,a:String(g[c])};});
-  P={id:id,rows:rows.length?rows:[{c:'',a:''}],rc:rr.total||sum};R=null;renderPend();
+  P={id:id,rows:rows.length?rows:[{c:'',a:''}],rc:rr.total||sum,note:PNOTE[id]||''};R=null;renderPend();
 }
 function pendWrite(it,groups,keep){
   var A=getAcc(pendAcc(it.num,it.cur));if(!A){toast('Нет счёта в '+it.cur);return false;}
   var rid=groups.length>1?uid():'';
-  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:String(it.label).slice(0,80),cat:g.c,bk:it.id};if(g.s)t.sub=g.s;if(rid)t.rid=rid;S.tx.push(t);});
+  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:(String(it.label)+(PNOTE[it.id]?' · '+PNOTE[it.id]:'')).slice(0,120),cat:g.c,bk:it.id};if(g.s)t.sub=g.s;if(rid)t.rid=rid;S.tx.push(t);});
   if(groups.length===1)pendLearn(it.key,groups[0].c,groups[0].s);
-  S.settings.lastAcc=A.id;pendDone(it.id);delete PSUB[it.id];
+  S.settings.lastAcc=A.id;pendDone(it.id);delete PSUB[it.id];delete PNOTE[it.id];
   if(keep)return true;
   closeSheet();commit();hap('ok');toast('Записано');return true;
 }
@@ -4122,7 +4127,7 @@ function renderPendList(){
     h+='<div class="small muted" style="margin-top:14px">Знакомые получатели. Проверьте категории и снимите галочку, если категория не подходит.</div>';
     kn.forEach(function(it){
       var c=pendSug(it),A=getAcc(pendAcc(it.num,it.cur)),k=!PL.off[it.id];
-      h+='<div class="card" style="margin-top:8px"><div class="row" style="gap:10px;align-items:flex-start"><button class="chip'+(k?' on':'')+'" data-a="pendtick" data-id="'+esc(it.id)+'" aria-label="Отметить" style="min-width:36px">'+(k?'✓':'')+'</button><div style="flex:1;min-width:0"><div class="row"><b>−'+fmt(Math.abs(it.amount),A.cur)+'</b><span class="small muted">'+esc(it.time)+'</span></div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div><div style="margin-top:4px">'+catIcon(c)+' '+esc(c)+'</div>'+pendSubChips(it,c)+'</div></div></div>';
+      h+='<div class="card" style="margin-top:8px"><div class="row" style="gap:10px;align-items:flex-start"><button class="chip'+(k?' on':'')+'" data-a="pendtick" data-id="'+esc(it.id)+'" aria-label="Отметить" style="min-width:36px">'+(k?'✓':'')+'</button><div style="flex:1;min-width:0"><div class="row"><b>−'+fmt(Math.abs(it.amount),A.cur)+'</b><span class="small muted">'+esc(it.time)+'</span></div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div><div style="margin-top:4px">'+catIcon(c)+' '+esc(c)+'</div>'+pendSubChips(it,c)+'</div>'+penBtn(it.id)+'</div></div>';
     });
     h+='<button class="btn income" data-a="pendbulk"'+(on.length?'':' disabled')+' style="margin-top:12px">Записать отмеченные ('+on.length+')</button>';
   }
@@ -4133,6 +4138,16 @@ function renderPendList(){
   openSheet(h);
 }
 H.pendall=function(){PL={off:{}};renderPendList();};
+H.pendnoteo=function(){P.noteOpen=true;renderPend();var i=$('[data-pn]');if(i)i.focus();};
+H.pendnote=function(el){
+  var it=pendFind(el.dataset.id);if(!it)return;PN=it.id;
+  openSheet('<h2>Заметка</h2><div class="small muted">'+fmt(Math.abs(it.amount),pendCur(it))+' · '+esc(it.label)+'</div><input class="pf" id="pnote" placeholder="Например: манго и бананы" value="'+esc(PNOTE[it.id]||'')+'" maxlength="60" autocomplete="off"><button class="btn" data-a="pendnotesave">Сохранить</button>');
+  var i=$('#pnote');if(i)i.focus();
+};
+H.pendnotesave=function(){
+  var v=(($('#pnote')||{}).value||'').trim();if(PN){if(v)PNOTE[PN]=v;else delete PNOTE[PN];}
+  if(PL)renderPendList();else{closeSheet();render();}
+};
 H.pendtick=function(el){if(!PL)return;PL.off[el.dataset.id]=!PL.off[el.dataset.id];renderPendList();};
 H.pendsub=function(el){
   var it=pendFind(el.dataset.id);if(!it)return;
@@ -4164,7 +4179,7 @@ H.pendrest=function(){
   renderPend();
 };
 H.pendok=function(){
-  var it=pendFind(P.id);if(!it)return;var t=pendTotals();
+  var it=pendFind(P.id);if(!it)return;var t=pendTotals();if(P.note)PNOTE[it.id]=P.note;
   if(t.left!==0||!P.rows.every(function(r){return r.c&&num(r.a)>0;})){renderPend();return;}
   var g={},ord=[];P.rows.forEach(function(r){var k=r.c+'|'+(r.s||'');if(!(k in g)){g[k]=0;ord.push(k);}g[k]+=num(r.a);});
   pendWrite(it,ord.map(function(k){var q=k.split('|');return {c:q[0],s:q[1],a:Math.round(g[k]*100)/100};}));
@@ -4196,6 +4211,7 @@ H.banksms=function(){ncall('LuckyNative','requestSms').then(function(){setTimeou
 H.bankset=function(){ncall('LuckyNative','openAppSettings');};
 document.addEventListener('input',function(e){
   var el=e.target;if(!P||!el.dataset)return;
+  if(el.dataset.pn&&P){P.note=el.value;return;}
   if(el.dataset.pr!==undefined&&el.dataset.pr!==''){var r=P.rows[+el.dataset.pr];if(r)r[el.dataset.k]=el.value;var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
   else if(el.dataset.pm==='g'){P.g=el.value;pmRate();}
 });
