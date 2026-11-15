@@ -10,3 +10,7 @@ android/capacitor-cordova-android-plugins/
 www/
 *.jks
 *.keystore
+
+build/
+.gradle/
+.DS_Store
