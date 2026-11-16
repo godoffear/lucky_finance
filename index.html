@@ -398,7 +398,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.13';
+var VERSION='4.14';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -473,6 +473,15 @@ function normalize(o){
       s.tx.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),seq:(s.seq=(s.seq||1)+1)-1,date:'2026-11-15',type:'expense',acc:bi.id,amount:242134,note:'Подписка, сервер',cat:'Подписки'});
     }
     s.settings.migSub15=true;
+  }
+  /* 4.14: разовая правка по выписке BIDV: подписка 231 750 ₫ (было 242 134) + комиссия за валютную операцию 12 450 ₫ */
+  if(!(o.settings&&o.settings.migSub16)){
+    var sb=s.tx.filter(function(t){return t.date==='2026-11-15'&&t.cat==='Подписки'&&t.amount===242134;})[0];
+    if(sb){
+      sb.amount=231750;
+      s.tx.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),seq:(s.seq=(s.seq||1)+1)-1,date:'2026-11-15',type:'expense',acc:sb.acc,amount:12450,note:'Подписка, сервер: комиссия за валютную операцию',cat:'Подписки'});
+    }
+    s.settings.migSub16=true;
   }
   sanitize(s);
   /* 2.18: категория «Еда» переименована в «Продукты» — один раз переносим старые данные */
@@ -1647,6 +1656,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.14',items:['Разовая правка по выписке BIDV: подписка на сервер исправлена на 231 750 ₫ и добавлена комиссия за валютную операцию 12 450 ₫.']},
   {v:'4.13',items:['Чек по фото снова работает: обновлена модель Gemini (старая больше недоступна).']},
   {v:'4.12',items:['Разовая правка по сверке с банком: добавлена подписка за 15.11 («Подписки», заметка «Подписка, сервер») на 242 134 ₫, чтобы баланс BIDV совпал с банком']},
   {v:'4.11',items:['Заметка к банковской операции: маленький карандаш ✎ в карточке на главной, в списке с галочками и в окне выбора категории; заметка дописывается к названию получателя','Окно выбора категории: поля стали заметнее, выбранная подкатегория выделена цветом']},
