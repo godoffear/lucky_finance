@@ -398,7 +398,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.14';
+var VERSION='4.15';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1656,6 +1656,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.15',items:['Чек по фото: исправлено имя модели Gemini и добавлен автоподбор — если Google снова переименует модель, приложение само найдёт рабочую.']},
   {v:'4.14',items:['Разовая правка по выписке BIDV: подписка на сервер исправлена на 231 750 ₫ и добавлена комиссия за валютную операцию 12 450 ₫.']},
   {v:'4.13',items:['Чек по фото снова работает: обновлена модель Gemini (старая больше недоступна).']},
   {v:'4.12',items:['Разовая правка по сверке с банком: добавлена подписка за 15.11 («Подписки», заметка «Подписка, сервер») на 242 134 ₫, чтобы баланс BIDV совпал с банком']},
@@ -3766,7 +3767,7 @@ var H={
 /* ---------- Чек по фото (Gemini) ----------
    Ключ лежит отдельно в localStorage (как токен GitHub): в копии и сводки не попадает.
    Фото уходит в Google Gemini, ответ — JSON с позициями. Всё проверяет пользователь до записи. */
-var GEMKEY='fin-mvp-gem',GEM_MODEL='gemini-3.8',RCMAPKEY='fin-mvp-rcmap',R=null;
+var GEMKEY='fin-mvp-gem',GEM_MODEL='gemini-flash-latest',GEMMKEY='fin-mvp-gmodel',GEMAPI='https://generativelanguage.googleapis.com/v1beta/models',RCMAPKEY='fin-mvp-rcmap',R=null;
 function gemKey(){try{return (JSON.parse(localStorage.getItem(GEMKEY)||'{}')||{}).key||'';}catch(e){return '';}}
 function rcMap(){try{return JSON.parse(localStorage.getItem(RCMAPKEY)||'{}')||{};}catch(e){return {};}}
 function rcLearn(items){var m=rcMap();items.forEach(function(x){if(x.o)m[String(x.o).toLowerCase().slice(0,60)]=x.c;});try{localStorage.setItem(RCMAPKEY,JSON.stringify(m));}catch(e){}}
@@ -3793,10 +3794,30 @@ function bankSt(){
   return {ok:a,t:(a?'Уведомления BIDV: доступ включён.':BANK_ACCESS===false?'Уведомления BIDV: доступ выключен.':'Уведомления BIDV: проверяется…')+last,sms:BANK_SMS===true,smsT:BANK_SMS===true?'SMS Т-Банка: чтение разрешено.':BANK_SMS===false?'SMS Т-Банка: чтение выключено.':'SMS Т-Банка: проверяется…'};
 }
 H.gemtest=function(){gemCheck();};
+function gemModel(){try{return localStorage.getItem(GEMMKEY)||GEM_MODEL;}catch(e){return GEM_MODEL;}}
+/* если модель вернула 404 — спрашиваем у Google список и берём первую flash-модель с generateContent */
+function gemFind(){
+  return fetch(GEMAPI+'?pageSize=200',{headers:{'x-goog-api-key':gemKey()}}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+    var l=((d&&d.models)||[]).filter(function(m){return /flash/i.test(m.name)&&(m.supportedGenerationMethods||[]).indexOf('generateContent')>=0;}).map(function(m){return m.name.replace(/^models\//,'');});
+    var pick=l.filter(function(n){return !/lite|image|tts|live|audio|preview|exp/i.test(n);})[0]||l[0]||null;
+    if(pick){try{localStorage.setItem(GEMMKEY,pick);}catch(e){}}
+    return pick;
+  }).catch(function(){return null;});
+}
+function gemPost(body,ctl,retried){
+  var m=gemModel();
+  return fetch(GEMAPI+'/'+m+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':gemKey()},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined}).then(function(r){
+    if(r.status===404&&!retried)return gemFind().then(function(nm){return nm&&nm!==m?gemPost(body,ctl,true):r;});
+    return r;
+  });
+}
 function gemCheck(){
   var k=gemKey();if(!k)return Promise.resolve();
   toast('Проверяю ключ…');
-  return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL,{headers:{'x-goog-api-key':k}}).then(function(r){
+  return fetch(GEMAPI+'/'+gemModel(),{headers:{'x-goog-api-key':k}}).then(function(r){
+    if(r.status===404)return gemFind().then(function(nm){return nm?{ok:true,status:200}:r;});
+    return r;
+  }).then(function(r){
     lsSet('fin-mvp-gemok',{ok:r.ok,at:Date.now(),msg:r.ok?'':(r.status===400||r.status===403||r.status===401?'Ключ не принят Google. Проверьте, что вставлен целиком.':'Gemini ответил ошибкой '+r.status)});
   }).catch(function(){lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Нет связи с Gemini. Проверьте интернет.'});}).then(function(){render();});
 }
@@ -3871,7 +3892,7 @@ function rcRead(file){
   rcImage(file).then(function(b64){
     var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
     var to=setTimeout(function(){if(ctl)ctl.abort();},60000);
-    return fetch('https://generativelanguage.googleapis.com/v1beta/models/'+GEM_MODEL+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':gemKey()},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(to);
+    return gemPost(body,ctl).then(function(r){clearTimeout(to);
       if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}if(r.status===400&&/API key/i.test(m))lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Ключ не принят Google. Введите новый.'});throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверьте его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подождите минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
       return r.json();});
   }).then(function(d){
