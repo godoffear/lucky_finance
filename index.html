@@ -398,7 +398,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.12';
+var VERSION='4.13';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1647,6 +1647,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.13',items:['Чек по фото снова работает: обновлена модель Gemini (старая больше недоступна).']},
   {v:'4.12',items:['Разовая правка по сверке с банком: добавлена подписка за 15.11 («Подписки», заметка «Подписка, сервер») на 242 134 ₫, чтобы баланс BIDV совпал с банком']},
   {v:'4.11',items:['Заметка к банковской операции: маленький карандаш ✎ в карточке на главной, в списке с галочками и в окне выбора категории; заметка дописывается к названию получателя','Окно выбора категории: поля стали заметнее, выбранная подкатегория выделена цветом']},
   {v:'4.10',items:['Операции из банка: можно выбрать подкатегорию (например, «Фрукты и овощи»), приложение запоминает её для получателя','Если операций несколько, на главной одна строка «Нужно указать категорию · N», а внутри список с галочками: знакомые получатели отмечены, кнопка «Записать отмеченные» записывает только их','Тексты приложения приведены к единому обращению на «вы», убраны слова вроде «разнести»']},
@@ -3755,7 +3756,7 @@ var H={
 /* ---------- Чек по фото (Gemini) ----------
    Ключ лежит отдельно в localStorage (как токен GitHub): в копии и сводки не попадает.
    Фото уходит в Google Gemini, ответ — JSON с позициями. Всё проверяет пользователь до записи. */
-var GEMKEY='fin-mvp-gem',GEM_MODEL='gemini-2.5-flash',RCMAPKEY='fin-mvp-rcmap',R=null;
+var GEMKEY='fin-mvp-gem',GEM_MODEL='gemini-3.8',RCMAPKEY='fin-mvp-rcmap',R=null;
 function gemKey(){try{return (JSON.parse(localStorage.getItem(GEMKEY)||'{}')||{}).key||'';}catch(e){return '';}}
 function rcMap(){try{return JSON.parse(localStorage.getItem(RCMAPKEY)||'{}')||{};}catch(e){return {};}}
 function rcLearn(items){var m=rcMap();items.forEach(function(x){if(x.o)m[String(x.o).toLowerCase().slice(0,60)]=x.c;});try{localStorage.setItem(RCMAPKEY,JSON.stringify(m));}catch(e){}}
