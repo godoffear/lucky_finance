@@ -398,7 +398,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.16';
+var VERSION='4.17';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1656,6 +1656,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.17',items:['Чек по фото быстрее: Gemini думает минимально, фото легче, таймаут 90 с с секундомером, при зависании одна автоповторная попытка на быстрой модели Lite.']},
   {v:'4.16',items:['Копия на GitHub каждый день около 23:59 и стабильный файл latest.json со свежей сводкой по всем разделам (счета, накопления, долги, инвестиции, траты по месяцам и категориям, лимиты, прогноз).']},
   {v:'4.15',items:['Чек по фото: исправлено имя модели Gemini и добавлен автоподбор — если Google снова переименует модель, приложение само найдёт рабочую.']},
   {v:'4.14',items:['Разовая правка по выписке BIDV: подписка на сервер исправлена на 231 750 ₫ и добавлена комиссия за валютную операцию 12 450 ₫.']},
@@ -3833,8 +3834,12 @@ function gemFind(){
   }).catch(function(){return null;});
 }
 function gemPost(body,ctl,retried){
-  var m=gemModel();
+  var m=(R&&R.lite)?'gemini-flash-lite-latest':gemModel();
   return fetch(GEMAPI+'/'+m+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':gemKey()},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined}).then(function(r){
+    if(r.status===400&&body.generationConfig&&body.generationConfig.thinkingConfig)return r.clone().text().then(function(t){
+      if(/thinking/i.test(t)){delete body.generationConfig.thinkingConfig;return gemPost(body,ctl,retried);}
+      return r;
+    });
     if(r.status===404&&!retried)return gemFind().then(function(nm){return nm&&nm!==m?gemPost(body,ctl,true):r;});
     return r;
   });
@@ -3874,7 +3879,7 @@ function renderRc(){
       '<input type="file" accept="image/*" capture="environment" id="rcf1" data-rcf="1" hidden><input type="file" accept="image/*" id="rcf2" data-rcf="1" hidden>'+
       '<button class="btn" data-a="rcshot">📷 Сделать фото</button><button class="btn plain" data-a="rcgal">🖼 Из галереи</button><button class="btn plain" data-a="close">Отмена</button>';
   }else if(R.step==='busy'){
-    h='<h2>Чек по фото</h2><div class="card" style="text-align:center"><div style="font-size:28px">⏳</div><div class="t1">Читаю чек…</div><div class="small muted">Обычно 5–20 секунд. Не закрывай окно.</div></div><button class="btn plain" data-a="rcabort">Отменить</button>';
+    h='<h2>Чек по фото</h2><div class="card" style="text-align:center"><div style="font-size:28px">⏳</div><div class="t1">Читаю чек…</div><div class="small muted">Обычно 5–20 секунд. Не закрывай окно. Прошло: <b id="rcsec">0</b> с</div></div><button class="btn plain" data-a="rcabort">Отменить</button>';
   }else if(R.step==='review'){
     var groups=[],idx={};
     R.items.forEach(function(x){if(!(x.c in idx)){idx[x.c]=groups.length;groups.push({c:x.c,s:0,l:[]});}var g=groups[idx[x.c]];g.s+=(+x.a)||0;g.l.push((x.n||x.o||'?')+' '+rcFmtN(x.a));});
@@ -3904,9 +3909,9 @@ function rcImage(file){
   return new Promise(function(res,rej){
     var url=URL.createObjectURL(file),im=new Image();
     im.onload=function(){
-      var k=Math.min(1,1600/Math.max(im.width,im.height)),w=Math.round(im.width*k),hh=Math.round(im.height*k),c=document.createElement('canvas');
+      var k=Math.min(1,1200/Math.max(im.width,im.height)),w=Math.round(im.width*k),hh=Math.round(im.height*k),c=document.createElement('canvas');
       c.width=w;c.height=hh;c.getContext('2d').drawImage(im,0,0,w,hh);URL.revokeObjectURL(url);
-      res(c.toDataURL('image/jpeg',0.82).split(',')[1]);
+      res(c.toDataURL('image/jpeg',0.75).split(',')[1]);
     };
     im.onerror=function(){URL.revokeObjectURL(url);rej(new Error('Не удалось открыть фото'));};
     im.src=url;
@@ -3914,12 +3919,13 @@ function rcImage(file){
 }
 function rcRead(file){
   R.step='busy';R.err='';renderRc();
+  var t0=Date.now();clearInterval(R.iv);R.iv=setInterval(function(){var e=document.getElementById('rcsec');if(e)e.textContent=Math.round((Date.now()-t0)/1000);},1000);
   var ctl=window.AbortController?new AbortController():null;R.ctl=ctl;var myR=R;
   var cats=rcCats();
   var prompt='Это фото кассового чека (скорее всего из Вьетнама, на вьетнамском). Прочитай его. Верни JSON. store — название магазина. date — дата чека в формате ГГГГ-ММ-ДД или пустая строка, если не видно. currency — код валюты (обычно VND). total — итог к оплате числом. items — все купленные позиции: o — название как на чеке, n — перевод на русский (коротко), a — итоговая сумма за позицию числом (количество уже учтено, скидка вычтена), c — категория строго из списка: '+cats.join(', ')+'. Если не уверен, ставь «Другое». Во вьетнамских ценах точка разделяет тысячи: 32.000 это 32000. Не придумывай позиции, которых нет на чеке.';
   rcImage(file).then(function(b64){
-    var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
-    var to=setTimeout(function(){if(ctl)ctl.abort();},60000);
+    var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{thinkingConfig:{thinkingLevel:'minimal'},responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
+    var to=setTimeout(function(){if(ctl)ctl.abort();},90000);
     return gemPost(body,ctl).then(function(r){clearTimeout(to);
       if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}if(r.status===400&&/API key/i.test(m))lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Ключ не принят Google. Введите новый.'});throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверьте его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подождите минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
       return r.json();});
@@ -3932,12 +3938,14 @@ function rcRead(file){
     R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c};});
     R.store=String(o.store||'').slice(0,60);R.cur=scur(o.currency)||'VND';R.total=Math.round(+o.total)||0;
     R.date=/^\d{4}-\d{2}-\d{2}$/.test(o.date||'')&&o.date<=today()?o.date:today();
-    lsSet('fin-mvp-gemok',{ok:true,at:Date.now()});
+    clearInterval(myR.iv);lsSet('fin-mvp-gemok',{ok:true,at:Date.now()});
     if(myR.pend){pendFromReceipt(myR);return;}
     R.step='review';renderRc();
   }).catch(function(e){
+    clearInterval(myR.iv);
     if(R!==myR)return;
-    R.step='pick';R.err=(e&&e.name==='AbortError')?'Gemini не ответил за минуту. Проверьте интернет и повтори.':(e&&e.message&&!/Failed to fetch|NetworkError/i.test(e.message)?e.message:'Нет связи с Gemini. Проверьте интернет и повтори.');renderRc();
+    if(e&&e.name==='AbortError'&&!myR.retried){myR.retried=1;myR.lite=1;rcRead(file);return;}
+    R.step='pick';R.err=(e&&e.name==='AbortError')?'Gemini не ответил за полторы минуты. Проверьте интернет и повтори.':(e&&e.message&&!/Failed to fetch|NetworkError/i.test(e.message)?e.message:'Нет связи с Gemini. Проверьте интернет и повтори.');renderRc();
   });
 }
 function rcSave(accId){
