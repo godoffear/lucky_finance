@@ -398,7 +398,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.15';
+var VERSION='4.16';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -1656,6 +1656,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.16',items:['Копия на GitHub каждый день около 23:59 и стабильный файл latest.json со свежей сводкой по всем разделам (счета, накопления, долги, инвестиции, траты по месяцам и категориям, лимиты, прогноз).']},
   {v:'4.15',items:['Чек по фото: исправлено имя модели Gemini и добавлен автоподбор — если Google снова переименует модель, приложение само найдёт рабочую.']},
   {v:'4.14',items:['Разовая правка по выписке BIDV: подписка на сервер исправлена на 231 750 ₫ и добавлена комиссия за валютную операцию 12 450 ₫.']},
   {v:'4.13',items:['Чек по фото снова работает: обновлена модель Gemini (старая больше недоступна).']},
@@ -2283,12 +2284,39 @@ function handleAppUrl(u){
   if(m&&S.accounts.length){closeSheet();setTimeout(function(){openOp(m[1]);},120);}
 }
 /* Копия данных внутри памяти приложения: если хранилище окна приложения вдруг опустеет, данные предложат восстановить */
+/* Сводка для выгрузки: всё, что видно на экранах, уже посчитано теми же функциями (compute, capitalAt, forecast…). Новые разделы добавлять сюда же. */
+function buildSummary(){
+  var main=S.settings.main,r2=function(x){return x==null||!isFinite(x)?null:Math.round(x*100)/100;},r6=function(x){return x==null||!isFinite(x)?null:Math.round(x*1e6)/1e6;};
+  var sm={appVersion:VERSION,mainCur:main,rates:{},accounts:[],savings:[],capital:null,months:{},debts:[],investments:[],recurring:[],limits:null,must:S.settings.must||[],goal:S.settings.goal||null,forecast:null};
+  var curs={};S.accounts.forEach(function(a){curs[a.cur]=1;});Object.keys(C.sav||{}).forEach(function(c){curs[c]=1;});
+  Object.keys(curs).forEach(function(c){var ri=rateInfoC(c);sm.rates[c]={perMain:r6(ri.r),source:ri.src||''};});
+  S.accounts.forEach(function(a){var b=C.accs[a.id]?C.accs[a.id].bal:0,r=rateToMain(a.cur);sm.accounts.push({id:a.id,name:a.name,cur:a.cur,balance:r2(b),inMain:r2(a.cur===main?b:(r!=null?b*r:null)),excluded:!!a.excl});});
+  Object.keys(C.sav||{}).forEach(function(c){var b=C.sav[c].bal,r=rateToMain(c);sm.savings.push({cur:c,balance:r2(b),inMain:r2(c===main?b:(r!=null?b*r:null))});});
+  var cap=capitalAt('9999-12-31');sm.capital={total:r2(cap.total),someRatesMissing:!!cap.missing};
+  S.tx.forEach(function(t){
+    if(t.type!=='expense'&&t.type!=='income')return;
+    var v=txToMain(t);if(v==null)return;
+    var ym=t.date.slice(0,7),m=sm.months[ym]||(sm.months[ym]={income:0,expense:0,expenseByCat:{},incomeByCat:{}});
+    var key=t.type==='expense'?'expense':'income',cat=t.cat||'Без категории',bc=m[key+'ByCat'];
+    m[key]+=v;bc[cat]=(bc[cat]||0)+v;
+  });
+  Object.keys(sm.months).forEach(function(ym){var m=sm.months[ym];m.income=r2(m.income);m.expense=r2(m.expense);['expenseByCat','incomeByCat'].forEach(function(k){Object.keys(m[k]).forEach(function(c){m[k][c]=r2(m[k][c]);});});});
+  S.debts.forEach(function(d){sm.debts.push({id:d.id,direction:d.dir,who:d.who,due:d.due||'',cur:d.cur,amount:d.amount,left:r2(debtLeft(d)),paid:(d.paid||[]).length});});
+  S.inv.forEach(function(x){sm.investments.push({where:x.where,what:x.what,cur:x.cur,invested:x.invested,now:x.now,upd:x.upd});});
+  S.rec.forEach(function(x){var a=getAcc(x.acc);sm.recurring.push({name:x.name,amount:x.amount,cur:a?a.cur:null,cat:x.cat,day:x.day});});
+  sm.limits=limits();
+  try{var f=forecast();if(f)sm.forecast={monthEnd:f.me,perCurrency:f.per,total:f.total};}catch(e){}
+  return sm;
+}
 var MIR_T=0;
 function mirrorSave(){
   if(!IS_APP||!S||(!S.accounts.length&&!S.tx.length))return;
   clearTimeout(MIR_T);
   MIR_T=setTimeout(function(){
     ncall('Filesystem','writeFile',{path:'lucky-mirror.json',data:JSON.stringify(S),directory:'DATA',encoding:'utf8'}).then(function(){
+      var sum='';try{sum=JSON.stringify(buildSummary());}catch(e){}
+      return ncall('Filesystem','writeFile',{path:'lucky-summary.json',data:sum||'null',directory:'DATA',encoding:'utf8'});
+    }).then(function(){
       ncall('Filesystem','writeFile',{path:'lucky-mirror.hash',data:ghHash(),directory:'DATA',encoding:'utf8'});
     });
   },1500);
@@ -2614,13 +2642,13 @@ function ghAuto(){
   var g=ghCfg();if(!ghReady(g)||g.auto===false||!S.tx.length)return;
   if(g.hash&&g.hash===ghHash())return;
   if(g.last&&localDayOf(g.last)===today())return;
-  if(IS_APP&&new Date().getHours()<(g.hour||22)&&g.last&&Date.now()-g.last<30*36e5)return;
+  if(IS_APP&&new Date().getHours()<(g.hour||23)&&g.last&&Date.now()-g.last<30*36e5)return;
   ghUpload(true);
 }
 function ghPushJob(){
   if(!IS_APP)return;
   var g=ghCfg();
-  ncall('LuckyNative','setBackupJob',{enabled:ghReady(g)&&g.auto!==false,repo:g.repo||'',token:g.token||'',hour:g.hour||22});
+  ncall('LuckyNative','setBackupJob',{enabled:ghReady(g)&&g.auto!==false,repo:g.repo||'',token:g.token||'',hour:g.hour||23});
 }
 /* Узнаём, что фоновое задание успело выгрузить, пока приложение было закрыто */
 function ghSyncNative(){
@@ -2641,7 +2669,7 @@ function ghCard(){
   if(ghReady(g)){
     h+='<button class="btn plain" data-a="ghnow" style="margin-top:8px">Выгрузить сейчас</button>';
     h+='<div class="row" style="margin-top:16px"><div class="grow"><div class="t1">'+(IS_APP?'Каждый вечер автоматически':'Каждый день автоматически')+'</div><div class="t2">'+(IS_APP?'Даже если приложение закрыто, если данные менялись. Телефон может сдвинуть время на несколько минут.':'При открытии приложения, если данные менялись')+'</div></div><button class="sw'+(g.auto!==false?' on':'')+'" data-a="ghauto" aria-label="Автовыгрузка" style="border:0;padding:0"></button></div>';
-    if(IS_APP&&g.auto!==false)h+='<label>Во сколько отправлять<select data-ghh="1">'+[19,20,21,22,23].map(function(x){return '<option value="'+x+'"'+((g.hour||22)===x?' selected':'')+'>'+x+':10</option>';}).join('')+'</select></label>';
+    if(IS_APP&&g.auto!==false)h+='<label>Во сколько отправлять<select data-ghh="1">'+[19,20,21,22,23].map(function(x){return '<option value="'+x+'"'+((g.hour||23)===x?' selected':'')+'>'+x+':10</option>';}).join('')+'</select></label>';
     h+='<div class="hint'+(g.err?' warn':'')+'" style="margin-top:8px">'+(g.err?'Последняя попытка не удалась: '+esc(g.err):g.last?'Последняя выгрузка: '+new Date(g.last).toLocaleString('ru-RU'):'Выгрузок пока не было.')+'</div>';
     h+='<button class="btn plain" data-a="ghoff" style="margin-top:8px">Забыть токен</button>';
   }
@@ -4286,7 +4314,7 @@ document.addEventListener('change',function(e){
   if(el.dataset.bk==='time'){backupCfg().time=el.value||'20:00';save();render();return;}
   if(el.dataset.nf){nav[el.dataset.nf]=el.value;ofRefresh();return;}
   if(el.dataset.wid==='cur'){S.settings.wcur=el.value;save();render();nativeSync();return;}
-  if(el.dataset.ghh){var gg=ghCfg();gg.hour=+el.value||22;ghSet(gg);ghPushJob();render();return;}
+  if(el.dataset.ghh){var gg=ghCfg();gg.hour=+el.value||23;ghSet(gg);ghPushJob();render();return;}
   if(el.dataset.lim==='total'){var v=num(el.value),l=S.settings.limit||(S.settings.limit={total:0,cats:{}});l.total=v>0?v:0;commit();return;}
   if(el.dataset.f==='cat'&&F&&F.type){
     if(el.value!==F.cat)F.sub='';
