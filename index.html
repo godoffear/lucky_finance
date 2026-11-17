@@ -328,6 +328,7 @@ var SUBS={
   'Здоровье':[{n:'Врачи и анализы',ic:'🩺'},{n:'Аптека',ic:'💊'},{n:'Страховка',ic:'🛡'}],
   'Спорт':[{n:'Пиклбол',ic:'🏓'},{n:'Спортивное питание',ic:'🥤'},{n:'Тренажёрный зал',ic:'🏋'}],
   'Развлечения':[{n:'Кафе и рестораны',ic:'🍷'},{n:'Кино и концерты',ic:'🎬'},{n:'Экскурсии и парки',ic:'🎡'},{n:'Игры и клубы',ic:'🎯'}],
+  'Красота':[{n:'Стрижка',ic:'💈'},{n:'Другое',ic:'✨'}],
   'Жильё':[{n:'Коммуналка',ic:'💡'},{n:'Прачечная',ic:'🧺'}],
   'Мопед':[{n:'Обслуживание',ic:'🔧'},{n:'Топливо',ic:'⛽'},{n:'Покупка',ic:'📦',oneoff:true}]};
 function subsFor(cat){
@@ -398,7 +399,7 @@ var AUTO_DEFAULT={date:'2026-09-19',src:'ЦБ РФ',rub:{RUB:1,USD:84.1975,EUR:9
 var KEY='fin-mvp-v1', TKEY='fin-mvp-theme', PKEY='fin-mvp-palette';
 /* Цветные темы: [ключ, название, основной цвет, перелив карточки, тёмная] */
 var PALS=[["espresso", "Эспрессо", "#17100B", "linear-gradient(135deg,#2A1A10,#4A2E1B 60%,#7A4B2A)", true], ["amoled", "AMOLED", "#000000", "linear-gradient(135deg,#000000,#262B33)", true]];
-var VERSION='4.17';
+var VERSION='4.18';
 var DEF_FAVS=['RUB','VND','USD','USDT'];
 var NAMES={RUB:'российский рубль',VND:'вьетнамский донг',USD:'доллар США',EUR:'евро',GBP:'фунт стерлингов',CNY:'китайский юань',JPY:'японская иена',CHF:'швейцарский франк',AUD:'австралийский доллар',CAD:'канадский доллар',THB:'тайский бат',KRW:'южнокорейская вона',AED:'дирхам ОАЭ',TRY:'турецкая лира',KZT:'казахстанский тенге',BTC:'биткоин bitcoin',ETH:'эфириум ethereum',USDT:'tether тезер',USDC:'usd coin',BNB:'bnb binance',SOL:'solana солана',XRP:'xrp ripple',ADA:'cardano кардано',DOGE:'dogecoin доге',TON:'toncoin тон'};
 var ABOUT={
@@ -542,7 +543,7 @@ function inp(n){
   var p=s.split('.');return (neg?'-':'')+grp(p[0])+(p[1]?','+p[1]:'');
 }
 function isAmtInput(el){
-  return !!(el&&el.tagName==='INPUT'&&el.parentNode&&el.parentNode.classList&&el.parentNode.classList.contains('amtwrap')&&!/^(daysS|bufS)$/.test(el.dataset.f||''));
+  return !!(el&&el.tagName==='INPUT'&&el.parentNode&&el.parentNode.classList&&el.parentNode.classList.contains('amtwrap')&&!/^(daysS|bufS)$/.test(el.dataset.f||''))||!!(el&&el.tagName==='INPUT'&&el.dataset&&el.dataset.k==='a'&&el.dataset.pr!==undefined);
 }
 /* Живое форматирование суммы: 1.234.567,89 (точка — тысячи, запятая — дробь) */
 function fmtField(el,e){
@@ -1656,6 +1657,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
+  {v:'4.18',items:['Окно категории банковской операции: свой карандаш ✎ к каждой сумме (заметка открывается только по нажатию), суммы в полях разбиваются пробелами по три цифры, у «Красоты» появились подкатегории «Стрижка» и «Другое».']},
   {v:'4.17',items:['Чек по фото быстрее: Gemini думает минимально, фото легче, таймаут 90 с с секундомером, при зависании одна автоповторная попытка на быстрой модели Lite.']},
   {v:'4.16',items:['Копия на GitHub каждый день около 23:59 и стабильный файл latest.json со свежей сводкой по всем разделам (счета, накопления, долги, инвестиции, траты по месяцам и категориям, лимиты, прогноз).']},
   {v:'4.15',items:['Чек по фото: исправлено имя модели Gemini и добавлен автоподбор — если Google снова переименует модель, приложение само найдёт рабочую.']},
@@ -3980,6 +3982,18 @@ document.addEventListener('change',function(e){
   if(el.dataset&&el.dataset.rci&&R&&R.step==='edit'){var x=R.items[+el.dataset.rci];if(x&&el.dataset.k==='c')x.c=el.value;}
 });
 document.addEventListener('input',function(e){
+  var el=e.target;if(!el||el.tagName!=='INPUT'||el.getAttribute('inputmode')!=='decimal')return;
+  var v=el.value;if(!/^[\d\s\u00A0.,]*$/.test(v))return;
+  var raw=v.replace(/[\s\u00A0]/g,''),m=/^(\d*)([.,]?)(.*)$/.exec(raw),ip=m[1],rest=m[2]+m[3];
+  var g=ip.replace(/\B(?=(\d{3})+(?!\d))/g,'\u00A0')+rest;
+  if(g===v)return;
+  var pos=el.selectionStart,digits=0,i;
+  for(i=0;i<(pos==null?v.length:pos);i++)if(/[\d.,]/.test(v[i]))digits++;
+  el.value=g;
+  var np=0,seen=0;for(np=0;np<g.length&&seen<digits;np++)if(/[\d.,]/.test(g[np]))seen++;
+  try{el.setSelectionRange(np,np);}catch(e2){}
+});
+document.addEventListener('input',function(e){
   var el=e.target;if(!R||!el.dataset)return;
   if(el.dataset.rci&&el.dataset.k==='a'&&R.step==='edit'){var x=R.items[+el.dataset.rci],v=num(el.value);x.a=isFinite(v)?v:0;var s=$('#rcsum');if(s)s.textContent=rcFmtN(rcSum());}
   else if(el.dataset.rcs&&R.step==='edit'){R[el.dataset.rcs]=el.value;}
@@ -4122,26 +4136,28 @@ function renderPend(){
   var h='<h2>Категория расхода</h2><div class="row"><b style="font-size:22px">−'+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(it.label)+'</span></div>';
   if(P.rc)h+='<div class="small muted" style="margin-top:6px">🧾 По чеку: '+fmt(P.rc,cur)+(Math.abs(P.rc-Math.abs(it.amount))>0.5?'. Не совпадает с переводом, поправьте ниже или добавьте вручную.':'')+'</div>';
   P.rows.forEach(function(r,i){
-    h+='<div class="row" style="gap:8px;margin-top:10px"><select class="pf" data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input class="pf" inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a)+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'</div>';
+    h+='<div class="row" style="gap:8px;margin-top:10px"><select class="pf" data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input class="pf" inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a===''||r.a==null?'':inp(num(r.a)))+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'<button class="pen'+(r.n?' has':'')+'" data-a="pendrown" data-i="'+i+'" aria-label="Заметка к сумме">✎</button></div>';
     if(SUBS[r.c])h+='<select class="pf" data-pr="'+i+'" data-k="s" style="margin-top:6px"><option value="">Подкатегория (необязательно)</option>'+subsFor(r.c).map(function(x){return '<option'+(x.n===r.s?' selected':'')+'>'+esc(x.n)+'</option>';}).join('')+'</select>';
+    if(r.no||r.n)h+='<input class="pf" data-pr="'+i+'" data-k="n" placeholder="Заметка к этой сумме" value="'+esc(r.n||'')+'" maxlength="60" autocomplete="off">';
   });
-  h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn plain" data-a="pendadd" style="margin-top:0;flex:1">+ Категория</button><button class="pen'+(P.note?' has':'')+'" data-a="pendnoteo" aria-label="Заметка">✎</button></div>'+(P.noteOpen||P.note?'<input class="pf" data-pn="1" placeholder="Заметка" value="'+esc(P.note||'')+'" maxlength="60" autocomplete="off">':'')+'<div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">'+pendStatus()+'</div>';
+  h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn plain" data-a="pendadd" style="margin-top:0;flex:1">+ Категория</button></div><div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding-top:12px">'+pendStatus()+'</div>';
   openSheet(h);
 }
 function openPend(id,rc){
   var it=pendFind(id);if(!it)return;
-  P={id:id,rows:[{c:'',s:'',a:String(Math.abs(it.amount))}],rc:rc||0,note:PNOTE[id]||''};renderPend();
+  P={id:id,rows:[{c:'',s:'',a:String(Math.abs(it.amount)),n:PNOTE[id]||'',no:!!PNOTE[id]}],rc:rc||0};renderPend();
 }
 function pendFromReceipt(rr){
   var g={},ord=[],sum=0;
   rr.items.forEach(function(x){var a=+x.a||0;if(a<=0)return;if(!(x.c in g)){g[x.c]=0;ord.push(x.c);}g[x.c]+=a;sum+=a;});
   var id=rr.pend,rows=ord.map(function(c){return {c:c,a:String(g[c])};});
-  P={id:id,rows:rows.length?rows:[{c:'',a:''}],rc:rr.total||sum,note:PNOTE[id]||''};R=null;renderPend();
+  rows=rows.length?rows:[{c:'',a:''}];if(PNOTE[id]){rows[0].n=PNOTE[id];rows[0].no=true;}
+  P={id:id,rows:rows,rc:rr.total||sum};R=null;renderPend();
 }
 function pendWrite(it,groups,keep){
   var A=getAcc(pendAcc(it.num,it.cur));if(!A){toast('Нет счёта в '+it.cur);return false;}
   var rid=groups.length>1?uid():'';
-  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:(String(it.label)+(PNOTE[it.id]?' · '+PNOTE[it.id]:'')).slice(0,120),cat:g.c,bk:it.id};if(g.s)t.sub=g.s;if(rid)t.rid=rid;S.tx.push(t);});
+  groups.forEach(function(g){var t={id:uid(),seq:S.seq++,date:it.date,type:'expense',acc:A.id,amount:g.a,note:(String(it.label)+(PNOTE[it.id]?' · '+PNOTE[it.id]:'')+(g.n?' · '+g.n:'')).slice(0,120),cat:g.c,bk:it.id};if(g.s)t.sub=g.s;if(rid)t.rid=rid;S.tx.push(t);});
   if(groups.length===1)pendLearn(it.key,groups[0].c,groups[0].s);
   S.settings.lastAcc=A.id;pendDone(it.id);delete PSUB[it.id];delete PNOTE[it.id];
   if(keep)return true;
@@ -4214,7 +4230,7 @@ function renderPendList(){
   openSheet(h);
 }
 H.pendall=function(){PL={off:{}};renderPendList();};
-H.pendnoteo=function(){P.noteOpen=true;renderPend();var i=$('[data-pn]');if(i)i.focus();};
+H.pendrown=function(el){var r=P.rows[+el.dataset.i];if(!r)return;r.no=!r.no;renderPend();if(r.no){var i=$('[data-pr="'+el.dataset.i+'"][data-k="n"]');if(i)i.focus();}};
 H.pendnote=function(el){
   var it=pendFind(el.dataset.id);if(!it)return;PN=it.id;
   openSheet('<h2>Заметка</h2><div class="small muted">'+fmt(Math.abs(it.amount),pendCur(it))+' · '+esc(it.label)+'</div><input class="pf" id="pnote" placeholder="Например: манго и бананы" value="'+esc(PNOTE[it.id]||'')+'" maxlength="60" autocomplete="off"><button class="btn" data-a="pendnotesave">Сохранить</button>');
@@ -4255,10 +4271,14 @@ H.pendrest=function(){
   renderPend();
 };
 H.pendok=function(){
-  var it=pendFind(P.id);if(!it)return;var t=pendTotals();if(P.note)PNOTE[it.id]=P.note;
+  var it=pendFind(P.id);if(!it)return;var t=pendTotals();
   if(t.left!==0||!P.rows.every(function(r){return r.c&&num(r.a)>0;})){renderPend();return;}
-  var g={},ord=[];P.rows.forEach(function(r){var k=r.c+'|'+(r.s||'');if(!(k in g)){g[k]=0;ord.push(k);}g[k]+=num(r.a);});
-  pendWrite(it,ord.map(function(k){var q=k.split('|');return {c:q[0],s:q[1],a:Math.round(g[k]*100)/100};}));
+  var gs=[];P.rows.forEach(function(r){
+    var n=(r.n||'').trim(),f=gs.filter(function(x){return x.c===r.c&&x.s===(r.s||'')&&x.n===n;})[0];
+    if(f)f.a+=num(r.a);else gs.push({c:r.c,s:r.s||'',n:n,a:num(r.a)});
+  });
+  delete PNOTE[it.id];
+  pendWrite(it,gs.map(function(g){g.a=Math.round(g.a*100)/100;return g;}));
 };
 H.pendinc=function(el){
   var it=pendFind(el.dataset.id);if(!it)return;P={id:it.id};
@@ -4288,7 +4308,7 @@ H.bankset=function(){ncall('LuckyNative','openAppSettings');};
 document.addEventListener('input',function(e){
   var el=e.target;if(!P||!el.dataset)return;
   if(el.dataset.pn&&P){P.note=el.value;return;}
-  if(el.dataset.pr!==undefined&&el.dataset.pr!==''){var r=P.rows[+el.dataset.pr];if(r)r[el.dataset.k]=el.value;var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
+  if(el.dataset.pr!==undefined&&el.dataset.pr!==''){var r=P.rows[+el.dataset.pr];if(r){if(el.dataset.k==='a'){setTimeout(function(){r.a=el.value;var s2=$('#pendst');if(s2)s2.innerHTML=pendStatus();},0);return;}r[el.dataset.k]=el.value;}var st=$('#pendst');if(st)st.innerHTML=pendStatus();}
   else if(el.dataset.pm==='g'){P.g=el.value;pmRate();}
 });
 document.addEventListener('change',function(e){
