@@ -158,6 +158,7 @@ details.dt summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:8
 .chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 .chip.pc.on{background:var(--fx-soft);border-color:var(--fx);color:var(--fx)}
 .pf{border:1.5px solid var(--muted);background:var(--surface);box-shadow:inset 0 0 0 100px var(--fx-soft)}
+.bdbub{position:fixed;z-index:60;background:var(--surface);color:var(--ink);border:1px solid var(--muted);border-radius:14px;padding:12px 34px 10px 12px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}.bdbub .row{display:flex;justify-content:space-between;padding:2px 0}.bdx{position:absolute;top:6px;right:6px;width:22px;height:22px;padding:0;margin:0;border:0;border-radius:50%;background:none;color:var(--muted);font-size:13px}.bdar{position:absolute;top:-7px;width:12px;height:12px;background:inherit;border-left:1px solid var(--muted);border-top:1px solid var(--muted);transform:rotate(45deg)}.bdh{display:block;margin:8px 0 0;padding:0;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline}
 .exm{display:inline-grid;place-items:center;width:22px;height:22px;margin:0 0 0 10px;padding:0;border:0;border-radius:50%;background:#f0b429;color:#1a1200;font-weight:800;font-size:14px;vertical-align:4px}
 .pcol{width:22px;height:22px;flex:none;padding:0;margin:0;border:0;border-radius:7px;background:var(--fx-soft);color:var(--ink);display:grid;place-items:center}.pcol svg{width:12px;height:12px;display:block}.pcol.up svg{transform:rotate(180deg)}
 .pen{width:40px;height:40px;flex:none;padding:0;margin:0;border-radius:12px;border:1.5px solid var(--muted);background:var(--bg);color:var(--ink);font-size:17px;display:grid;place-items:center}
@@ -1667,7 +1668,7 @@ function renderTplEdit(){
   openSheet('<h2>Шаблон</h2><div class="small muted">'+esc(x.cat)+' · '+(a?esc(a.name):'—')+'</div><label>Название<input data-f="name" value="'+esc(F.name)+'" autocomplete="off"></label><label>Сумма<div class="amtwrap"><input inputmode="decimal" data-f="amountS" value="'+esc(F.amountS)+'" autocomplete="off"><span>'+(a?a.cur:'')+'</span></div></label><button class="btn" data-a="savetpl">Сохранить</button><button class="btn ghost" data-a="deltpl">Удалить шаблон</button>');
 }
 var CHANGELOG=[
-  {v:'4.21',items:['Знак «!» рядом с общей суммой: если остаток из банковского уведомления и остаток в приложении расходятся больше суток, нажмите на него — увидите цифры и сможете записать разницу в «Другое». Разовая правка: расхождение 41 180 ₫ по BIDV записано расходом в «Другое».']},
+  {v:'4.21',items:['Знак «!» рядом с общей суммой: если остаток из банковского уведомления и остаток в приложении расходятся больше суток, нажмите на него — всплывёт облачко с цифрами (крестик закрывает, «Скрыть на день» прячет знак на сутки). Разовая правка: расхождение 41 180 ₫ по BIDV записано расходом в «Другое».']},
   {v:'4.20',items:['Чек по фото снова быстрый: модель Gemini Flash-Lite (по замеру 2–4 секунды), таймаут 30 секунд. Разница между суммой позиций и итогом (например НДС) раскладывается по позициям, чтобы записался ровно итог. Дата чека читается как ДД/ММ/ГГГГ и показывается крупно.']},
   {v:'4.19',items:['Операцию из банка на главном экране можно свернуть маленькой стрелкой в плашку и развернуть обратно. Кнопки стали компактнее: «Категория» и «📷 Чек». В окне категории подсказка, что операция останется на главном экране, а «Подтвердить» не уходит под клавиатуру.']},
   {v:'4.18',items:['Окно категории банковской операции: свой карандаш ✎ к каждой сумме (заметка открывается только по нажатию), суммы в полях разбиваются пробелами по три цифры, у «Красоты» появились подкатегории «Стрижка» и «Другое».']},
@@ -4086,23 +4087,21 @@ function bdiffMark(){
   var l=bdiffList();
   return l.length?'<button class="exm" data-a="bdiff" aria-label="Расхождение с банком">!</button>':'';
 }
-H.bdiff=function(){
+function bdClose(){var o=document.getElementById('bdbub');if(o)o.remove();}
+H.bdiff=function(el){
+  if(document.getElementById('bdbub')){bdClose();return;}
   var l=bdiffList();if(!l.length){toast('Расхождений нет');return;}
-  var h='<h2>Расхождение с банком</h2><div class="small muted">Сверьте остатки с банком. Суммы в банке и в приложении разные уже больше суток.</div>';
-  l.forEach(function(x){
-    h+='<div class="card" style="margin-top:10px"><b>'+esc(x.name)+'</b><div class="row" style="margin-top:6px"><span class="muted">В банке</span><b>'+fmt(x.bank,x.cur)+'</b></div><div class="row"><span class="muted">В приложении</span><b>'+fmt(x.app,x.cur)+'</b></div><div class="row"><span class="muted">Разница</span><b class="warn">'+(x.diff>0?'+':'−')+fmt(Math.abs(x.diff),x.cur)+'</b></div>'+
-      '<button class="btn" data-a="bdfix" data-id="'+esc(x.id)+'" style="margin-top:10px">Записать разницу в «Другое»</button><button class="btn plain" data-a="bdhide" data-id="'+esc(x.id)+'">Скрыть на день</button></div>';
+  var r=el.getBoundingClientRect(),w=Math.min(300,window.innerWidth-24),left=Math.max(12,Math.min(r.left+r.width/2-w/2,window.innerWidth-w-12)),top=r.bottom+10,ar=Math.max(14,Math.min(w-30,r.left+r.width/2-left-6));
+  var h='<button class="bdx" data-a="bdclose" aria-label="Закрыть">✕</button><div class="bdar" style="left:'+ar+'px"></div>';
+  l.forEach(function(x,i){
+    h+='<div'+(i?' style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px"':'')+'><b>Расхождение с банком: '+esc(x.name)+'</b><div class="row" style="margin-top:6px"><span class="muted">В банке</span><span>'+fmt(x.bank,x.cur)+'</span></div><div class="row"><span class="muted">В приложении</span><span>'+fmt(x.app,x.cur)+'</span></div><div class="row"><span class="muted">Разница</span><b class="warn">'+(x.diff>0?'+':'−')+fmt(Math.abs(x.diff),x.cur)+'</b></div><button class="bdh" data-a="bdhide" data-id="'+esc(x.id)+'">Скрыть на день</button></div>';
   });
-  h+='<button class="btn plain" data-a="close" style="margin-top:12px">Закрыть</button>';
-  openSheet(h);
+  var d=document.createElement('div');d.id='bdbub';d.className='bdbub';d.style.cssText='left:'+left+'px;top:'+top+'px;width:'+w+'px';d.innerHTML=h;
+  document.body.appendChild(d);
 };
-H.bdhide=function(el){var st=lsGet(BDIFFKEY,{}),e=st[el.dataset.id];if(e){e.hide=Date.now()+864e5;lsSet(BDIFFKEY,st);}closeSheet();render();};
-H.bdfix=function(el){
-  var x=bdiffList().filter(function(q){return q.id===el.dataset.id;})[0];if(!x)return;
-  var over=x.diff>0;
-  S.tx.push({id:uid(),seq:S.seq++,date:today(),type:over?'expense':'income',acc:x.id,amount:Math.abs(x.diff),note:'Расхождение с банком',cat:'Другое'});
-  closeSheet();commit();hap('ok');toast('Записано');
-};
+H.bdclose=function(){bdClose();};
+H.bdhide=function(el){var st=lsGet(BDIFFKEY,{}),e=st[el.dataset.id];if(e){e.hide=Date.now()+864e5;lsSet(BDIFFKEY,st);}bdClose();render();};
+document.addEventListener('click',function(e){if(!e.target.closest('#bdbub')&&!e.target.closest('[data-a="bdiff"]'))bdClose();});
 function pendRefresh(){if(nav.tab==='home'&&$('#sheet').hidden)render();}
 function pendPull(){
   if(!IS_APP)return Promise.resolve();
