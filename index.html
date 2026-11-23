@@ -162,6 +162,18 @@ details.dt summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:8
 .exm{display:inline-grid;place-items:center;width:22px;height:22px;margin:0 0 0 10px;padding:0;border:0;border-radius:50%;background:#f0b429;color:#1a1200;font-weight:800;font-size:14px;vertical-align:4px}
 .pcol{width:22px;height:22px;flex:none;padding:0;margin:0;border:0;border-radius:7px;background:var(--fx-soft);color:var(--ink);display:grid;place-items:center}.pcol svg{width:12px;height:12px;display:block}.pcol.up svg{transform:rotate(180deg)}
 .pen{width:40px;height:40px;flex:none;padding:0;margin:0;border-radius:12px;border:1.5px solid var(--muted);background:var(--bg);color:var(--ink);font-size:17px;display:grid;place-items:center}
+.pli .ov{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--fx);color:var(--fx);background:var(--fx-soft);border-radius:999px;padding:6px 11px;font-size:14px;margin:0;max-width:100%}.pli .ov svg{width:12px;height:12px;flex:none}.pli .ov.open svg{transform:rotate(180deg)}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-top:10px;background:var(--bg)}
+.pnum{width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--fx);font-size:12px;display:grid;place-items:center;flex:none}
+.pcard .ov{white-space:nowrap;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--fx);color:var(--fx);background:var(--fx-soft);border-radius:999px;padding:6px 11px;font-size:14px;margin:0;min-width:0}
+.pcard .ov.empty{border-color:var(--line);color:var(--muted);background:none}
+.pcard .ov svg{width:12px;height:12px}
+.pamt{margin:0 0 0 auto;width:96px;min-width:0;text-align:right;padding:6px 9px;font-size:14px;height:auto}
+.pmini{width:28px;height:28px;flex:none;padding:0;margin:0;border-radius:8px;border:1px solid var(--line);background:none;color:var(--muted);font-size:13px;display:grid;place-items:center}
+.pmini.has{border-color:var(--fx);color:var(--fx);background:var(--fx-soft)}
+.pcats{margin-top:8px}
+.psub{margin:8px 0 0 11px;padding-left:12px;border-left:2px solid var(--fx)}
+.pauto{font-style:normal;font-size:10px;color:var(--income);margin-left:5px}
 .pen.has{border-color:var(--fx);background:var(--fx-soft);color:var(--fx)}
 .seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0 0}
 .seg button{padding:10px 0;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:500}
@@ -3884,6 +3896,7 @@ function rcOpen(){
   renderRc();
 }
 function rcCats(){return catsFor('expense');}
+function rcSubList(){return Object.keys(SUBS).map(function(c){return c+': '+SUBS[c].map(function(x){return x.n;}).join(', ');}).join('; ');}
 function rcSum(){var s=0;R.items.forEach(function(x){s+=(+x.a)||0;});return s;}
 function rcFmtN(n){return nf(0).format(n);}
 function renderRc(){
@@ -3938,9 +3951,9 @@ function rcRead(file){
   var t0=Date.now();clearInterval(R.iv);R.iv=setInterval(function(){var e=document.getElementById('rcsec');if(e)e.textContent=Math.round((Date.now()-t0)/1000);},1000);
   var ctl=window.AbortController?new AbortController():null;R.ctl=ctl;var myR=R;
   var cats=rcCats();
-  var prompt='Это фото кассового чека (скорее всего из Вьетнама, на вьетнамском). Прочитай его. Верни JSON. store — название магазина. date — дата чека в формате ГГГГ-ММ-ДД или пустая строка, если не видно. currency — код валюты (обычно VND). total — итог к оплате числом. items — все купленные позиции: o — название как на чеке, n — перевод на русский (коротко), a — итоговая сумма за позицию числом (количество уже учтено, скидка вычтена), c — категория строго из списка: '+cats.join(', ')+'. Если не уверен, ставь «Другое». Даты на вьетнамских чеках в формате ДД/ММ/ГГГГ (08/11/2026 — это 8 ноября 2026). Во вьетнамских ценах точка разделяет тысячи: 32.000 это 32000. Не придумывай позиции, которых нет на чеке.';
+  var prompt='Это фото кассового чека (скорее всего из Вьетнама, на вьетнамском). Прочитай его. Верни JSON. store — название магазина. date — дата чека в формате ГГГГ-ММ-ДД или пустая строка, если не видно. currency — код валюты (обычно VND). total — итог к оплате числом. items — все купленные позиции: o — название как на чеке, n — перевод на русский (коротко), a — итоговая сумма за позицию числом (количество уже учтено, скидка вычтена), c — категория строго из списка: '+cats.join(', ')+'. Если не уверен, ставь «Другое». s — подкатегория строго из списка для выбранной категории или пустая строка, если подходящей нет (списки: '+rcSubList()+'). Даты на вьетнамских чеках в формате ДД/ММ/ГГГГ (08/11/2026 — это 8 ноября 2026). Во вьетнамских ценах точка разделяет тысячи: 32.000 это 32000. Не придумывай позиции, которых нет на чеке.';
   rcImage(file).then(function(b64){
-    var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{thinkingConfig:{thinkingLevel:'minimal'},responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
+    var body={contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{thinkingConfig:{thinkingLevel:'minimal'},responseMimeType:'application/json',responseSchema:{type:'OBJECT',properties:{store:{type:'STRING'},date:{type:'STRING'},currency:{type:'STRING'},total:{type:'NUMBER'},items:{type:'ARRAY',items:{type:'OBJECT',properties:{o:{type:'STRING'},n:{type:'STRING'},a:{type:'NUMBER'},c:{type:'STRING'},s:{type:'STRING'}},required:['o','n','a','c']}}},required:['store','currency','total','items']}}};
     var to=setTimeout(function(){if(ctl)ctl.abort();},30000);
     return gemPost(body,ctl).then(function(r){clearTimeout(to);
       if(!r.ok)return r.text().then(function(t){var m='';try{m=JSON.parse(t).error.message;}catch(e){}if(r.status===400&&/API key/i.test(m))lsSet('fin-mvp-gemok',{ok:false,at:Date.now(),msg:'Ключ не принят Google. Введите новый.'});throw new Error(r.status===400&&/API key/i.test(m)?'Ключ не принят. Проверьте его в «Ещё → Копии».':r.status===429?'Лимит запросов Gemini. Подождите минуту и повтори.':'Gemini ответил ошибкой '+r.status+(m?': '+m.slice(0,120):''));});
@@ -3951,7 +3964,7 @@ function rcRead(file){
     try{o=JSON.parse(tx);}catch(e){throw new Error('Не получилось разобрать ответ. Попробуйте сфотографировать чек ровнее.');}
     var items=(o.items||[]).filter(function(x){return x&&isFinite(+x.a);}),map=rcMap();
     if(!items.length)throw new Error('На фото не нашлось позиций. Сфотографируйте чек целиком и поближе.');
-    R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c};});
+    R.items=items.map(function(x){var c=String(x.c||'Другое'),k=String(x.o||'').toLowerCase().slice(0,60);if(map[k])c=map[k];if(cats.indexOf(c)<0)c='Другое';var sb=String(x.s||'').trim();if(!(SUBS[c]&&SUBS[c].some(function(y){return y.n===sb;})))sb='';return {o:String(x.o||''),n:String(x.n||''),a:Math.round(+x.a),c:c,s:sb};});
     var tt=Math.round(+o.total)||0,ss=R.items.reduce(function(q,x){return q+x.a;},0);
     if(tt>0&&ss>0&&Math.abs(tt-ss)>=1&&Math.abs(tt-ss)<=tt*0.25){
       var acc=0,big=0;R.items.forEach(function(x,i){x.a=Math.round(x.a*tt/ss);acc+=x.a;if(x.a>R.items[big].a)big=i;});
@@ -3972,10 +3985,10 @@ function rcRead(file){
 function rcSave(accId){
   var A=getAcc(accId);if(!A)return;
   var groups={},order=[];
-  R.items.forEach(function(x){var a=+x.a||0;if(!a)return;if(!(x.c in groups)){groups[x.c]={s:0,n:[]};order.push(x.c);}groups[x.c].s+=a;groups[x.c].n.push(x.n||x.o);});
+  R.items.forEach(function(x){var a=+x.a||0;if(!a)return;var k=x.c+'\u0001'+(x.s||'');if(!(k in groups)){groups[k]={c:x.c,sub:x.s||'',s:0,n:[]};order.push(k);}groups[k].s+=a;groups[k].n.push(x.n||x.o);});
   var rid=uid(),made=0;
-  order.forEach(function(c){var g=groups[c];if(g.s<=0)return;
-    S.tx.push({id:uid(),seq:S.seq++,date:R.date,type:'expense',acc:accId,amount:g.s,note:('Чек · '+(R.store||'без названия')).slice(0,80),cat:c,rid:rid});made++;});
+  order.forEach(function(k){var g=groups[k];if(g.s<=0)return;
+    var t={id:uid(),seq:S.seq++,date:R.date,type:'expense',acc:accId,amount:g.s,note:('Чек · '+(R.store||'без названия')).slice(0,80),cat:g.c,rid:rid};if(g.sub)t.sub=g.sub;S.tx.push(t);made++;});
   if(!made){toast('Нечего записывать');return;}
   rcLearn(R.items);S.settings.lastAcc=accId;R=null;closeSheet();commit();hap('ok');toast('Чек записан: '+made+' '+plural(made,'расход','расхода','расходов'));
 }
@@ -3998,7 +4011,7 @@ H.delrc=function(){var rid=F.rid;ask('Удалить весь чек (все е�
 document.addEventListener('change',function(e){
   var el=e.target;
   if(el.dataset&&el.dataset.rcf&&R){var f=el.files&&el.files[0];if(f)rcRead(f);return;}
-  if(el.dataset&&el.dataset.rci&&R&&R.step==='edit'){var x=R.items[+el.dataset.rci];if(x&&el.dataset.k==='c')x.c=el.value;}
+  if(el.dataset&&el.dataset.rci&&R&&R.step==='edit'){var x=R.items[+el.dataset.rci];if(x&&el.dataset.k==='c'){x.c=el.value;x.s='';}}
 });
 document.addEventListener('input',function(e){
   var el=e.target;if(!el||el.tagName!=='INPUT'||el.getAttribute('inputmode')!=='decimal')return;
@@ -4201,9 +4214,12 @@ function renderPend(){
   var h='<h2>Категория расхода</h2><div class="row"><b style="font-size:22px">−'+fmt(Math.abs(it.amount),cur)+'</b><span class="small muted">'+esc(it.label)+'</span></div><div class="small muted" style="margin-top:4px">Закроете окно, и операция останется на главном экране.</div>';
   if(P.rc)h+='<div class="small muted" style="margin-top:6px">🧾 По чеку: '+fmt(P.rc,cur)+(Math.abs(P.rc-Math.abs(it.amount))>0.5?'. Не совпадает с переводом, поправьте ниже или добавьте вручную.':'')+'</div>';
   P.rows.forEach(function(r,i){
-    h+='<div class="row" style="gap:8px;margin-top:10px"><select class="pf" data-pr="'+i+'" data-k="c" style="flex:1.4;margin-top:0"><option value="">Категория…</option>'+cats.map(function(c){return '<option'+(c===r.c?' selected':'')+'>'+esc(c)+'</option>';}).join('')+'</select><input class="pf" inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a===''||r.a==null?'':inp(num(r.a)))+'" style="flex:1;margin-top:0;text-align:right" autocomplete="off">'+(P.rows.length>1?'<button class="chip sm" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'<button class="pen'+(r.n?' has':'')+'" data-a="pendrown" data-i="'+i+'" aria-label="Заметка к сумме">✎</button></div>';
-    if(SUBS[r.c])h+='<select class="pf" data-pr="'+i+'" data-k="s" style="margin-top:6px"><option value="">Подкатегория (необязательно)</option>'+subsFor(r.c).map(function(x){return '<option'+(x.n===r.s?' selected':'')+'>'+esc(x.n)+'</option>';}).join('')+'</select>';
+    var open=!r.c||r.co;
+    h+='<div class="pcard"><div class="row" style="gap:8px"><span class="pnum">'+(i+1)+'</span><button class="ov'+(r.c?'':' empty')+'" data-a="pendco" data-i="'+i+'">'+(r.c?catIcon(r.c)+' '+esc(r.c):'Категория')+PCHEV+'</button><input class="pf pamt" inputmode="decimal" data-pr="'+i+'" data-k="a" value="'+esc(r.a===''||r.a==null?'':inp(num(r.a)))+'" autocomplete="off">'+(P.rows.length>1?'<button class="pmini" data-a="pendrm" data-i="'+i+'" aria-label="Убрать строку">✕</button>':'')+'<button class="pmini'+(r.n?' has':'')+'" data-a="pendrown" data-i="'+i+'" aria-label="Заметка к сумме">✎</button></div>';
+    if(open)h+='<div class="chips pcats">'+cats.map(function(c){return '<button class="chip'+(c===r.c?' on':'')+'" data-a="pendsc" data-i="'+i+'" data-v="'+esc(c)+'">'+catIcon(c)+' '+esc(c)+'</button>';}).join('')+'</div>';
+    if(r.c&&SUBS[r.c])h+='<div class="chips psub">'+subsFor(r.c).map(function(x){var on=x.n===r.s;return '<button class="chip'+(on?' on':'')+'" data-a="pendss" data-i="'+i+'" data-v="'+esc(x.n)+'">'+x.ic+' '+esc(x.n)+(on&&r.auto?'<i class="pauto">авто</i>':'')+'</button>';}).join('')+'</div>';
     if(r.no||r.n)h+='<input class="pf" data-pr="'+i+'" data-k="n" placeholder="Заметка к этой сумме" value="'+esc(r.n||'')+'" maxlength="60" autocomplete="off">';
+    h+='</div>';
   });
   h+='<div class="row" style="gap:8px;margin-top:10px"><button class="btn plain" data-a="pendadd" style="margin-top:0;flex:1">+ Категория</button></div><div id="pendst" style="margin-top:14px;border-top:1px solid var(--line);padding:12px 0 4px;position:sticky;bottom:0;background:var(--surface);z-index:2">'+pendStatus()+'</div>';
   openSheet(h);
@@ -4214,8 +4230,8 @@ function openPend(id,rc){
 }
 function pendFromReceipt(rr){
   var g={},ord=[],sum=0;
-  rr.items.forEach(function(x){var a=+x.a||0;if(a<=0)return;if(!(x.c in g)){g[x.c]=0;ord.push(x.c);}g[x.c]+=a;sum+=a;});
-  var id=rr.pend,rows=ord.map(function(c){return {c:c,a:String(g[c])};});
+  rr.items.forEach(function(x){var a=+x.a||0;if(a<=0)return;var k=x.c+'\u0001'+(x.s||'');if(!(k in g)){g[k]={c:x.c,s:x.s||'',a:0};ord.push(k);}g[k].a+=a;sum+=a;});
+  var id=rr.pend,rows=ord.map(function(k){var q=g[k];return {c:q.c,s:q.s,auto:!!q.s,a:String(q.a)};});
   rows=rows.length?rows:[{c:'',a:''}];if(PNOTE[id]){rows[0].n=PNOTE[id];rows[0].no=true;}
   P={id:id,rows:rows,rc:rr.total||sum};R=null;renderPend();
 }
@@ -4284,7 +4300,10 @@ function renderPendList(){
     h+='<div class="small muted" style="margin-top:14px">Знакомые получатели. Проверьте категории и снимите галочку, если категория не подходит.</div>';
     kn.forEach(function(it){
       var c=pendSug(it),A=getAcc(pendAcc(it.num,it.cur)),k=!PL.off[it.id];
-      h+='<div class="card" style="margin-top:8px"><div class="row" style="gap:10px;align-items:flex-start"><button class="chip'+(k?' on':'')+'" data-a="pendtick" data-id="'+esc(it.id)+'" aria-label="Отметить" style="min-width:36px">'+(k?'✓':'')+'</button><div style="flex:1;min-width:0"><div class="row"><b>−'+fmt(Math.abs(it.amount),A.cur)+'</b><span class="small muted">'+esc(it.time)+'</span></div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div><div style="margin-top:4px">'+catIcon(c)+' '+esc(c)+'</div>'+pendSubChips(it,c)+'</div>'+penBtn(it.id)+'</div></div>';
+      var sb=pendSubOf(it,c),op=PL.open&&PL.open[it.id];
+      h+='<div class="card pli" style="margin-top:12px"><div class="row" style="gap:10px;align-items:flex-start"><button class="chip'+(k?' on':'')+'" data-a="pendtick" data-id="'+esc(it.id)+'" aria-label="Отметить" style="min-width:36px">'+(k?'✓':'')+'</button><div style="flex:1;min-width:0"><div class="row"><b>−'+fmt(Math.abs(it.amount),A.cur)+'</b><span class="small muted">'+esc(it.time)+'</span></div><div class="small muted" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(it.label)+'</div></div><button class="pmini'+(PNOTE[it.id]?' has':'')+'" data-a="pendnote" data-id="'+esc(it.id)+'" aria-label="Заметка">✎</button></div>'+
+        '<div class="row" style="gap:8px;margin:8px 0 0 46px;justify-content:flex-start"><button class="ov'+(op?' open':'')+'" data-a="pendlo" data-id="'+esc(it.id)+'">'+catIcon(c)+' '+esc(c)+(sb?' · '+esc(sb):'')+PCHEV+'</button></div>'+
+        (op?pendSubChips(it,c).replace('class="chips" style="margin-top:6px"','class="chips psub" style="margin:8px 0 0 46px"')+'<div style="margin:8px 0 0 46px"><button class="chip sm" data-a="pendmanual" data-id="'+esc(it.id)+'">Другая категория</button></div>':'')+'</div>';
     });
     h+='<button class="btn income" data-a="pendbulk"'+(on.length?'':' disabled')+' style="margin-top:12px">Записать отмеченные ('+on.length+')</button>';
   }
@@ -4307,6 +4326,7 @@ H.pendnotesave=function(){
   var v=(($('#pnote')||{}).value||'').trim();if(PN){if(v)PNOTE[PN]=v;else delete PNOTE[PN];}
   if(PL)renderPendList();else{closeSheet();render();}
 };
+H.pendlo=function(el){if(!PL)return;PL.open=PL.open||{};PL.open[el.dataset.id]=!PL.open[el.dataset.id];renderPendList();};
 H.pendtick=function(el){if(!PL)return;PL.off[el.dataset.id]=!PL.off[el.dataset.id];renderPendList();};
 H.pendsub=function(el){
   var it=pendFind(el.dataset.id);if(!it)return;
@@ -4330,6 +4350,9 @@ H.pendrcpt=function(el){
   R={pend:it.id,step:gemKey()?'pick':'key',items:[],store:'',date:it.date,cur:'VND',total:0,err:''};renderRc();
 };
 H.pendadd=function(){var t=pendTotals();P.rows.push({c:'',a:t.left>0?String(t.left):''});renderPend();};
+H.pendco=function(el){var r=P.rows[+el.dataset.i];if(!r)return;r.co=!r.co;renderPend();};
+H.pendsc=function(el){var r=P.rows[+el.dataset.i];if(!r)return;var c=el.dataset.v;r.c=c;r.s='';r.auto=false;r.co=false;var it0=pendFind(P.id);if(it0&&c)r.s=pendSubSug(it0.key,c)||'';renderPend();};
+H.pendss=function(el){var r=P.rows[+el.dataset.i];if(!r)return;var v=el.dataset.v;r.s=r.s===v?'':v;r.auto=false;renderPend();};
 H.pendrm=function(el){P.rows.splice(+el.dataset.i,1);if(!P.rows.length)P.rows.push({c:'',a:''});renderPend();};
 H.pendrest=function(){
   var t=pendTotals();if(t.left<=0)return;
