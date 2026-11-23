@@ -4176,6 +4176,7 @@ function pendCard(it,inList){
   return h+'<button class="chip sm" data-a="pdrop" data-id="'+esc(it.id)+'" style="margin-top:8px">Пропустить</button></div>';
 }
 /* --- выбор категорий расхода --- */
+function pendBlank(r){return !r.c&&!(num(r.a)>0)&&!r.s&&!r.n;}
 function pendTotals(){
   var it=pendFind(P.id),tot=Math.abs(it.amount),s=0;
   P.rows.forEach(function(r){var v=num(r.a);if(isFinite(v)&&v>0)s+=v;});
@@ -4184,7 +4185,7 @@ function pendTotals(){
 function pendCur(it){var A=getAcc(pendAcc(it.num,it.cur));return A?A.cur:it.cur;}
 function pendStatus(){
   var it=pendFind(P.id);if(!it)return '';
-  var t=pendTotals(),cur=pendCur(it),ok=P.rows.every(function(r){return r.c&&num(r.a)>0;}),h='';
+  var t=pendTotals(),cur=pendCur(it),ok=P.rows.every(function(r){return pendBlank(r)||(r.c&&num(r.a)>0);})&&P.rows.some(function(r){return !pendBlank(r);}),h='';
   if(t.left>0){
     h+='<div class="row"><span class="muted">Осталось распределить</span><b class="warn" style="font-size:18px">'+fmt(t.left,cur)+'</b></div><div style="height:6px;background:var(--line);border-radius:3px;margin-top:8px"><div style="height:6px;border-radius:3px;background:var(--fx);width:'+Math.min(100,Math.round(t.s/t.tot*100))+'%"></div></div><button class="btn plain" data-a="pendrest" style="margin-top:12px">Остаток в «Другое»</button>';
   }else if(t.left<0){
@@ -4337,7 +4338,9 @@ H.pendrest=function(){
   renderPend();
 };
 H.pendok=function(){
-  var it=pendFind(P.id);if(!it)return;var t=pendTotals();
+  var it=pendFind(P.id);if(!it)return;
+  if(P.rows.length>1){var kept=P.rows.filter(function(r){return !pendBlank(r);});if(kept.length)P.rows=kept;}
+  var t=pendTotals();
   if(t.left!==0||!P.rows.every(function(r){return r.c&&num(r.a)>0;})){renderPend();return;}
   var gs=[];P.rows.forEach(function(r){
     var n=(r.n||'').trim(),f=gs.filter(function(x){return x.c===r.c&&x.s===(r.s||'')&&x.n===n;})[0];
